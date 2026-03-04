@@ -21,7 +21,6 @@ export function InvoiceStandard({ data }: any) {
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">NCF:</span> <span className="font-mono font-bold">{document.number}</span></p>
                         <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">Fecha:</span> <span className="font-bold">{document.date}</span></p>
-                        {document.ncf && <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">NCF:</span> <span className="font-bold text-xs">{document.ncf}</span></p>}
                         {document.dueDate && <p className="flex justify-between gap-8"><span className="text-gray-500">Vence:</span> <span className="font-bold text-xs">{document.dueDate}</span></p>}
                     </div>
                 </div>

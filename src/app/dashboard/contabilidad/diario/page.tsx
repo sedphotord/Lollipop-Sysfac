@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const ASIENTOS = [
     { id: "AJ-2024-001", fecha: "31 Oct 2024", desc: "Cierre mensual ventas octubre", debito: 3850000, credito: 3850000, tipo: "cierre", status: "publicado" },
@@ -21,7 +22,12 @@ export default function EntradaDiarioPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Entradas de Diario</h2><p className="text-muted-foreground mt-1 text-sm">Asientos contables manuales y automáticos del período.</p></div>
-                <div className="flex gap-2"><Button variant="outline"><Download className="w-4 h-4 mr-2" />Exportar</Button><Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Asiento</Button></div>
+                <div className="flex gap-2">
+                    <Button variant="outline"><Download className="w-4 h-4 mr-2" />Exportar</Button>
+                    <Link href="/dashboard/contabilidad/diario/new">
+                        <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Asiento</Button>
+                    </Link>
+                </div>
             </div>
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">

@@ -26,13 +26,13 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 const INVOICES = [
-    { id: "INV-2024-0042", ecf: "E3100000006", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "CLARO (CODETEL)", rnc: "101010101", date: "20 Oct 2024", vencimiento: "19 Nov 2024", total: 605800, status: "accepted" },
-    { id: "INV-2024-0041", ecf: "E3200000010", tipo: "B02", tipoName: "Consumo", cliente: "Juan Pérez", rnc: "00114356789", date: "18 Oct 2024", vencimiento: "18 Oct 2024", total: 3500, status: "accepted" },
-    { id: "INV-2024-0040", ecf: "E3100000005", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "ALTICE DOMINICANA", rnc: "130819985", date: "15 Oct 2024", vencimiento: "14 Nov 2024", total: 125000, status: "pending" },
-    { id: "INV-2024-0039", ecf: "E3100000004", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "GRUPO RAMOS", rnc: "101001010", date: "10 Oct 2024", vencimiento: "09 Nov 2024", total: 95000, status: "accepted" },
-    { id: "INV-2024-0038", ecf: "E3200000009", tipo: "B02", tipoName: "Consumo", cliente: "María Santos", rnc: "40212345678", date: "08 Oct 2024", vencimiento: "08 Oct 2024", total: 8750, status: "rejected" },
-    { id: "INV-2024-0037", ecf: "E3100000003", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "BANRESERVAS", rnc: "101288345", date: "01 Oct 2024", vencimiento: "31 Oct 2024", total: 250000, status: "accepted" },
-    { id: "INV-2024-0036", ecf: "E3200000008", tipo: "B02", tipoName: "Consumo", cliente: "Pedro Almonte", rnc: "001555999", date: "28 Sep 2024", vencimiento: "28 Sep 2024", total: 12300, status: "accepted" },
+    { id: "0042", ecf: "E3100000006", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "CLARO (CODETEL)", rnc: "101010101", date: "20 Oct 2024", vencimiento: "19 Nov 2024", total: 605800, status: "accepted" },
+    { id: "0041", ecf: "E3200000010", tipo: "B02", tipoName: "Consumo", cliente: "Juan Pérez", rnc: "00114356789", date: "18 Oct 2024", vencimiento: "18 Oct 2024", total: 3500, status: "accepted" },
+    { id: "0040", ecf: "E3100000005", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "ALTICE DOMINICANA", rnc: "130819985", date: "15 Oct 2024", vencimiento: "14 Nov 2024", total: 125000, status: "pending" },
+    { id: "0039", ecf: "E3100000004", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "GRUPO RAMOS", rnc: "101001010", date: "10 Oct 2024", vencimiento: "09 Nov 2024", total: 95000, status: "accepted" },
+    { id: "0038", ecf: "E3200000009", tipo: "B02", tipoName: "Consumo", cliente: "María Santos", rnc: "40212345678", date: "08 Oct 2024", vencimiento: "08 Oct 2024", total: 8750, status: "rejected" },
+    { id: "0037", ecf: "E3100000003", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "BANRESERVAS", rnc: "101288345", date: "01 Oct 2024", vencimiento: "31 Oct 2024", total: 250000, status: "accepted" },
+    { id: "0036", ecf: "E3200000008", tipo: "B02", tipoName: "Consumo", cliente: "Pedro Almonte", rnc: "001555999", date: "28 Sep 2024", vencimiento: "28 Sep 2024", total: 12300, status: "accepted" },
 ];
 
 const STATUS_MAP: Record<string, { label: string; cls: string; icon: any }> = {
@@ -246,7 +246,7 @@ export default function InvoicesPage() {
                                     <TableRow key={inv.id} className={cn("hover:bg-muted/20 transition-colors group", (inv as any).isDraft && "bg-amber-50/30 dark:bg-amber-900/5")}>
                                         <TableCell>
                                             {(inv as any).isDraft ? (
-                                                <Link href="/dashboard/invoices/new" className="font-mono font-bold text-amber-600 hover:underline text-sm">
+                                                <Link href={`/dashboard/invoices/${inv.id}/edit`} className="font-mono font-bold text-amber-600 hover:underline text-sm">
                                                     {inv.ecf !== '—' ? inv.ecf : 'Sin NCF'}
                                                 </Link>
                                             ) : (

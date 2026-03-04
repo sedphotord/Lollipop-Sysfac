@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Download, MapPin, Package, Plus, Search, Truck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const DATA = [
     { id: "CON-001", fecha: "20 Oct 2024", cliente: "CLARO", destino: "Av. 27 de Febrero #120, SD", items: 3, peso: "45 kg", status: "entregado" },
@@ -23,7 +24,9 @@ export default function ConducesPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Conduces</h2><p className="text-muted-foreground mt-1 text-sm">Documentos de entrega y remisión de mercancía a clientes.</p></div>
-                <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Conduce</Button>
+                <Link href="/dashboard/ingresos/conduces/new">
+                    <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Conduce</Button>
+                </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[{ l: "Total Conduces", v: DATA.length, i: Truck, c: "text-blue-600 bg-blue-500/10" }, { l: "En Tránsito", v: DATA.filter(d => d.status === 'en_transito').length, i: MapPin, c: "text-amber-600 bg-amber-500/10" }, { l: "Entregados", v: DATA.filter(d => d.status === 'entregado').length, i: Package, c: "text-emerald-600 bg-emerald-500/10" }].map((k, i) => (

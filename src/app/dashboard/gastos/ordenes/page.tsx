@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { CheckSquare, ClipboardList, Package, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const DATA = [
     { id: "OC-001", fecha: "19 Oct 2024", proveedor: "Dell Technologies", items: 2, total: 100300, status: "recibida" },
@@ -22,7 +23,9 @@ export default function OrdenesCompraPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Órdenes de Compra</h2><p className="text-muted-foreground mt-1 text-sm">Gestiona tus solicitudes de compra a proveedores.</p></div>
-                <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nueva OC</Button>
+                <Link href="/dashboard/gastos/ordenes/new">
+                    <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nueva OC</Button>
+                </Link>
             </div>
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">

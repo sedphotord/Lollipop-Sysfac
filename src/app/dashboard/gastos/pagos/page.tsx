@@ -12,14 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label";
 import { Printer, Edit } from "lucide-react";
 
+// Initial mock data simulating payments to suppliers
 const INITIAL_DATA = [
-    { id: "PAG-001", fecha: "20 Oct 2024", cliente: "CLARO", factura: "0042", metodo: "Transferencia", monto: 605800, status: "confirmado" },
-    { id: "PAG-002", fecha: "15 Oct 2024", cliente: "ALTICE", factura: "0040", metodo: "Cheque", monto: 147500, status: "pendiente" },
-    { id: "PAG-003", fecha: "01 Oct 2024", cliente: "BANRESERVAS", factura: "0037", metodo: "Transferencia", monto: 297500, status: "confirmado" },
-    { id: "PAG-004", fecha: "28 Sep 2024", cliente: "Pedro Almonte", factura: "0036", metodo: "Efectivo", monto: 14514, status: "confirmado" },
+    { id: "PGE-001", fecha: "22 Oct 2024", proveedor: "DISTRIBUIDORA CORRIPIO", factura: "B0100000045", metodo: "Transferencia", monto: 125000, status: "confirmado" },
+    { id: "PGE-002", fecha: "18 Oct 2024", proveedor: "CEPM", factura: "B0100000089", metodo: "Transferencia", monto: 45000, status: "pendiente" },
+    { id: "PGE-003", fecha: "05 Oct 2024", proveedor: "ARL SALUD", factura: "B0100000102", metodo: "Cheque", monto: 18500, status: "confirmado" },
+    { id: "PGE-004", fecha: "01 Oct 2024", proveedor: "OFICINA VIRTUAL DGII", factura: "IR-17", metodo: "Transferencia", monto: 9550, status: "confirmado" },
 ];
 
-export default function PagosRecibidosPage() {
+export default function PagosProvedoresPage() {
     const [search, setSearch] = useState("");
     const [pagos, setPagos] = useState<any[]>(INITIAL_DATA);
     const [selectedPayment, setSelectedPayment] = useState<any>(null);
@@ -27,9 +28,9 @@ export default function PagosRecibidosPage() {
     const [editForm, setEditForm] = useState<any>({});
 
     useEffect(() => {
-        // Load saved payments
+        // Load saved payments for suppliers
         try {
-            const savedPagos = JSON.parse(localStorage.getItem('pagos_recibidos') || '[]');
+            const savedPagos = JSON.parse(localStorage.getItem('pagos_proveedores') || '[]');
             if (savedPagos.length > 0) {
                 setPagos([...savedPagos, ...INITIAL_DATA]);
             }
@@ -38,12 +39,12 @@ export default function PagosRecibidosPage() {
 
     const handleUpdatePayment = () => {
         const updatedPagos = pagos.map(p => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
-        const existingRaw = localStorage.getItem('pagos_recibidos');
+        const existingRaw = localStorage.getItem('pagos_proveedores');
         let existing = [];
         try { existing = JSON.parse(existingRaw || '[]'); } catch { }
         const newStorage = existing.map((p: any) => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
 
-        localStorage.setItem('pagos_recibidos', JSON.stringify(newStorage));
+        localStorage.setItem('pagos_proveedores', JSON.stringify(newStorage));
         setPagos(updatedPagos);
         setSelectedPayment({ ...selectedPayment, ...editForm, monto: parseFloat(editForm.monto) || 0 });
         setIsEditingPayment(false);
@@ -59,10 +60,10 @@ export default function PagosRecibidosPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Recibos de Ingreso</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Registro de cobros y conciliación con facturas emitidas.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Pagos a Proveedores</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Registro de desembolsos y abonos a facturas de suplidores.</p>
                 </div>
-                <Link href="/dashboard/ingresos/pagos/new">
+                <Link href="/dashboard/gastos/pagos/new">
                     <Button className="bg-primary shadow-lg shadow-primary/20">
                         <Plus className="w-4 h-4 mr-2" /> Registrar Pago
                     </Button>
@@ -71,7 +72,7 @@ export default function PagosRecibidosPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                    { label: "Total Cobrado", value: `RD$ ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "text-emerald-600 bg-emerald-500/10" },
+                    { label: "Total Pagado", value: `RD$ ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "text-emerald-600 bg-emerald-500/10" },
                     { label: "Confirmados", value: pagos.filter(d => d.status === 'confirmado').length, icon: CheckCircle2, color: "text-blue-600 bg-blue-500/10" },
                     { label: "Pendientes", value: pagos.filter(d => d.status === 'pendiente').length, icon: Clock, color: "text-amber-600 bg-amber-500/10" },
                 ].map((k, i) => (
@@ -104,7 +105,7 @@ export default function PagosRecibidosPage() {
                                 <TableRow>
                                     <TableHead>ID</TableHead>
                                     <TableHead>Fecha</TableHead>
-                                    <TableHead>Cliente</TableHead>
+                                    <TableHead>Proveedor</TableHead>
                                     <TableHead>Factura Ref.</TableHead>
                                     <TableHead>Método</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
@@ -112,11 +113,11 @@ export default function PagosRecibidosPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {pagos.filter(d => d.cliente.toLowerCase().includes(search.toLowerCase()) || d.factura.toLowerCase().includes(search.toLowerCase())).map((d, i) => (
+                                {pagos.filter(d => d.proveedor.toLowerCase().includes(search.toLowerCase()) || d.factura.toLowerCase().includes(search.toLowerCase())).map((d, i) => (
                                     <TableRow key={i} className="hover:bg-muted/20 cursor-pointer" onClick={() => { setSelectedPayment(d); setIsEditingPayment(false); }}>
                                         <TableCell className="font-mono text-xs">{d.id}</TableCell>
                                         <TableCell className="text-sm text-muted-foreground">{d.fecha}</TableCell>
-                                        <TableCell className="font-semibold">{d.cliente}</TableCell>
+                                        <TableCell className="font-semibold">{d.proveedor}</TableCell>
                                         <TableCell className="font-mono text-xs text-primary">{d.factura}</TableCell>
                                         <TableCell><Badge variant="outline" className="text-xs">{d.metodo}</Badge></TableCell>
                                         <TableCell className="text-right font-bold tabular-nums text-emerald-600">
@@ -141,7 +142,7 @@ export default function PagosRecibidosPage() {
                     <div className="bg-background rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative print:shadow-none print:w-full print:max-w-none print:h-full" onClick={e => e.stopPropagation()}>
                         {/* Header Actions (hidden on print) */}
                         <div className="px-6 py-4 flex items-center justify-between border-b bg-muted/20 print:hidden">
-                            <h2 className="font-bold text-lg text-foreground">Recibo de Ingreso</h2>
+                            <h2 className="font-bold text-lg text-foreground">Comprobante de Egreso</h2>
                             <div className="flex items-center gap-2">
                                 <Button variant="outline" size="icon" onClick={() => { setEditForm({ fecha: selectedPayment.fecha, metodo: selectedPayment.metodo, referencia: selectedPayment.referencia || '', monto: selectedPayment.monto, status: selectedPayment.status }), setIsEditingPayment(!isEditingPayment) }} className="w-8 h-8">
                                     <Edit className="w-4 h-4 text-muted-foreground" />
@@ -164,7 +165,7 @@ export default function PagosRecibidosPage() {
                                 <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600 print:text-black">
                                     RD$ {parseFloat(selectedPayment.monto).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h3>
-                                <p className="text-sm font-medium text-muted-foreground">Cobro realizado exitosamente</p>
+                                <p className="text-sm font-medium text-muted-foreground">Pago realizado exitosamente</p>
                             </div>
 
                             {isEditingPayment ? (
@@ -200,7 +201,7 @@ export default function PagosRecibidosPage() {
                             ) : (
                                 <div className="space-y-4">
                                     <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">ID Recibo</span>
+                                        <span className="text-sm text-muted-foreground">ID Egreso</span>
                                         <span className="text-sm font-mono font-medium">{selectedPayment.id}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-border/40">
@@ -208,8 +209,8 @@ export default function PagosRecibidosPage() {
                                         <span className="text-sm font-medium">{selectedPayment.fecha}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">Cliente</span>
-                                        <span className="text-sm font-bold text-foreground text-right max-w-[200px] truncate" title={selectedPayment.cliente}>{selectedPayment.cliente}</span>
+                                        <span className="text-sm text-muted-foreground">Proveedor</span>
+                                        <span className="text-sm font-bold text-foreground text-right max-w-[200px] truncate" title={selectedPayment.proveedor}>{selectedPayment.proveedor}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-border/40">
                                         <span className="text-sm text-muted-foreground">Factura Pagada</span>
@@ -233,7 +234,7 @@ export default function PagosRecibidosPage() {
                         {!isEditingPayment && (
                             <div className="bg-muted/30 p-6 text-center print:hidden border-t">
                                 <p className="text-xs text-muted-foreground">
-                                    Este recibo es un comprobante interno del sistema. No tiene validez fiscal por sí solo.
+                                    Este recibo es un comprobante de egreso. No tiene validez fiscal por sí solo.
                                 </p>
                             </div>
                         )}

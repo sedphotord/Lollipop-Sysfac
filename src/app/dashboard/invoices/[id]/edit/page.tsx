@@ -243,7 +243,7 @@ function ItemRow({ item, onUpdate, onRemove }: {
 // ─────────────────────────────────────────────
 //  MAIN COMPONENT (Inner)
 // ─────────────────────────────────────────────
-function InvoiceBuilderContent() {
+function InvoiceEditorContent({ routeId }: { routeId: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -306,8 +306,64 @@ function InvoiceBuilderContent() {
         if (savedTpl) setPlantilla(savedTpl);
     }, []);
 
-    // Auto-generate NCF when type changes
+    // Load initial invoice data
     useEffect(() => {
+        if (!routeId) return;
+
+        let invoice = null;
+
+        if (routeId.startsWith("DRAFT-")) {
+            const drafts = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+            invoice = drafts.find((d: any) => d.id === routeId);
+            if (!invoice) {
+                const legacyDraft = JSON.parse(localStorage.getItem('invoice_draft') || '{}');
+                if (legacyDraft.id === routeId) invoice = legacyDraft;
+            }
+        } else {
+            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            invoice = emitted.find((i: any) => i.id === routeId);
+        }
+
+        if (invoice) {
+            if (invoice.tipo) setTipo(invoice.tipo);
+            if (invoice.ecf || invoice.ncf) setNcf(invoice.ecf || invoice.ncf);
+            if (invoice.date) setDate(invoice.date);
+            if (invoice.vencimiento) setDueDate(invoice.vencimiento);
+            if (invoice.paymentTerms) setPaymentTerms(invoice.paymentTerms);
+            if (invoice.notes) setNotes(invoice.notes);
+            if (invoice.footer) setFooter(invoice.footer);
+            if (invoice.vendedor) setVendedor(invoice.vendedor);
+            if (invoice.plantilla) setPlantilla(invoice.plantilla);
+
+            if (invoice.cliente || invoice.client) {
+                const clientName = invoice.cliente || invoice.client?.name;
+                const clientRnc = invoice.rnc || invoice.client?.rnc;
+                // Try to find the full client object based on the name or RNC
+                const matched = DEFAULT_CLIENTS.find(c => c.name === clientName || c.rnc === clientRnc);
+                if (matched) {
+                    setClient(matched);
+                } else {
+                    setClient({
+                        id: clientName, rnc: clientRnc || "", name: clientName,
+                        trade: "", type: "RNC", status: "Activo", email: "", phone: "", address: ""
+                    });
+                }
+            }
+
+            if (invoice.items && invoice.items.length > 0) {
+                setItems(invoice.items.map((i: any) => ({
+                    ...i,
+                    id: i.id || Date.now() + Math.random(),
+                    desc: i.desc || ""
+                })));
+            }
+        }
+    }, [routeId]);
+
+    // Auto-generate NCF when type changes manually
+    const initialT = React.useRef(true);
+    useEffect(() => {
+        if (initialT.current) { initialT.current = false; return; }
         try {
             const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
             setNcf(generateNextNCF(tipo, emitted));
@@ -374,13 +430,16 @@ function InvoiceBuilderContent() {
         setItems(p => p.map(i => i.id !== id ? i : { ...i, [field]: value }));
 
     const handleSave = (autoPay = false) => {
-        const emittedForId = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
-        const existingIds = emittedForId.map((i: any) => {
-            const num = parseInt(i.id);
-            return isNaN(num) ? 0 : num;
-        });
-        const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
-        const invoiceId = String(nextId).padStart(4, '0');
+        let invoiceId = routeId;
+        if (routeId.startsWith("DRAFT-")) {
+            const emittedForId = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const existingIds = emittedForId.map((i: any) => {
+                const num = parseInt(i.id);
+                return isNaN(num) ? 0 : num;
+            });
+            const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+            invoiceId = String(nextId).padStart(4, '0');
+        }
         const invoice = {
             id: invoiceId,
             ecf: ncf,
@@ -401,15 +460,24 @@ function InvoiceBuilderContent() {
             totals: { subtotal, discount: discountTotal, tax: taxTotal, total },
         };
         const existing = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
-        existing.unshift(invoice);
-        localStorage.setItem('invoice_emitted', JSON.stringify(existing));
+        // Remove old if it existed
+        const updated = existing.filter((i: any) => i.id !== routeId);
+        updated.unshift({ ...invoice, id: routeId.startsWith("DRAFT-") ? invoiceId : routeId });
+        localStorage.setItem('invoice_emitted', JSON.stringify(updated));
+
+        // Remove draft if converted
+        if (routeId.startsWith("DRAFT-")) {
+            const drafts = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+            localStorage.setItem('invoice_drafts', JSON.stringify(drafts.filter((d: any) => d.id !== routeId)));
+        }
+
         setSaved(true);
         setTimeout(() => {
             setSaved(false);
             if (autoPay) {
-                router.push(`/dashboard/invoices/${invoiceId}?pay=true`);
+                router.push(`/dashboard/invoices/${routeId.startsWith("DRAFT-") ? invoiceId : routeId}?pay=true`);
             } else {
-                router.push('/dashboard/invoices');
+                router.push(`/dashboard/invoices`);
             }
         }, 1500);
     };
@@ -434,18 +502,17 @@ function InvoiceBuilderContent() {
 
     const handleSaveDraft = () => {
         const draft = {
-            id: `DRAFT-${Date.now()}`,
+            id: routeId.startsWith("DRAFT-") ? routeId : `DRAFT-${Date.now()}`,
             savedAt: new Date().toISOString(),
             tipo, ncf, date, dueDate, paymentTerms, notes, footer, vendedor, plantilla,
             client: client ? { name: client.name, rnc: client.rnc, address: client.address } : null,
             items: items.filter(i => i.name),
         };
         // Save to array for multi-draft support
-        const existing = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+        let existing = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+        existing = existing.filter((d: any) => d.id !== draft.id);
         existing.unshift(draft);
         localStorage.setItem('invoice_drafts', JSON.stringify(existing));
-        // Also keep the legacy single-draft key for compatibility
-        localStorage.setItem('invoice_draft', JSON.stringify(draft));
         router.push('/dashboard/invoices');
     };
 
@@ -518,7 +585,7 @@ function InvoiceBuilderContent() {
                         >
                             <ArrowLeft className="w-4.5 h-4.5" />
                         </button>
-                        <h1 className="text-base font-bold text-foreground">Nueva factura</h1>
+                        <h1 className="text-base font-bold text-foreground">Editar comprobante {routeId.startsWith("DRAFT-") ? "" : routeId}</h1>
                     </div>
                     <div className="flex items-center gap-2">
                         <button className="flex items-center gap-1.5 text-xs text-muted-foreground border rounded-lg px-3 py-1.5 hover:bg-muted/40 transition-colors">
@@ -997,10 +1064,11 @@ function InvoiceBuilderContent() {
 // ─────────────────────────────────────────────
 //  PAGE EXPORT (Wrapped in Suspense)
 // ─────────────────────────────────────────────
-export default function NewInvoicePage() {
+export default function InvoiceEditorPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id: routeId } = React.use(params);
     return (
-        <Suspense fallback={<div className="p-8 text-center text-muted-foreground flex items-center justify-center min-h-[50vh]"><div className="animate-spin mr-2 h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />Cargando constructor...</div>}>
-            <InvoiceBuilderContent />
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground flex items-center justify-center min-h-[50vh]"><div className="animate-spin mr-2 h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />Cargando editor...</div>}>
+            <InvoiceEditorContent routeId={routeId} />
         </Suspense>
     );
 }

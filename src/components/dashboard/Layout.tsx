@@ -488,7 +488,7 @@ export function Header() {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {[
-                            { t: "Factura INV-0047 pagada", s: "CLARO DO pagó RD$ 605,800", dot: "bg-emerald-500", time: "hace 5 min" },
+                            { t: "Factura 0047 pagada", s: "CLARO DO pagó RD$ 605,800", dot: "bg-emerald-500", time: "hace 5 min" },
                             { t: "DGII: Formato 607 pendiente", s: "Vence en 3 días · Octubre 2024", dot: "bg-amber-500", time: "hace 1 h" },
                             { t: "Nuevo usuario registrado", s: "Ana García fue invitada al sistema", dot: "bg-purple-500", time: "hace 2 h" },
                         ].map((n, i) => (

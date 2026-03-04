@@ -23,15 +23,15 @@ import Link from "next/link";
 const INITIAL_NOTIFICATIONS = [
     {
         id: "1",
-        title: "Factura INV-0047 pagada",
-        description: "CLARO DOMINICANA ha pagado la factura por un monto de RD$ 605,800.00 a través de transferencia bancaria.",
+        title: "Factura 0047 pagada",
+        description: "CLARO DO completó el pago de su factura por un monto de RD$ 605,800.00 a través de transferencia bancaria.",
         type: "payment",
         category: "billing",
         status: "unread",
         date: "hace 5 min",
         icon: CreditCard,
         iconColor: "text-emerald-500 bg-emerald-500/10",
-        action: { label: "Ver Factura", href: "/dashboard/invoices/INV-0047" }
+        action: { label: "Ver Factura", href: "/dashboard/invoices/0047" }
     },
     {
         id: "2",

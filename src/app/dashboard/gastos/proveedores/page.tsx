@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState } from "react";
 import { Download, FileText, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const DATA = [
     { id: "FP-001", fecha: "18 Oct 2024", proveedor: "Dell Technologies", ncf: "B0100002341", subtotal: 85000, itbis: 15300, total: 100300, status: "pagada" },
@@ -21,7 +22,9 @@ export default function ProveedoresPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Facturas de Proveedores</h2><p className="text-muted-foreground mt-1 text-sm">Gestión de Cuentas por Pagar y documentos de compra.</p></div>
-                <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Registrar Factura</Button>
+                <Link href="/dashboard/gastos/proveedores/new">
+                    <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Registrar Factura</Button>
+                </Link>
             </div>
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -119,6 +119,17 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
 }
 
 // ─────────────────────────────────────────────
+//  PAGE EXPORT (Wrapped in Suspense)
+// ─────────────────────────────────────────────
+export default function CotizacionBuilder() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground flex items-center justify-center min-h-[50vh]"><div className="animate-spin mr-2 h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />Cargando constructor...</div>}>
+            <CotizacionBuilderContent />
+        </Suspense>
+    );
+}
+
+// ─────────────────────────────────────────────
 //  ITEM ROW
 // ─────────────────────────────────────────────
 function ItemRow({ item, onUpdate, onRemove }: {
@@ -208,9 +219,9 @@ function ItemRow({ item, onUpdate, onRemove }: {
 }
 
 // ─────────────────────────────────────────────
-//  MAIN PAGE
+//  MAIN COMPONENT (Inner)
 // ─────────────────────────────────────────────
-export default function NewCotizacionPage() {
+function CotizacionBuilderContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
