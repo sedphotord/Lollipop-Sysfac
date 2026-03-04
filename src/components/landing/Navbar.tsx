@@ -42,7 +42,7 @@ export function Navbar() {
                 <div className="flex items-center gap-8">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">L</div>
+                        <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">🍭</div>
                         <span className="text-xl font-black tracking-tight">Lolli<span className="bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">pop</span></span>
                     </Link>
 
