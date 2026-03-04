@@ -86,7 +86,7 @@ sysfac/
 
 A continuación se detalla exhaustivamente cómo funciona actualmente cada módulo a nivel de interfaz de usuario (UI/Frontend) y qué lógica de servidor (Backend) debe construirse para completar su funcionamiento en producción.
 
-### 4.1 Dashboard
+### 4.1 Dashboard `/dashboard`
 
 * **Función Actual (UI):** Es el centro de mando y resumen analítico. Muestra componentes visuales simulados como Total Facturado, Aceptadas DGII, Pendientes de Cobro y gráficos de ingresos/gastos mensuales. Incluye botones de acceso rápido (Crear Factura, ir a POS).
 * **Falta en Backend:**
@@ -105,11 +105,13 @@ A continuación se detalla exhaustivamente cómo funciona actualmente cada módu
   * Al cobrar con Pago Combinado, el sistema debe crear un "Asiento Contable" múltiple en el fondo (Ej: Débito a Caja Fuerte $500, Débito a Cuenta de Banco BHD $500, y Crédito a Ventas Generales $1,000).
   * Actualmente el POS es un entorno aislado, las facturas generadas ahí **no** se están guardando en la lista genérica de facturas emitidas ni enviando su XML a la DGII en segundo plano.
 
-### 4.3 Ventas y Facturación (Editor e-CF) `/dashboard/invoices/new` y `/[id]`
+### 4.3 Ingresos, Ventas y Facturación (e-CF) `/dashboard/invoices` e `/ingresos`
 
-Este es el motor principal del sistema, y el módulo más robusto actualmente.
+Este es el clúster principal del sistema, compuesto por múltiples submódulos:
 
-* **Función Actual del Editor (UI):**
+#### Editor de Facturas (`/invoices/[id]` y `/new`)
+
+* **Función Actual (UI):**
   * **Diseño de Factura:** Es una vista que emula un papel (WYSWYG). Permite agregar ítems a una tabla, cambiar cantidades, precios individuales, y establecer descuentos por línea o totales.
   * **Motor Lógico Matemático:** Calcula dinámicamente el Subtotal, aplica el 18% de ITBIS (o el porcentaje configurado) y devuelve el Total Neto. Todo con formato monetario.
   * **RNC y Comprobantes:** Tiene electores para elegir al Cliente de la lista y el NCF (Válido para Crédito Fiscal B01, Consumo B02, Gubernamental B15, etc.). Carga automáticamente el RNC del cliente.
@@ -121,26 +123,53 @@ Este es el motor principal del sistema, y el módulo más robusto actualmente.
     3. **Encadenamiento de Eventos:** Guardar en la base de datos la respuesta de la DGII (`ACEPTADO` o `RECHAZADO`). Si es aceptado, generar el Código de Seguridad (String Hash) y convertirlo en el código QR que va impreso en el PDF, como dicta la norma técnica obligatoria de Facturación Electrónica en R.D.
     4. Cargar y relacionar la factura en la BD a la tabla de `clientes` por su ID real.
 
-### 4.4 Compras y Gastos `/dashboard/gastos`
+#### Cotizaciones (`/ingresos/cotizaciones`)
 
-* **Función Actual (UI):** Pantallas diseñadas para el control del egreso. Cuenta con módulos como "Órdenes de Compra", "Pago a Proveedores", y "Gastos Menores/Caja Chica". Las tablas y formularios visuales muestran cómo el usuario retiene impuestos en la compra.
+* **Función Actual (UI):** Similar a la factura, pero sin impacto fiscal. Permite generar presupuestos en formato PDF.
+* **Falta en Backend:** Lógica para que un botón de "Convertir a Factura" copie íntegramente las líneas de la base de datos hacia una nueva Factura Oficial.
+
+#### Conduces (`/ingresos/conduces`)
+
+* **Función Actual (UI):** Pantalla para remitir mercancía (Delivery). No posee campos de dinero/impuestos, solo unidades y confirmación de firmas.
+* **Falta en Backend:** Asociar 1 a 1 un Conduce con la Factura original (ID Foráneo) para que no se despache mercancía sin soporte fiscal. Descontar del inventario "On-Hold" en ruta.
+
+#### Pagos Recibidos (`/ingresos/pagos`)
+
+* **Función Actual (UI):** Visualizador de listado de Recibos de Ingreso (dinero cobrado a facturas a crédito).
+* **Falta en Backend:** Sistema de "Aplicación de Pagos". El backend debe detectar de qué banco ingresó, vincular el monto residual exacto a la Factura (ej. debía $1000, abonó $400, quedan $600 pendientes) y actualizar el Dashboard "Cuentas por Cobrar".
+
+### 4.4 Compras y Egresos `/dashboard/gastos` y `/proveedores`
+
+* **Función Actual (UI):** Pantallas diseñadas para el control de la salida de dinero. Las tablas y formularios visuales muestran cómo el usuario gestiona el Impuesto Retenido o ITBIS Retenido en las compras formales.
+  * **Gestión de Proveedores:** Ficha de contacto de suplidores comerciales.
+  * **Órdenes de Compra (`/ordenes`):** Elaboración en UI de un Requerimiento formal para mandarlo al suplidor.
+  * **Recepción (`/recepcion`):** Vista especializada para la entrada analítica de la mercancía.
+  * **Caja Chica y Gastos Menores (`/menores`):** Manejo asilado para gastos que no requieren un flujo masivo, simulando Comprobantes de Compras (B11) y Gastos Menores (B13).
 * **Falta en Backend:**
-  * Al aprobar un gasto, no se refleja como obligación crediticia en "Cuentas por Pagar" (Accounts Payable).
-  * Relacionar la generación de esta compra para que viaje directamente al formato base del archivo TXT del 606 (Compras a proveedores).
-  * Sumar el inventario al Kardex cuando el almacén "Recepciona" una Orden de Compra.
+  * Al aprobar el gasto, no se refleja de forma transaccional como obligación crediticia en "Cuentas por Pagar" (Accounts Payable).
+  * Lógica asíncrona para que todo lo capturado acá viaje directo a alimentar el archivo de generación del 606 automático, categorizando si el egreso cruzó un NCF o un Gasto Menor válido.
+  * Sumar las cantidades físicas al **Kardex General** inmediatamente después de teclear "Aprobar" en la vista de `/recepcion`.
 
 ### 4.5 Catálogo e Inventario `/dashboard/productos`
 
-* **Función Actual (UI):** Listado estilizado de artículos y servicios. Formularios para catalogar SKU/Código de barras, imágenes y configuración de ITBIS aplicable a cada línea.
+* **Función Actual (UI):** Listado estilizado de los artículos de la empresa.
+  * **Gestor General (`/productos`):** Malla principal (Grid y Data Table) de SKU, Código de Barras (REF), imágenes, precio venta y costo meta.
+  * **Categorías y Almacenes (`/categorias` y `/almacenes`):** Formularios para clasificar jerárquicamente la mercancía y dividir el stock en ubicaciones físicas (Sucursal Piantini, Bodega Herrera).
+  * **Kardex / Inventario UI (`/inventario`):** Visualizaciones de existencias por almacén.
 * **Falta en Backend (Kardex Engine):**
-  * Todo el control de "Movimientos". Cada vez que un componente del sistema afecte un producto (Facturación resta, Devolución o Nota de Crédito suma, Orden de Compra suma, Transferencia inter-bodegas), el `Kardex` en BD debe instanciar un nuevo registro `+2` o `-5` para tener trazabilidad estricta de quién hizo qué con cada clavo de la empresa.
-  * Calcular el Costo Promedio Ponderado para fines contables.
+  * Todo el control duro de "Movimientos". Cada componente del sistema debe afectar la tabla SQL de *Movimientos_Inventario* transaccionalmente: la Facturación de Ícons resta unidades, Devoluciones o Notas de Crédito suman, la Orden de Compra/Recepción suma.
+  * Se debe instanciar un registro como `+2` o `-5` bloqueando asimetrías de stock, brindando la trazabilidad total de quién despachó y a qué hora.
+  * Algoritmo de cálculo en el servidor del Costo Promedio Ponderado de cada lote adquirido.
 
 ### 4.6 Finanzas y Contabilidad `/dashboard/contabilidad`
 
-* **Función Actual (UI):** Interfaces listas para que un Contador (CPA) acceda. Incluye la estructura arbórea jerárquica del "Catálogo de Cuentas" (Activos, Pasivos, Capital, Ingresos, Gastos) de 6 dígitos base (Ej 100-01-001). Pantalla lista para realizar *Entradas de Diario* (Asientos manuales con suma en Debit y Credit). Visores para simular un Estado de Resultados y Balance General.
-* **Falta en Backend:**
-  * **Double-Entry Automático:** Este es el bloque contable que falta al 100%. Un usuario del sistema (cajero) no sabe de contabilidad. Cada vez que hace una  Factura, un Pago, o un POS ticket, el backend debe secretamente invocar una función `crearAsientoGeneral()` que afecte las cuentas correctas configuradas para Impuestos por Pagar, Cuentas por Cobrar e Ingresos netos, para garantizar que la pantalla de "Balance General" cuadre y no sea ficticia.
+* **Función Actual (UI):** Interfaces listas para que un Contador Interno o Auditor externo (CPA) acceda.
+  * **Catálogo de Cuentas (`/catalogo`):** Estructura arbórea jerárquica obligatoria (Activos, Pasivos, Capital, Ingresos, Gastos) mapeada a 6 dígitos estándar y subcuentas (Ej: 100-01-001 Caja General).
+  * **Asientos y Diarios (`/page.tsx` base contable):** Pantallas puras para "Entradas de Diario" (Asientos manuales con suma en su columna Débito y Crédito y validación visual de cuadre).
+  * **Balances y Reportes (`/reportes`):** Paneles para mostrar un Estado de Resultados, un Libro Mayor o el Balance General.
+* **Falta en Backend (Double-Entry Engine):**
+  * **Double-Entry Automático:** Este es el bloque contable lógico que le falta al 100% al sistema. Debido a que un usuario diario (Cajero, Facturador) desconoce la contabilidad formal moderna, cada evento del sistema (Ej: Hacer una Venta de $118 pesos) debe secretamente en el servidor invocar la función de motor contable `crearAsientoAutomático(metadata)`.
+    * En este backend automatizado, esa Venta de $118 asume en el motor: *Registrar Débito $118 Cuenta 'Cuentas x Cobrar Clientes'*, y compensadamente registrar *Crédito $100 a Cuenta 'Ingresos Ventas'* sumado al *Crédito $18 a 'ITBIS por Pagar'*. Sin este motor backend sólido, la UI de Balance General jamás cobrará vida.
 
 ---
 
