@@ -1,0 +1,44 @@
+﻿src/app/dashboard/pos/page.tsx(730,70): error TS2304: Cannot find name 'X'.
+src/components/templates/AccountStatement.tsx(20,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/DeliveryNote.tsx(11,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/DeliveryNote.tsx(36,61): error TS2339: Property 'includes' does not exist on type 'string | number | bigint | true | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'includes' does not exist on type 'number'.
+src/components/templates/EmailInvoice.tsx(11,24): error TS18049: 'data.client.name' is possibly 'null' or 'undefined'.
+src/components/templates/EmailInvoice.tsx(11,41): error TS2339: Property 'split' does not exist on type 'string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'split' does not exist on type 'number'.
+src/components/templates/EmailQuote.tsx(11,24): error TS18049: 'data.client.name' is possibly 'null' or 'undefined'.
+src/components/templates/EmailQuote.tsx(11,41): error TS2339: Property 'split' does not exist on type 'string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'split' does not exist on type 'number'.
+src/components/templates/EmailReceipt.tsx(12,24): error TS18049: 'data.client.name' is possibly 'null' or 'undefined'.
+src/components/templates/EmailReceipt.tsx(12,41): error TS2339: Property 'split' does not exist on type 'string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'split' does not exist on type 'number'.
+src/components/templates/InvoiceCorporate.tsx(21,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/InvoiceElegant.tsx(17,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/InvoiceMinimal.tsx(17,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/InvoiceModern.tsx(17,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/InvoiceStandard.tsx(17,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/PaymentReceipt.tsx(26,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/PurchaseOrder.tsx(16,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/PurchaseOrder.tsx(80,96): error TS2345: Argument of type 'NodeOr<number>' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/components/templates/QuoteStandard.tsx(19,54): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/TicketPOS.tsx(15,50): error TS2322: Type 'NodeOr<string>' is not assignable to type 'string | undefined'.
+  Type 'null' is not assignable to type 'string | undefined'.
+src/components/templates/TicketPOS.tsx(36,21): error TS18049: 'data.client.name' is possibly 'null' or 'undefined'.
+src/components/templates/TicketPOS.tsx(36,38): error TS2339: Property 'substring' does not exist on type 'string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'substring' does not exist on type 'number'.
+src/components/templates/TicketPOS.tsx(54,39): error TS18049: 'item.description' is possibly 'null' or 'undefined'.
+src/components/templates/TicketPOS.tsx(54,56): error TS2339: Property 'substring' does not exist on type 'string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<...>'.
+  Property 'substring' does not exist on type 'number'.
+src/components/templates/TicketPOS.tsx(56,53): error TS2345: Argument of type 'NodeOr<number>' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.

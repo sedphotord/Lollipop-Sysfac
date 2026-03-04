@@ -1,0 +1,11 @@
+﻿src/components/templates/AccountStatement.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/DeliveryNote.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/InvoiceCorporate.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/InvoiceElegant.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/InvoiceMinimal.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/InvoiceModern.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/InvoiceStandard.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/PaymentReceipt.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/QuoteDetailed.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/QuoteStandard.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.
+src/components/templates/TicketPOS.tsx(2,10): error TS2305: Module '"@/lib/utils"' has no exported member 'formatCurrency'.

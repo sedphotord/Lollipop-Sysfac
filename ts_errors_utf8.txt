@@ -1,0 +1,23 @@
+﻿src/app/dashboard/invoices/preview/page.tsx(7,33): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceStandard.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(8,34): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceCorporate.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(9,32): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceMinimal.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(10,31): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceModern.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(11,32): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceElegant.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(12,31): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/QuoteStandard.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(13,31): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/QuoteDetailed.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(14,32): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/PaymentReceipt.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(15,27): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/TicketPOS.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(16,30): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/DeliveryNote.tsx' is not a module.
+src/app/dashboard/invoices/preview/page.tsx(17,34): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/AccountStatement.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(24,46): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceStandard.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(25,47): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceCorporate.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(26,45): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceMinimal.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(27,44): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceModern.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(28,45): error TS2306: File 'C:/Users/marke/Documents/Sysfac/src/components/templates/InvoiceElegant.tsx' is not a module.
+src/app/dashboard/pos/page.tsx(969,45): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: {}, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ data: { color: { primary: string; }; company: { name: string; rnc: string; phone: string; email: string; address: string; }; client: { name: string; address: string; rnc: string; }; document: { type: string; number: any; date: any; ncf: any; seller: string; }; items: { ...; }[]; totals: { ...; }; payments: { ...; ...' is not assignable to type 'IntrinsicAttributes'.
+      Property 'data' does not exist on type 'IntrinsicAttributes'.
+  Overload 2 of 2, '(props: {}): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ data: { color: { primary: string; }; company: { name: string; rnc: string; phone: string; email: string; address: string; }; client: { name: string; address: string; rnc: string; }; document: { type: string; number: any; date: any; ncf: any; seller: string; }; items: { ...; }[]; totals: { ...; }; payments: { ...; ...' is not assignable to type 'IntrinsicAttributes'.
+      Property 'data' does not exist on type 'IntrinsicAttributes'.
