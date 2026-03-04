@@ -9,7 +9,7 @@ import {
     Receipt, FileText, Users, CreditCard, Landmark, BookOpen, Tag,
     Warehouse, Star, SlidersHorizontal, List, RefreshCw, ClipboardList,
     ArrowDownLeft, ArrowUpRight, Repeat, MessageSquare, Truck, BarChart3,
-    BookMarked, Boxes, PlusSquare, CheckSquare,
+    BookMarked, Boxes, PlusSquare, CheckSquare, ArrowLeftRight,
     UserCircle2, Wrench, Bell as BellIcon, Globe, Link as LinkIcon,
     DollarSign, Store, Users2, UserCheck, Flame,
     LogOut, User, KeyRound, LifeBuoy, ChevronsUpDown, BadgeCheck, Building, Plus, Sparkles
@@ -43,9 +43,9 @@ const NAV: NavItem[] = [
         icon: TrendingUp, label: "Ingresos",
         children: [
             { icon: FileText, label: "Facturas de Venta", href: "/dashboard/invoices" },
-            { icon: Repeat, label: "Facturas Recurrentes", href: "/dashboard/ingresos/recurrentes" },
+            { icon: Repeat, label: "Facturas Recurrentes", href: "/dashboard/invoices/recurrentes" },
             { icon: DollarSign, label: "Pagos Recibidos", href: "/dashboard/ingresos/pagos" },
-            { icon: ArrowDownLeft, label: "Notas de Crédito", href: "/dashboard/invoices/nota" },
+            { icon: ArrowDownLeft, label: "Notas de Crédito", href: "/dashboard/invoices/notas" },
             { icon: ClipboardList, label: "Cotizaciones", href: "/dashboard/ingresos/cotizaciones" },
             { icon: Truck, label: "Conduces", href: "/dashboard/ingresos/conduces" },
         ],
@@ -71,6 +71,7 @@ const NAV: NavItem[] = [
             { icon: Wrench, label: "Gestión de Productos", href: "/dashboard/productos/gestion" },
             { icon: Tag, label: "Listas de Precios", href: "/dashboard/productos/precios" },
             { icon: Warehouse, label: "Almacenes", href: "/dashboard/productos/almacenes" },
+            { icon: ArrowLeftRight, label: "Transferencias", href: "/dashboard/productos/transferencias" },
             { icon: List, label: "Categorías", href: "/dashboard/productos/categorias" },
             { icon: SlidersHorizontal, label: "Atributos", href: "/dashboard/productos/atributos" },
         ],
