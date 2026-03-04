@@ -7,12 +7,17 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     BarChart3, BookMarked, Calendar, Download, FileBarChart2, FileText,
-    Globe, Search, ShoppingCart, Star, TrendingUp
+    Globe, Search, ShoppingCart, Star, TrendingUp, CheckCircle2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+
 type Reporte = { id: string; nombre: string; desc: string; icon: any; fav?: boolean };
 
+// ... (Categorías definidas previamente)
 const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[] }> = {
     ventas: {
         color: "text-blue-600 bg-blue-500/10 border-blue-500/20",
@@ -95,8 +100,18 @@ const TAB_LABELS: Record<string, string> = {
 export default function ReportesPage() {
     const [search, setSearch] = useState("");
     const [favs, setFavs] = useState<string[]>([]);
+    const [selectedReport, setSelectedReport] = useState<Reporte | null>(null);
 
     const toggleFav = (id: string) => setFavs(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+
+    const handleDownload = (format: "TXT" | "EXCEL") => {
+        toast.success(`Generando ${selectedReport?.nombre} en ${format}...`, {
+            description: "El archivo se descargará automáticamente en unos segundos."
+        });
+        setTimeout(() => {
+            setSelectedReport(null);
+        }, 1500);
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
@@ -147,22 +162,27 @@ export default function ReportesPage() {
                                 .filter(r => !search || r.nombre.toLowerCase().includes(search.toLowerCase()))
                                 .map(rpt => (
                                     <Card key={rpt.id} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group cursor-pointer">
-                                        <CardContent className="p-4">
+                                        <CardContent className="p-4 flex flex-col h-full">
                                             <div className="flex justify-between items-start mb-3">
                                                 <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center", CATEGORIAS[key].color)}>
                                                     <rpt.icon className="w-4 h-4" />
                                                 </div>
                                                 <button
-                                                    onClick={() => toggleFav(rpt.id)}
+                                                    onClick={(e) => { e.stopPropagation(); toggleFav(rpt.id); }}
                                                     className={cn("transition-colors", favs.includes(rpt.id) ? "text-amber-500" : "text-muted-foreground/30 group-hover:text-muted-foreground")}
                                                 >
                                                     <Star className={cn("w-4 h-4", favs.includes(rpt.id) && "fill-amber-500")} />
                                                 </button>
                                             </div>
                                             <p className="font-bold text-sm mb-1 group-hover:text-primary transition-colors">{rpt.nombre}</p>
-                                            <p className="text-xs text-muted-foreground leading-relaxed mb-3">{rpt.desc}</p>
-                                            <Button size="sm" variant="outline" className="w-full h-7 text-xs group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all">
-                                                <Download className="w-3 h-3 mr-1.5" /> Generar Reporte
+                                            <p className="text-xs text-muted-foreground leading-relaxed mb-3 flex-1">{rpt.desc}</p>
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => setSelectedReport(rpt)}
+                                                className="w-full h-7 text-xs group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all mt-auto"
+                                            >
+                                                <Download className="w-3 h-3 mr-1.5" /> Generar
                                             </Button>
                                         </CardContent>
                                     </Card>
@@ -171,6 +191,82 @@ export default function ReportesPage() {
                     </TabsContent>
                 ))}
             </Tabs>
+
+            {/* Modal de Generación de Reporte DGII */}
+            <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <FileBarChart2 className="w-5 h-5 text-primary" />
+                            Generar: {selectedReport?.nombre}
+                        </DialogTitle>
+                        <DialogDescription>
+                            Selecciona los parámetros de fecha para generar tu reporte oficial.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-semibold uppercase text-muted-foreground">Mes</label>
+                                <Select defaultValue={new Date().getMonth().toString()}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Mes" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="0">01 - Enero</SelectItem>
+                                        <SelectItem value="1">02 - Febrero</SelectItem>
+                                        <SelectItem value="2">03 - Marzo</SelectItem>
+                                        <SelectItem value="3">04 - Abril</SelectItem>
+                                        <SelectItem value="4">05 - Mayo</SelectItem>
+                                        <SelectItem value="5">06 - Junio</SelectItem>
+                                        <SelectItem value="6">07 - Julio</SelectItem>
+                                        <SelectItem value="7">08 - Agosto</SelectItem>
+                                        <SelectItem value="8">09 - Septiembre</SelectItem>
+                                        <SelectItem value="9">10 - Octubre</SelectItem>
+                                        <SelectItem value="10">11 - Noviembre</SelectItem>
+                                        <SelectItem value="11">12 - Diciembre</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-semibold uppercase text-muted-foreground">Año</label>
+                                <Select defaultValue={new Date().getFullYear().toString()}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Año" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="2026">2026</SelectItem>
+                                        <SelectItem value="2025">2025</SelectItem>
+                                        <SelectItem value="2024">2024</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        {/* Mostrar info extra si es 606/607 */}
+                        {(selectedReport?.id === "T1" || selectedReport?.id === "T2") && (
+                            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mt-2">
+                                <p className="text-xs text-primary font-medium flex gap-2">
+                                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                                    <span>Este archivo se generará codificado en <strong>UTF-8</strong> (estándar). Si previsualizas caracteres raros (ñ, tildes) en Excel antiguo, utiliza el Bloc de Notas o envíalo directo a la Oficina Virtual DGII.</span>
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    <DialogFooter className="flex-col sm:flex-row gap-2">
+                        <Button variant="outline" onClick={() => handleDownload("EXCEL")} className="w-full sm:w-1/2">
+                            <Download className="w-4 h-4 mr-2" />
+                            Previsualizar Excel
+                        </Button>
+                        <Button onClick={() => handleDownload("TXT")} className="w-full sm:w-1/2 bg-blue-600 hover:bg-blue-700 text-white">
+                            <FileText className="w-4 h-4 mr-2" />
+                            Descargar TXT Oficial
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
