@@ -79,7 +79,7 @@ const NAV: NavItem[] = [
         icon: Landmark, label: "Bancos y Cajas",
         children: [
             { icon: CreditCard, label: "Cuentas Bancarias", href: "/dashboard/bancos" },
-            { icon: RefreshCw, label: "Conciliaciones", href: "/dashboard/bancos/conciliaciones" },
+            { icon: RefreshCw, label: "Conciliaciones", href: "/dashboard/bancos/conciliacion" },
         ],
     },
     {
