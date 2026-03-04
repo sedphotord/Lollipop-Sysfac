@@ -51,8 +51,8 @@ export default function RegisterPage() {
                 <div className="w-full max-w-md space-y-6 py-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200 fill-mode-both">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2.5 lg:hidden mb-6 group">
-                        <div className="w-9 h-9 bg-gradient-brand rounded-xl flex items-center justify-center text-white font-black group-hover:scale-110 transition-transform">S</div>
-                        <span className="text-xl font-black">Sys<span className="text-primary">Fac</span></span>
+                        <div className="flex items-center justify-center text-3xl transition-transform group-hover:scale-110">🍭</div>
+                        <span className="text-xl font-black tracking-tight">Lolli<span className="text-primary">pop</span></span>
                     </Link>
 
                     <div>
@@ -160,7 +160,7 @@ export default function RegisterPage() {
 
                 <div className="relative z-10 w-full max-w-sm text-white animate-in slide-in-from-right-8 duration-700 delay-300 fill-mode-both">
                     <Link href="/" className="flex items-center gap-3 mb-12 group">
-                        <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center font-black text-xl group-hover:scale-110 transition-transform">S</div>
+                        <div className="flex items-center justify-center text-4xl transition-transform group-hover:scale-110">🍭</div>
                         <span className="text-2xl font-black group-hover:text-blue-200 transition-colors">Lollipop</span>
                     </Link>
 

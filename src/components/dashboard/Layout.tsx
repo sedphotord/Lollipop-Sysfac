@@ -221,8 +221,8 @@ function SidebarContent() {
             {/* Logo */}
             <div className="h-16 flex items-center px-5 shrink-0">
                 <Link href="/dashboard" className="flex items-center gap-2.5 group">
-                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-md shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-shadow">
-                        <span className="text-white font-black text-sm">🍭</span>
+                    <div className="flex items-center justify-center text-3xl transition-transform group-hover:scale-110">
+                        🍭
                     </div>
                     <span className="text-xl font-black tracking-tight">
                         Lolli<span className="text-gradient">pop</span>

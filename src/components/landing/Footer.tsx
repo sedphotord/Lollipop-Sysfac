@@ -31,8 +31,8 @@ export function Footer() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
                     {/* Brand */}
                     <div className="col-span-2 md:col-span-1">
-                        <Link href="/" className="flex items-center gap-2.5 mb-4">
-                            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shadow-purple-500/25">🍭</div>
+                        <Link href="/" className="flex items-center gap-2.5 mb-4 group">
+                            <div className="flex items-center justify-center text-3xl transition-transform group-hover:scale-110">🍭</div>
                             <span className="text-xl font-black tracking-tight">Lolli<span className="bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">pop</span></span>
                         </Link>
                         <p className="text-xs text-muted-foreground leading-relaxed mb-4 max-w-xs">Plataforma de facturacion electronica, contabilidad y gestion comercial para Republica Dominicana.</p>
