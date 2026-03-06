@@ -329,14 +329,14 @@ export default function BancosPage() {
                         <p className="text-2xl font-black text-primary mt-1">
                             RD${totalBancos.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
+                        <p className="text-xs text-muted-foreground mt-1">Última actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
                     </div>
                     <div className="bg-card border border-border/60 rounded-xl p-5 shadow-sm">
                         <p className="text-sm text-muted-foreground">Deuda en tarjetas de crédito</p>
                         <p className="text-2xl font-black text-rose-500 mt-1">
                             RD${totalTarjetas.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
+                        <p className="text-xs text-muted-foreground mt-1">Última actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
                     </div>
                 </div>
 

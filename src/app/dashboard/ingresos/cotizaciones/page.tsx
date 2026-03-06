@@ -63,11 +63,21 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function CotizacionesPage() {
     const [search, setSearch] = useState("");
-    const [data, setData] = useState(INITIAL_DATA);
+    const [data, setData] = useState<any[]>([]);
     const router = useRouter();
 
+    function saveData(list: any[]) {
+        setData(list);
+        companyStorage.set("cotizaciones", JSON.stringify(list));
+    }
+
+
     useEffect(() => {
-        // Read quote drafts from localStorage
+        // First, load saved quotations from localStorage
+        const savedRaw = companyStorage.get("cotizaciones");
+        let saved: any[] = savedRaw ? JSON.parse(savedRaw) : INITIAL_DATA;
+
+        // Read quote drafts from localStorage and merge
         const raw = companyStorage.get('quote_draft');
         const rawArr = companyStorage.get('quote_drafts');
         const draftsList: any[] = [];
@@ -92,8 +102,9 @@ export default function CotizacionesPage() {
                 totals: d.totals || { subtotal: 0, discount: 0, tax: 0, total: 0 },
                 isDraft: true,
             }));
-            setData([...draftRows, ...INITIAL_DATA] as any);
+            saved = [...draftRows, ...saved.filter((s: any) => !s.isDraft)];
         }
+        setData(saved);
     }, []);
 
     const handleConvertToInvoice = (quote: typeof INITIAL_DATA[0]) => {
@@ -238,7 +249,7 @@ export default function CotizacionesPage() {
                                                         <ArrowUpRight className="w-4 h-4" /> Convertir a Factura
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
+                                                    <DropdownMenuItem className="gap-2 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10" onClick={() => saveData(data.filter(x => x.id !== d.id))}>
                                                         <Trash2 className="w-4 h-4" /> Eliminar
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
