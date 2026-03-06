@@ -211,16 +211,17 @@ export default function MonedasPage() {
                                             </button>
                                         </div>
                                     ) : (
-                                        <button
-                                            onClick={() => startEdit(c)}
-                                            className="group flex items-center gap-1.5 hover:text-blue-600 transition-colors"
-                                            title="Click para editar tasa"
-                                        >
-                                            <p className="font-black text-lg tabular-nums group-hover:text-blue-600 transition-colors">
+                                        <div className="flex flex-col items-center gap-1.5">
+                                            <p className="font-black text-lg tabular-nums">
                                                 RD$ {c.rate.toFixed(2)}
                                             </p>
-                                            <Pencil className="w-3 h-3 text-muted-foreground group-hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all" />
-                                        </button>
+                                            <button
+                                                onClick={() => startEdit(c)}
+                                                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-800/30 text-blue-600 text-[11px] font-semibold transition-colors border border-blue-200/60 dark:border-blue-700/40"
+                                            >
+                                                <Pencil className="w-2.5 h-2.5" /> Editar tasa
+                                            </button>
+                                        </div>
                                     )}
                                     {c.trend !== 0 && editingCode !== c.code && (
                                         <p className={cn("text-[11px] flex items-center gap-0.5 justify-center mt-0.5",
