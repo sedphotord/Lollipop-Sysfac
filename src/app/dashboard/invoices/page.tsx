@@ -124,6 +124,28 @@ function InvoicesPageInner() {
         setInvoices(combined);
     }, []);
 
+    const handleMarkAsPaid = (inv: any) => {
+        if (inv.isDraft) return;
+        // Save to pagos_recibidos
+        try {
+            const existing = JSON.parse(companyStorage.get('pagos_recibidos') || '[]');
+            const alreadyPaid = existing.some((p: any) => p.factura === inv.id && p.monto >= inv.total);
+            if (!alreadyPaid) {
+                existing.push({
+                    id: Date.now().toString(),
+                    factura: inv.id,
+                    cliente: inv.cliente,
+                    monto: inv.total,
+                    fecha: new Date().toISOString().split('T')[0],
+                    metodo: 'Manual',
+                    nota: 'Marcado como pagado desde lista',
+                });
+                companyStorage.set('pagos_recibidos', JSON.stringify(existing));
+            }
+        } catch { }
+        setInvoices(prev => prev.map(i => i.id === inv.id ? { ...i, paymentStatus: 'pagada' } : i));
+    };
+
     const handleDeleteInvoice = () => {
         if (!invoiceToDelete) return;
 
@@ -394,6 +416,14 @@ function InvoicesPageInner() {
                                                         <DropdownMenuItem onClick={() => setInvoiceToDelete(inv)} className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer">
                                                             <Trash2 className="w-4 h-4 mr-2" /> Eliminar
                                                         </DropdownMenuItem>
+                                                        {!inv.isDraft && inv.paymentStatus !== 'pagada' && (
+                                                            <>
+                                                                <DropdownMenuSeparator />
+                                                                <DropdownMenuItem onClick={() => handleMarkAsPaid(inv)} className="text-emerald-600 focus:text-emerald-600 cursor-pointer">
+                                                                    <CheckCircle2 className="w-4 h-4 mr-2" /> Marcar como Pagada
+                                                                </DropdownMenuItem>
+                                                            </>
+                                                        )}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>
@@ -416,7 +446,7 @@ function InvoicesPageInner() {
             <AlertDialog open={!!invoiceToDelete} onOpenChange={(open) => !open && setInvoiceToDelete(null)}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>┬┐Eliminar factura?</AlertDialogTitle>
+                        <AlertDialogTitle>¿Eliminar factura?</AlertDialogTitle>
                         <AlertDialogDescription>
                             Esta acción eliminará la factura <strong>{invoiceToDelete?.ecf !== '—' ? invoiceToDelete?.ecf : invoiceToDelete?.id}</strong> de <strong>{invoiceToDelete?.cliente}</strong> de forma permanente del sistema local.
                         </AlertDialogDescription>

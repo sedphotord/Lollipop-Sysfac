@@ -278,6 +278,7 @@ export default function BancosPage() {
     const [search, setSearch] = useState("");
     const [period, setPeriod] = useState<"6M" | "3M" | "7D">("6M");
     const [showModal, setShowModal] = useState(false);
+    const [editingCuenta, setEditingCuenta] = useState<Cuenta | null>(null);
 
     useEffect(() => {
         try {
@@ -296,11 +297,21 @@ export default function BancosPage() {
     const filtered = cuentas.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
     const handleSave = (f: BancoForm) => {
-        const newC: Cuenta = {
-            id: Date.now().toString(), name: f.name, tipo: f.tipo,
-            numero: f.numero, saldo: parseFloat(f.saldo) || 0, currency: f.currency, connected: false,
-        };
-        persistCuentas([...cuentas, newC]);
+        if (editingCuenta) {
+            // Editing existing
+            const updated = cuentas.map(c => c.id === editingCuenta.id
+                ? { ...c, name: f.name, tipo: f.tipo, numero: f.numero, saldo: parseFloat(f.saldo) || c.saldo, currency: f.currency }
+                : c
+            );
+            persistCuentas(updated);
+            setEditingCuenta(null);
+        } else {
+            const newC: Cuenta = {
+                id: Date.now().toString(), name: f.name, tipo: f.tipo,
+                numero: f.numero, saldo: parseFloat(f.saldo) || 0, currency: f.currency, connected: false,
+            };
+            persistCuentas([...cuentas, newC]);
+        }
         setShowModal(false);
     };
 
@@ -308,7 +319,7 @@ export default function BancosPage() {
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
-            {showModal && <AgregarBancoModal onClose={() => setShowModal(false)} onSave={handleSave} />}
+            {showModal && <AgregarBancoModal onClose={() => { setShowModal(false); setEditingCuenta(null); }} onSave={handleSave} />}
 
             {/* Header */}
             <div className="flex items-start justify-between gap-4">
@@ -425,10 +436,10 @@ export default function BancosPage() {
                                             <Eye className="w-4 h-4" />
                                         </button>
                                         <RowMenu
-                                            onEdit={() => { }}
+                                            onEdit={() => { setEditingCuenta(c); setShowModal(true); }}
                                             onDeactivate={() => { }}
                                             onReconcile={() => { }}
-                                            onDelete={() => setCuentas(p => p.filter(x => x.id !== c.id))}
+                                            onDelete={() => handleDelete(c.id)}
                                         />
                                     </div>
                                 </td>
