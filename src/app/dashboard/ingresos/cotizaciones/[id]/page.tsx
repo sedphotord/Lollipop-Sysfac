@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,7 @@ export default function CotizacionEditPage() {
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(LS_COTS);
+            const raw = companyStorage.get(LS_COTS);
             const list = raw ? JSON.parse(raw) : [];
             const found = list.find((c: any) => c.id === cotId);
             if (found) { setCot(found); } else { setNotFound(true); }
@@ -41,10 +42,10 @@ export default function CotizacionEditPage() {
 
     const handleSave = () => {
         try {
-            const raw = localStorage.getItem(LS_COTS);
+            const raw = companyStorage.get(LS_COTS);
             const list = raw ? JSON.parse(raw) : [];
             const updated = list.map((c: any) => c.id === cotId ? cot : c);
-            localStorage.setItem(LS_COTS, JSON.stringify(updated));
+            companyStorage.set(LS_COTS, JSON.stringify(updated));
         } catch { }
         setSaved(true);
         setTimeout(() => { setSaved(false); router.push("/dashboard/ingresos/cotizaciones"); }, 1500);

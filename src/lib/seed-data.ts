@@ -2,7 +2,7 @@
 // Runs once on first app load (guarded by lollipop_seeded_v4)
 import { saveCompanies, setActiveCompanyId, prefixedKey, Company } from './company-store';
 
-const SEED_KEY = 'lollipop_seeded_v4';
+const SEED_KEY = 'lollipop_seeded_v5';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  COMPANY DEFINITIONS
@@ -317,12 +317,6 @@ export function seedAllCompaniesData(): void {
     // Default active company: TechSolutions
     setActiveCompanyId('comp-tech');
 
-    // Mirror TechSolutions data into generic keys so all pages see it immediately
-    const MIRROR_KEYS = ['invoice_emitted', 'invoice_drafts', 'pagos_recibidos', 'pos_shift_history', 'pos_vendedores', 'lollipop_company_settings'];
-    MIRROR_KEYS.forEach(key => {
-        const val = localStorage.getItem(`company_comp-tech_${key}`);
-        if (val !== null) localStorage.setItem(key, val);
-    });
-
+    // No mirroring needed — companyStorage auto-reads from company-prefixed keys
     localStorage.setItem(SEED_KEY, '1');
 }

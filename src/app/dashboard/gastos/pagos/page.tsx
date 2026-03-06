@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,7 +31,7 @@ export default function PagosProvedoresPage() {
     useEffect(() => {
         // Load saved payments for suppliers
         try {
-            const savedPagos = JSON.parse(localStorage.getItem('pagos_proveedores') || '[]');
+            const savedPagos = JSON.parse(companyStorage.get('pagos_proveedores') || '[]');
             if (savedPagos.length > 0) {
                 setPagos([...savedPagos, ...INITIAL_DATA]);
             }
@@ -39,12 +40,12 @@ export default function PagosProvedoresPage() {
 
     const handleUpdatePayment = () => {
         const updatedPagos = pagos.map(p => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
-        const existingRaw = localStorage.getItem('pagos_proveedores');
+        const existingRaw = companyStorage.get('pagos_proveedores');
         let existing = [];
         try { existing = JSON.parse(existingRaw || '[]'); } catch { }
         const newStorage = existing.map((p: any) => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
 
-        localStorage.setItem('pagos_proveedores', JSON.stringify(newStorage));
+        companyStorage.set('pagos_proveedores', JSON.stringify(newStorage));
         setPagos(updatedPagos);
         setSelectedPayment({ ...selectedPayment, ...editForm, monto: parseFloat(editForm.monto) || 0 });
         setIsEditingPayment(false);

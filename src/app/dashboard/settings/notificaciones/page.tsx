@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -35,13 +36,13 @@ export default function NotificacionesPage() {
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(LS_KEY);
+            const raw = companyStorage.get(LS_KEY);
             if (raw) { const parsed = JSON.parse(raw); setConfig(parsed.config || DEFAULTS); setDias(parsed.dias || "3"); } else { setConfig(DEFAULTS); }
         } catch { setConfig(DEFAULTS); }
     }, []);
 
     const persist = () => {
-        try { localStorage.setItem(LS_KEY, JSON.stringify({ config, dias })); } catch { }
+        try { companyStorage.set(LS_KEY, JSON.stringify({ config, dias })); } catch { }
         setSaved(true); setTimeout(() => setSaved(false), 2000);
     };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -317,9 +318,9 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
 
     // Load company info from localStorage (set in Settings page)
     useEffect(() => {
-        const logo = localStorage.getItem('lollipop_company_logo') || localStorage.getItem('sysfac_company_logo');
+        const logo = companyStorage.get('lollipop_company_logo') || companyStorage.get('sysfac_company_logo');
         if (logo) setCompanyLogo(logo);
-        const raw = localStorage.getItem('lollipop_company_settings');
+        const raw = companyStorage.get('lollipop_company_settings');
         if (raw) {
             try {
                 const co = JSON.parse(raw);
@@ -342,14 +343,14 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
         let invoice = null;
 
         if (routeId.startsWith("DRAFT-")) {
-            const drafts = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+            const drafts = JSON.parse(companyStorage.get('invoice_drafts') || '[]');
             invoice = drafts.find((d: any) => d.id === routeId);
             if (!invoice) {
-                const legacyDraft = JSON.parse(localStorage.getItem('invoice_draft') || '{}');
+                const legacyDraft = JSON.parse(companyStorage.get('invoice_draft') || '{}');
                 if (legacyDraft.id === routeId) invoice = legacyDraft;
             }
         } else {
-            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emitted = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
             invoice = emitted.find((i: any) => i.id === routeId) || MOCK_INVOICES.find((i: any) => i.id === routeId);
         }
 
@@ -405,7 +406,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
         if (initialT.current) { initialT.current = false; return; }
         if (skipNextNcf.current) { skipNextNcf.current = false; return; }
         try {
-            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emitted = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
             setNcf(generateNextNCF(tipo, emitted, invoiceMode));
         } catch {
             setNcf(generateNextNCF(tipo, [], invoiceMode));
@@ -473,7 +474,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
     const handleSave = (autoPay = false) => {
         let invoiceId = routeId;
         if (routeId.startsWith("DRAFT-")) {
-            const emittedForId = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emittedForId = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
             const existingIds = emittedForId.map((i: any) => {
                 const num = parseInt(i.id);
                 return isNaN(num) ? 0 : num;
@@ -502,16 +503,16 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
             items: items.filter(i => i.name),
             totals: { subtotal, discount: discountTotal, tax: taxTotal, total },
         };
-        const existing = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+        const existing = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
         // Remove old if it existed
         const updated = existing.filter((i: any) => i.id !== routeId);
         updated.unshift({ ...invoice, id: routeId.startsWith("DRAFT-") ? invoiceId : routeId });
-        localStorage.setItem('invoice_emitted', JSON.stringify(updated));
+        companyStorage.set('invoice_emitted', JSON.stringify(updated));
 
         // Remove draft if converted
         if (routeId.startsWith("DRAFT-")) {
-            const drafts = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
-            localStorage.setItem('invoice_drafts', JSON.stringify(drafts.filter((d: any) => d.id !== routeId)));
+            const drafts = JSON.parse(companyStorage.get('invoice_drafts') || '[]');
+            companyStorage.set('invoice_drafts', JSON.stringify(drafts.filter((d: any) => d.id !== routeId)));
         }
 
         setSaved(true);
@@ -556,10 +557,10 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
             items: items.filter(i => i.name),
         };
         // Save to array for multi-draft support
-        let existing = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+        let existing = JSON.parse(companyStorage.get('invoice_drafts') || '[]');
         existing = existing.filter((d: any) => d.id !== draft.id);
         existing.unshift(draft);
-        localStorage.setItem('invoice_drafts', JSON.stringify(existing));
+        companyStorage.set('invoice_drafts', JSON.stringify(existing));
         router.push('/dashboard/invoices');
     };
 

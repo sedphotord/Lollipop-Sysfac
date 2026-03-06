@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,7 +57,7 @@ export default function TurnosPage() {
     const [selected, setSelected] = useState<ShiftRecord | null>(null);
 
     useEffect(() => {
-        const raw = localStorage.getItem("pos_shift_history");
+        const raw = companyStorage.get("pos_shift_history");
         if (raw) { try { setHistory(JSON.parse(raw)); } catch { } }
     }, []);
 

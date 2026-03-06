@@ -1,11 +1,12 @@
 "use client";
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { Company, getCompanies, saveCompanies, getActiveCompanyId, switchCompanyData } from "@/lib/company-store";
+import { Company, getCompanies, saveCompanies, getActiveCompanyId, setActiveCompanyId } from "@/lib/company-store";
 import { seedAllCompaniesData, SEED_COMPANIES } from "@/lib/seed-data";
 
 type CompanyContextType = {
     companies: Company[];
     activeCompany: Company | null;
+    /** Switch company: updates active ID then reloads page */
     switchCompany: (id: string) => void;
     createCompany: (data: Omit<Company, 'id' | 'createdAt'>) => Company;
     refreshCompanies: () => void;
@@ -19,25 +20,21 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
 
     const refreshCompanies = useCallback(() => {
         const list = getCompanies();
-        setCompanies(list);
+        setCompanies(list.length ? list : SEED_COMPANIES);
         setActiveId(getActiveCompanyId());
     }, []);
 
     useEffect(() => {
-        // Seed on first mount (client-side only)
         seedAllCompaniesData();
         refreshCompanies();
-
-        const handler = () => refreshCompanies();
-        window.addEventListener('company-changed', handler);
-        return () => window.removeEventListener('company-changed', handler);
     }, [refreshCompanies]);
 
+    /** Switch company = set ID in localStorage + full page reload.
+     *  companyStorage helper auto-reads the new company's data after reload. */
     const switchCompany = useCallback((toId: string) => {
-        if (toId === activeId) return;
-        switchCompanyData(activeId, toId);
-        setActiveId(toId);
-    }, [activeId]);
+        setActiveCompanyId(toId);
+        window.location.reload();
+    }, []);
 
     const createCompany = useCallback((data: Omit<Company, 'id' | 'createdAt'>): Company => {
         const id = `comp-${Date.now()}`;
@@ -46,8 +43,7 @@ export function CompanyProvider({ children }: { children: ReactNode }) {
             id,
             createdAt: new Date().toLocaleDateString('es-DO'),
         };
-        const list = getCompanies();
-        const updated = [...list, company];
+        const updated = [...getCompanies(), company];
         saveCompanies(updated);
         setCompanies(updated);
         return company;

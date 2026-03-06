@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -199,8 +200,8 @@ export default function ReportesPage() {
     const [expenses, setExpenses] = useState<any[]>([]);
 
     useEffect(() => {
-        try { setInvoices(JSON.parse(localStorage.getItem("invoice_emitted") || "[]")); } catch { }
-        try { setExpenses(JSON.parse(localStorage.getItem("gastos") || "[]")); } catch { }
+        try { setInvoices(JSON.parse(companyStorage.get("invoice_emitted") || "[]")); } catch { }
+        try { setExpenses(JSON.parse(companyStorage.get("gastos") || "[]")); } catch { }
     }, []);
 
     const toggleFav = (id: string) => setFavs(p => p.includes(id) ? p.filter(f => f !== id) : [...p, id]);

@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,7 +28,7 @@ export default function AjustesInventarioPage() {
     useEffect(() => {
         // Load saved adjustments
         try {
-            const savedAjustes = JSON.parse(localStorage.getItem('ajustes_inventario') || '[]');
+            const savedAjustes = JSON.parse(companyStorage.get('ajustes_inventario') || '[]');
             if (savedAjustes.length > 0) {
                 setAjustes([...savedAjustes, ...INITIAL_DATA]);
             }

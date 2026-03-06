@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -271,14 +272,14 @@ export default function BancosPage() {
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(LS_BANCOS);
+            const raw = companyStorage.get(LS_BANCOS);
             setCuentas(raw ? JSON.parse(raw) : INIT_CUENTAS);
         } catch { setCuentas(INIT_CUENTAS); }
     }, []);
 
     const persistCuentas = (data: Cuenta[]) => {
         setCuentas(data);
-        try { localStorage.setItem(LS_BANCOS, JSON.stringify(data)); } catch { }
+        try { companyStorage.set(LS_BANCOS, JSON.stringify(data)); } catch { }
     };
 
     const totalBancos = cuentas.filter(c => c.tipo !== "Tarjeta de crédito").reduce((a, c) => a + c.saldo, 0);

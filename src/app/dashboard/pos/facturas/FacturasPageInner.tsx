@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -38,7 +39,7 @@ export default function POSFacturasPage() {
     useEffect(() => {
         const load = () => {
             try {
-                const allInvoices: any[] = JSON.parse(localStorage.getItem("invoice_emitted") || "[]");
+                const allInvoices: any[] = JSON.parse(companyStorage.get("invoice_emitted") || "[]");
                 // Only POS invoices — those with source:'pos' OR id starting with 'POS-'
                 const posOnly = allInvoices.filter((inv: any) =>
                     inv.source === "pos" || String(inv.id).startsWith("POS-")

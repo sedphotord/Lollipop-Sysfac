@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -107,11 +108,11 @@ function EgresoBuilderContent() {
             status: "confirmado"
         };
 
-        const existingRaw = localStorage.getItem('pagos_proveedores') || '[]';
+        const existingRaw = companyStorage.get('pagos_proveedores') || '[]';
         let existing = [];
         try { existing = JSON.parse(existingRaw); } catch { }
         existing.unshift(egresoReceipt);
-        localStorage.setItem('pagos_proveedores', JSON.stringify(existing));
+        companyStorage.set('pagos_proveedores', JSON.stringify(existing));
 
         router.push('/dashboard/gastos/pagos');
     };

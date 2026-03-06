@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -67,8 +68,8 @@ export default function CotizacionesPage() {
 
     useEffect(() => {
         // Read quote drafts from localStorage
-        const raw = localStorage.getItem('quote_draft');
-        const rawArr = localStorage.getItem('quote_drafts');
+        const raw = companyStorage.get('quote_draft');
+        const rawArr = companyStorage.get('quote_drafts');
         const draftsList: any[] = [];
 
         if (rawArr) {

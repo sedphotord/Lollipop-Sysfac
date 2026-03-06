@@ -1,4 +1,5 @@
-ï»¿"use client";
+"use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,10 +21,10 @@ type ApiKey = { id: string; nombre: string; key: string; activa: boolean; creada
 const genKey = () => `loll_sk_${Array.from({ length: 32 }, () => "abcdefghijklmnopqrstuvwxyz0123456789"[Math.floor(Math.random() * 36)]).join("")}`;
 
 const INTEGRACIONES = [
-    { id: "dgii", nombre: "DGII e-CF", desc: "FacturaciÃ³n electrÃ³nica oficial", status: "conectado", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" },
+    { id: "dgii", nombre: "DGII e-CF", desc: "Facturación electrónica oficial", status: "conectado", color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" },
     { id: "whatsapp", nombre: "WhatsApp Business", desc: "Notificaciones y facturas por WhatsApp", status: "no conectado", color: "text-muted-foreground bg-muted" },
-    { id: "quickbooks", nombre: "QuickBooks", desc: "SincronizaciÃ³n contable", status: "no conectado", color: "text-muted-foreground bg-muted" },
-    { id: "hubspot", nombre: "HubSpot CRM", desc: "SincronizaciÃ³n de clientes y cotizaciones", status: "no conectado", color: "text-muted-foreground bg-muted" },
+    { id: "quickbooks", nombre: "QuickBooks", desc: "Sincronización contable", status: "no conectado", color: "text-muted-foreground bg-muted" },
+    { id: "hubspot", nombre: "HubSpot CRM", desc: "Sincronización de clientes y cotizaciones", status: "no conectado", color: "text-muted-foreground bg-muted" },
 ];
 
 export default function IntegracionesPage() {
@@ -33,8 +34,8 @@ export default function IntegracionesPage() {
     const [showKeys, setShowKeys] = useState<Record<string, boolean>>({});
     const [copied, setCopied] = useState("");
 
-    useEffect(() => { try { const r = localStorage.getItem(LS_KEY); setKeys(r ? JSON.parse(r) : []); } catch { } }, []);
-    const persist = (data: ApiKey[]) => { setKeys(data); try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { } };
+    useEffect(() => { try { const r = companyStorage.get(LS_KEY); setKeys(r ? JSON.parse(r) : []); } catch { } }, []);
+    const persist = (data: ApiKey[]) => { setKeys(data); try { companyStorage.set(LS_KEY, JSON.stringify(data)); } catch { } };
 
     const handleCreate = () => {
         if (!nombre) return;
@@ -89,7 +90,7 @@ export default function IntegracionesPage() {
 
                     {keys.length === 0 && (
                         <div className="py-8 text-center text-sm text-muted-foreground rounded-xl border-2 border-dashed border-border/40">
-                            No tienes claves de API creadas aÃºn.
+                            No tienes claves de API creadas aún.
                         </div>
                     )}
 
@@ -112,7 +113,7 @@ export default function IntegracionesPage() {
                                             {copied === k.key ? <CheckCircleIcon className="w-3.5 h-3.5 text-emerald-500" /> : <ClipboardDocumentIcon className="w-3.5 h-3.5" />}
                                         </button>
                                     </div>
-                                    <p className="text-[10px] text-muted-foreground mt-1">Creada: {k.creada} Â· Ãšltimo uso: {k.ultimoUso}</p>
+                                    <p className="text-[10px] text-muted-foreground mt-1">Creada: {k.creada} · Último uso: {k.ultimoUso}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Switch checked={k.activa} onCheckedChange={() => toggleKey(k.id)} />
@@ -130,8 +131,8 @@ export default function IntegracionesPage() {
                 <DialogContent className="sm:max-w-[400px]">
                     <DialogHeader><DialogTitle>Nueva Clave de API</DialogTitle></DialogHeader>
                     <div className="space-y-4 py-2">
-                        <div className="space-y-2"><Label>Nombre descriptivo</Label><Input placeholder="IntegraciÃ³n producciÃ³n" value={nombre} onChange={e => setNombre(e.target.value)} /></div>
-                        <p className="text-xs text-muted-foreground">La clave se generarÃ¡ automÃ¡ticamente. GuÃ¡rdala en un lugar seguro, no podrÃ¡s verla completa de nuevo.</p>
+                        <div className="space-y-2"><Label>Nombre descriptivo</Label><Input placeholder="Integración producción" value={nombre} onChange={e => setNombre(e.target.value)} /></div>
+                        <p className="text-xs text-muted-foreground">La clave se generará automáticamente. Guárdala en un lugar seguro, no podrás verla completa de nuevo.</p>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">
                         <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>

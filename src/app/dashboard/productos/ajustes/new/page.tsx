@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,11 +95,11 @@ function AjusteBuilderContent() {
             items
         };
 
-        const existingRaw = localStorage.getItem('ajustes_inventario');
+        const existingRaw = companyStorage.get('ajustes_inventario');
         let existing = [];
         try { existing = JSON.parse(existingRaw || '[]'); } catch { }
         existing.unshift(adjustment);
-        localStorage.setItem('ajustes_inventario', JSON.stringify(existing));
+        companyStorage.set('ajustes_inventario', JSON.stringify(existing));
 
         router.push('/dashboard/productos/ajustes');
     };

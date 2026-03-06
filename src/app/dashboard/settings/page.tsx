@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,10 +19,10 @@ export default function SettingsPage() {
     const fileRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        const savedLogo = localStorage.getItem('lollipop_company_logo');
+        const savedLogo = companyStorage.get('lollipop_company_logo');
         if (savedLogo) setLogo(savedLogo);
         // Restore company info
-        const raw = localStorage.getItem('lollipop_company_settings');
+        const raw = companyStorage.get('lollipop_company_settings');
         if (raw) {
             try {
                 const co = JSON.parse(raw);
@@ -34,7 +35,7 @@ export default function SettingsPage() {
                 if (co.web) setWeb(co.web);
             } catch { }
         }
-        const savedMode = localStorage.getItem('sysfac_invoice_mode');
+        const savedMode = companyStorage.get('sysfac_invoice_mode');
         if (savedMode === 'tradicional' || savedMode === 'electronico') {
             setInvoiceMode(savedMode);
         }
@@ -73,7 +74,7 @@ export default function SettingsPage() {
             reader.onloadend = () => {
                 const base64 = reader.result as string;
                 setLogo(base64);
-                localStorage.setItem('lollipop_company_logo', base64);
+                companyStorage.set('lollipop_company_logo', base64);
             };
             reader.readAsDataURL(file);
         }
@@ -81,12 +82,12 @@ export default function SettingsPage() {
 
     const handleRemoveLogo = () => {
         setLogo(null);
-        localStorage.removeItem('lollipop_company_logo');
+        companyStorage.remove('lollipop_company_logo');
     };
 
     const handleSave = () => {
         // Persist company info so invoices can read it
-        localStorage.setItem('lollipop_company_settings', JSON.stringify({
+        companyStorage.set('lollipop_company_settings', JSON.stringify({
             name: razon,
             comercialName: nombreComercial,
             rnc,
@@ -95,7 +96,7 @@ export default function SettingsPage() {
             email,
             web,
         }));
-        localStorage.setItem('sysfac_invoice_mode', invoiceMode);
+        companyStorage.set('sysfac_invoice_mode', invoiceMode);
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };

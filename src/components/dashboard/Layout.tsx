@@ -506,7 +506,7 @@ function ProfileDropdown() {
                             {companies.map(comp => (
                                 <button
                                     key={comp.id}
-                                    onClick={() => { switchCompany(comp.id); setShowCompanyModal(false); window.location.reload(); }}
+                                    onClick={() => { switchCompany(comp.id); setShowCompanyModal(false); }}
                                     className={cn(
                                         "w-full text-left flex items-center gap-3 p-3 rounded-xl transition-all border",
                                         activeCompany?.id === comp.id

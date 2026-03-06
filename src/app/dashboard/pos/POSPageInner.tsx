@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -163,12 +164,12 @@ export default function POSPage() {
     const [closeShiftShake, setCloseShiftShake] = useState(false);
 
     useEffect(() => {
-        const raw = localStorage.getItem('pos_shift_history');
+        const raw = companyStorage.get('pos_shift_history');
         if (raw) setShiftHistory(JSON.parse(raw));
 
         // Load product catalog from sysfac_catalog (products page)
         try {
-            const catRaw = localStorage.getItem('sysfac_catalog');
+            const catRaw = companyStorage.get('sysfac_catalog');
             if (catRaw) {
                 const catalog = JSON.parse(catRaw);
                 const mapped = catalog
@@ -189,7 +190,7 @@ export default function POSPage() {
 
         // Load global vendor list
         try {
-            const vRaw = localStorage.getItem('pos_vendedores');
+            const vRaw = companyStorage.get('pos_vendedores');
             if (vRaw) {
                 const vList: { nombre: string; activo: boolean }[] = JSON.parse(vRaw);
                 const names = vList.filter(v => v.activo).map(v => v.nombre);
@@ -197,10 +198,10 @@ export default function POSPage() {
             }
         } catch { }
 
-        const savedColor = localStorage.getItem('lollipop_theme_color');
+        const savedColor = companyStorage.get('lollipop_theme_color');
         if (savedColor) setGlobalColor(savedColor);
 
-        const savedInvoice = localStorage.getItem('lollipop_invoice_template_id');
+        const savedInvoice = companyStorage.get('lollipop_invoice_template_id');
         if (savedInvoice && Object.keys(INVOICE_TEMPLATES).includes(savedInvoice)) {
             setGlobalTemplateId(savedInvoice);
         }
@@ -320,7 +321,7 @@ export default function POSPage() {
         const num = parseInt(seqEditValue, 10);
         if (isNaN(num) || num < 1) return;
         const key = `pos_ncf_counter_${ncfType}`;
-        localStorage.setItem(key, String(num - 1)); // store n-1, next call will return n
+        companyStorage.set(key, String(num - 1)); // store n-1, next call will return n
         setShowSeqEditor(false);
         setSeqEditValue("");
     };
@@ -362,10 +363,10 @@ export default function POSPage() {
     });
 
     const saveShiftToHistory = (record: any) => {
-        const raw = localStorage.getItem('pos_shift_history');
+        const raw = companyStorage.get('pos_shift_history');
         const hist = raw ? JSON.parse(raw) : [];
         hist.unshift(record);
-        localStorage.setItem('pos_shift_history', JSON.stringify(hist));
+        companyStorage.set('pos_shift_history', JSON.stringify(hist));
         setShiftHistory(hist);
     };
 
@@ -451,10 +452,10 @@ export default function POSPage() {
     // Sequential NCF counter from localStorage
     const getNextNCF = (type: string): string => {
         const key = `pos_ncf_counter_${type}`;
-        const raw = localStorage.getItem(key);
+        const raw = companyStorage.get(key);
         const current = raw ? parseInt(raw, 10) : 0;
         const next = current + 1;
-        localStorage.setItem(key, String(next));
+        companyStorage.set(key, String(next));
         return `${type}${String(next).padStart(8, '0')}`;
     };
 
@@ -462,16 +463,16 @@ export default function POSPage() {
     const getNextPosId = (): string => {
         const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
         const key = `pos_inv_counter_${today}`;
-        const raw = localStorage.getItem(key);
+        const raw = companyStorage.get(key);
         const next = (raw ? parseInt(raw, 10) : 0) + 1;
-        localStorage.setItem(key, String(next));
+        companyStorage.set(key, String(next));
         return `POS-${today}-${String(next).padStart(4, '0')}`;
     };
 
     // Peek the NEXT NCF (without incrementing)
     const peekNextNCF = (type: string): string => {
         const key = `pos_ncf_counter_${type}`;
-        const raw = localStorage.getItem(key);
+        const raw = companyStorage.get(key);
         const next = (raw ? parseInt(raw, 10) : 0) + 1;
         return `${type}${String(next).padStart(8, '0')}`;
     };
@@ -510,10 +511,10 @@ export default function POSPage() {
         }
         // Sync to invoices list (invoice_emitted)
         try {
-            const raw = localStorage.getItem('invoice_emitted');
+            const raw = companyStorage.get('invoice_emitted');
             const emitted = raw ? JSON.parse(raw) : [];
             emitted.unshift(inv);
-            localStorage.setItem('invoice_emitted', JSON.stringify(emitted));
+            companyStorage.set('invoice_emitted', JSON.stringify(emitted));
         } catch { }
     };
 
@@ -573,7 +574,7 @@ export default function POSPage() {
 
                 const verifyClosePin = (pin: string) => {
                     try {
-                        const raw = localStorage.getItem('pos_vendedores');
+                        const raw = companyStorage.get('pos_vendedores');
                         if (raw) {
                             const list: { nombre: string; pin?: string }[] = JSON.parse(raw);
                             const match = list.find(v => v.nombre === shiftCloseVendedor);
@@ -1075,7 +1076,7 @@ export default function POSPage() {
                                         <span className="text-[10px] font-mono font-bold text-primary tracking-wider flex-1">{peekNextNCF(ncfType)}</span>
                                         <span className="text-[9px] text-muted-foreground">{TIPOS_NCF.find(t => t.code === ncfType)?.name}</span>
                                         <button
-                                            onClick={() => { setSeqEditValue(String((parseInt(localStorage.getItem(`pos_ncf_counter_${ncfType}`) || '0', 10) + 1))); setShowSeqEditor(true); }}
+                                            onClick={() => { setSeqEditValue(String((parseInt(companyStorage.get(`pos_ncf_counter_${ncfType}`) || '0', 10) + 1))); setShowSeqEditor(true); }}
                                             className="ml-1 text-muted-foreground hover:text-primary transition-colors"
                                             title="Editar secuencia"
                                         >

@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -310,9 +311,9 @@ function InvoiceBuilderContent() {
 
     // Load company info from localStorage (set in Settings page)
     useEffect(() => {
-        const logo = localStorage.getItem('lollipop_company_logo') || localStorage.getItem('sysfac_company_logo');
+        const logo = companyStorage.get('lollipop_company_logo') || companyStorage.get('sysfac_company_logo');
         if (logo) setCompanyLogo(logo);
-        const raw = localStorage.getItem('lollipop_company_settings');
+        const raw = companyStorage.get('lollipop_company_settings');
         if (raw) {
             try {
                 const co = JSON.parse(raw);
@@ -327,7 +328,7 @@ function InvoiceBuilderContent() {
         const savedTpl = sessionStorage.getItem('invoice_selected_template');
         if (savedTpl) setPlantilla(savedTpl);
 
-        const savedMode = localStorage.getItem('sysfac_invoice_mode');
+        const savedMode = companyStorage.get('sysfac_invoice_mode');
         if (savedMode === 'tradicional' || savedMode === 'electronico') {
             setInvoiceMode(savedMode);
         }
@@ -336,7 +337,7 @@ function InvoiceBuilderContent() {
     // Auto-generate NCF when type changes or mode changes
     useEffect(() => {
         try {
-            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emitted = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
             setNcf(generateNextNCF(tipo, emitted, invoiceMode));
         } catch {
             setNcf(generateNextNCF(tipo, [], invoiceMode));
@@ -401,7 +402,7 @@ function InvoiceBuilderContent() {
         setItems(p => p.map(i => i.id !== id ? i : { ...i, [field]: value }));
 
     const handleSave = (autoPay = false) => {
-        const emittedForId = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+        const emittedForId = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
         const existingIds = emittedForId.map((i: any) => {
             const num = parseInt(i.id);
             return isNaN(num) ? 0 : num;
@@ -428,9 +429,9 @@ function InvoiceBuilderContent() {
             totals: { subtotal, discount: discountTotal, tax: taxTotal, total },
             terms, footer, almacen, listaPrecios, moneda, mode: invoiceMode, plantilla
         };
-        const existing = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+        const existing = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
         existing.unshift(invoice);
-        localStorage.setItem('invoice_emitted', JSON.stringify(existing));
+        companyStorage.set('invoice_emitted', JSON.stringify(existing));
         setSaved(true);
         setTimeout(() => {
             setSaved(false);
@@ -475,11 +476,11 @@ function InvoiceBuilderContent() {
             items: items.filter(i => i.name),
         };
         // Save to array for multi-draft support
-        const existing = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+        const existing = JSON.parse(companyStorage.get('invoice_drafts') || '[]');
         existing.unshift(draft);
-        localStorage.setItem('invoice_drafts', JSON.stringify(existing));
+        companyStorage.set('invoice_drafts', JSON.stringify(existing));
         // Also keep the legacy single-draft key for compatibility
-        localStorage.setItem('invoice_draft', JSON.stringify(draft));
+        companyStorage.set('invoice_draft', JSON.stringify(draft));
         router.push('/dashboard/invoices');
     };
 

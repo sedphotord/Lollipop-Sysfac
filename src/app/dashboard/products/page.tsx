@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -614,14 +615,14 @@ export default function ProductsPage() {
     // Load from / save to localStorage
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(CATALOG_KEY);
+            const raw = companyStorage.get(CATALOG_KEY);
             if (raw) setItems(JSON.parse(raw));
         } catch { }
     }, []);
 
     const persistItems = (next: CatalogItem[]) => {
         setItems(next);
-        try { localStorage.setItem(CATALOG_KEY, JSON.stringify(next)); } catch { }
+        try { companyStorage.set(CATALOG_KEY, JSON.stringify(next)); } catch { }
     };
 
     const categories = Array.from(new Set(items.map(p => p.category)));

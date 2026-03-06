@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -54,19 +55,19 @@ function InvoicesPageInner() {
 
         // Load emitted invoices from localStorage
         try {
-            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emitted = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
 
             // Allow manual clearing of data persistence in case it was seeded earlier
-            if (localStorage.getItem('mock_invoices_seeded')) {
-                localStorage.removeItem('mock_invoices_seeded');
+            if (companyStorage.get('mock_invoices_seeded')) {
+                companyStorage.remove('mock_invoices_seeded');
             }
 
             result.push(...emitted);
         } catch { }
 
         // Load saved drafts from localStorage
-        const draftsRaw = localStorage.getItem('invoice_drafts');
-        const legacyDraft = localStorage.getItem('invoice_draft');
+        const draftsRaw = companyStorage.get('invoice_drafts');
+        const legacyDraft = companyStorage.get('invoice_draft');
         const draftsList: any[] = [];
 
         if (draftsRaw) {
@@ -89,7 +90,7 @@ function InvoicesPageInner() {
             isDraft: true,
         }));
 
-        const historyRaw = localStorage.getItem('pagos_recibidos');
+        const historyRaw = companyStorage.get('pagos_recibidos');
         let history: any[] = [];
         if (historyRaw) {
             try { history = JSON.parse(historyRaw); } catch { }
@@ -128,17 +129,17 @@ function InvoicesPageInner() {
         const storageKey = isDraft ? 'invoice_drafts' : 'invoice_emitted';
 
         try {
-            const current = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const current = JSON.parse(companyStorage.get(storageKey) || '[]');
             const updated = current.filter((i: any) => i.id !== invoiceToDelete.id);
-            localStorage.setItem(storageKey, JSON.stringify(updated));
+            companyStorage.set(storageKey, JSON.stringify(updated));
         } catch { }
 
         // Also clean up legacy draft if that was it
-        if (isDraft && localStorage.getItem('invoice_draft')) {
+        if (isDraft && companyStorage.get('invoice_draft')) {
             try {
-                const legacy = JSON.parse(localStorage.getItem('invoice_draft') || '{}');
+                const legacy = JSON.parse(companyStorage.get('invoice_draft') || '{}');
                 if (legacy.id === invoiceToDelete.id) {
-                    localStorage.removeItem('invoice_draft');
+                    companyStorage.remove('invoice_draft');
                 }
             } catch { }
         }

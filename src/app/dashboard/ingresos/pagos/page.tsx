@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -41,14 +42,14 @@ export default function PagosRecibidosPage() {
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(LS_KEY);
+            const raw = companyStorage.get(LS_KEY);
             setList(raw ? JSON.parse(raw) : SAMPLE);
-            const inv = JSON.parse(localStorage.getItem("invoice_emitted") || "[]");
+            const inv = JSON.parse(companyStorage.get("invoice_emitted") || "[]");
             setInvoices(inv.filter((i: any) => i.paymentStatus !== "pagado"));
         } catch { setList(SAMPLE); }
     }, []);
 
-    const save = (data: Pago[]) => { setList(data); try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { } };
+    const save = (data: Pago[]) => { setList(data); try { companyStorage.set(LS_KEY, JSON.stringify(data)); } catch { } };
     const set = (k: keyof typeof form) => (v: string) => setForm(p => ({ ...p, [k]: v }));
 
     const handleAdd = () => {
@@ -58,9 +59,9 @@ export default function PagosRecibidosPage() {
         // Mark invoice as paid if referenced
         if (form.facturaRef) {
             try {
-                const inv = JSON.parse(localStorage.getItem("invoice_emitted") || "[]");
+                const inv = JSON.parse(companyStorage.get("invoice_emitted") || "[]");
                 const updated = inv.map((i: any) => i.ncf === form.facturaRef ? { ...i, paymentStatus: "pagado" } : i);
-                localStorage.setItem("invoice_emitted", JSON.stringify(updated));
+                companyStorage.set("invoice_emitted", JSON.stringify(updated));
             } catch { }
         }
         save([newPago, ...list]);

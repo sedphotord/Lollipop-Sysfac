@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,10 +37,10 @@ export default function VendedoresPOSPage() {
     const [search, setSearch] = useState("");
 
     useEffect(() => {
-        try { const r = localStorage.getItem(LS_KEY); setList(r ? JSON.parse(r) : []); } catch { setList([]); }
+        try { const r = companyStorage.get(LS_KEY); setList(r ? JSON.parse(r) : []); } catch { setList([]); }
     }, []);
 
-    const persist = (data: Vendedor[]) => { setList(data); try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { } };
+    const persist = (data: Vendedor[]) => { setList(data); try { companyStorage.set(LS_KEY, JSON.stringify(data)); } catch { } };
     const set = (k: keyof typeof form) => (v: string) => setForm(p => ({ ...p, [k]: v }));
 
     const handleAdd = () => {

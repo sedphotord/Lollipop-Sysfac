@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -47,10 +48,10 @@ export default function RecepcionComprobantesPage() {
     const [saved, setSaved] = useState(false);
 
     useEffect(() => {
-        try { const raw = localStorage.getItem(LS_KEY); setList(raw ? JSON.parse(raw) : SAMPLE); } catch { setList(SAMPLE); }
+        try { const raw = companyStorage.get(LS_KEY); setList(raw ? JSON.parse(raw) : SAMPLE); } catch { setList(SAMPLE); }
     }, []);
 
-    const save = (data: Comprobante[]) => { setList(data); try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { } };
+    const save = (data: Comprobante[]) => { setList(data); try { companyStorage.set(LS_KEY, JSON.stringify(data)); } catch { } };
 
     const set = (k: keyof typeof form) => (v: string) => setForm(p => ({ ...p, [k]: v }));
 

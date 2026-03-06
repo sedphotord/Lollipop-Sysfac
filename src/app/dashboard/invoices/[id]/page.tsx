@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -88,14 +89,14 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
         let invoice = null;
 
         if (routeId.startsWith("DRAFT-")) {
-            const drafts = JSON.parse(localStorage.getItem('invoice_drafts') || '[]');
+            const drafts = JSON.parse(companyStorage.get('invoice_drafts') || '[]');
             invoice = drafts.find((d: any) => d.id === routeId);
             if (!invoice) {
-                const legacyDraft = JSON.parse(localStorage.getItem('invoice_draft') || '{}');
+                const legacyDraft = JSON.parse(companyStorage.get('invoice_draft') || '{}');
                 if (legacyDraft.id === routeId) invoice = legacyDraft;
             }
         } else {
-            const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+            const emitted = JSON.parse(companyStorage.get('invoice_emitted') || '[]');
             invoice = emitted.find((i: any) => i.id === routeId) || MOCK_INVOICES.find((i: any) => i.id === routeId);
         }
 
@@ -107,21 +108,21 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                 const ssTpl = sessionStorage.getItem('invoice_selected_template');
                 if (ssTpl && TEMPLATES[ssTpl]) { setTemplateId(ssTpl); }
                 else {
-                    const saved = localStorage.getItem('lollipop_invoice_template_id');
+                    const saved = companyStorage.get('lollipop_invoice_template_id');
                     if (saved && TEMPLATES[saved]) setTemplateId(saved);
                 }
             }
         }
 
-        const savedColor = localStorage.getItem('lollipop_theme_color');
+        const savedColor = companyStorage.get('lollipop_theme_color');
         if (savedColor) setGlobalColor(savedColor);
 
         // Logo
-        const savedLogo = localStorage.getItem('lollipop_company_logo') || localStorage.getItem('sysfac_company_logo');
+        const savedLogo = companyStorage.get('lollipop_company_logo') || companyStorage.get('sysfac_company_logo');
         if (savedLogo) setGlobalLogo(savedLogo);
 
         // Company settings
-        const coRaw = localStorage.getItem('lollipop_company_settings');
+        const coRaw = companyStorage.get('lollipop_company_settings');
         if (coRaw) {
             try {
                 const co = JSON.parse(coRaw);

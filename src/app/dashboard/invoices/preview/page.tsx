@@ -1,5 +1,6 @@
 "use client";
 
+import { companyStorage } from "@/lib/company-storage";
 import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
@@ -32,9 +33,9 @@ function InvoicePreviewContent() {
 
         // Read company info
         try {
-            const logo = localStorage.getItem("lollipop_company_logo") || localStorage.getItem("sysfac_company_logo");
+            const logo = companyStorage.get("lollipop_company_logo") || companyStorage.get("sysfac_company_logo");
             if (logo) setCompanyLogo(logo);
-            const raw = localStorage.getItem("lollipop_company_settings");
+            const raw = companyStorage.get("lollipop_company_settings");
             if (raw) setCompanySettings(JSON.parse(raw));
         } catch { }
     }, []);
@@ -90,7 +91,7 @@ function InvoicePreviewContent() {
         },
         items: data.items || [],
         totals: data.totals || { subtotal: 0, discount: 0, tax: 0, total: 0 },
-        color: { primary: localStorage.getItem("lollipop_theme_color") || "#3b82f6" },
+        color: { primary: companyStorage.get("lollipop_theme_color") || "#3b82f6" },
     };
 
     return (

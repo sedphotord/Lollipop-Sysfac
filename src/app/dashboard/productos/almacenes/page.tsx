@@ -1,4 +1,5 @@
 "use client";
+import { companyStorage } from "@/lib/company-storage";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -57,7 +58,7 @@ export default function AlmacenesPage() {
 
     useEffect(() => {
         try {
-            const raw = localStorage.getItem(LS_KEY);
+            const raw = companyStorage.get(LS_KEY);
             setList(raw ? JSON.parse(raw) : SEED);
         } catch {
             setList(SEED);
@@ -66,7 +67,7 @@ export default function AlmacenesPage() {
 
     const persist = (data: Almacen[]) => {
         setList(data);
-        try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { }
+        try { companyStorage.set(LS_KEY, JSON.stringify(data)); } catch { }
     };
 
     const f = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
