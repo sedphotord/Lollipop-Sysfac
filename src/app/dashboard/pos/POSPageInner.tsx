@@ -26,6 +26,8 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { OpenShiftModal } from "@/components/pos/OpenShiftModal";
+import { BarcodeScannerButton } from "@/components/BarcodeScannerButton";
+import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
 
 
 // Lazy-load invoice templates ÔÇö only needed when printing, not on initial page load
@@ -162,6 +164,31 @@ export default function POSPage() {
     const [closeShiftPin, setCloseShiftPin] = useState("");
     const [closeShiftPinError, setCloseShiftPinError] = useState(false);
     const [closeShiftShake, setCloseShiftShake] = useState(false);
+
+    // ── Barcode scanner state ─────────────────────────────────────────────────
+    const [scanToast, setScanToast] = useState<{ msg: string; type: 'ok' | 'err' } | null>(null);
+
+    const handleBarcodeScan = (code: string) => {
+        const q = code.toLowerCase();
+        const found = products.find(
+            p => p.code?.toLowerCase() === q ||
+                p.name?.toLowerCase() === q ||
+                p.code?.toLowerCase().includes(q) ||
+                q.includes(p.code?.toLowerCase() ?? '__never__')
+        );
+        if (found) {
+            addToCart(found);
+            setScanToast({ msg: `✓ ${found.name}`, type: 'ok' });
+        } else {
+            // Fallback: set search so user sees filtered result
+            setSearch(code);
+            setScanToast({ msg: `Código "${code}" no encontrado`, type: 'err' });
+        }
+        setTimeout(() => setScanToast(null), 2500);
+    };
+
+    // Hardware scanner always active (even when camera modal is closed)
+    useBarcodeScanner({ onScan: handleBarcodeScan, enabled: true });
 
     useEffect(() => {
         const raw = companyStorage.get('pos_shift_history');
@@ -540,7 +567,20 @@ export default function POSPage() {
 
     return (
         <>
-            {/* ÔöÇÔöÇ Open Shift Modal ÔöÇÔöÇ */}
+            {/* ── Barcode scan toast ── */}
+            {scanToast && (
+                <div className={cn(
+                    "fixed top-20 right-4 z-[400] flex items-center gap-2 px-4 py-2.5 rounded-xl shadow-xl border text-sm font-bold transition-all",
+                    scanToast.type === 'ok'
+                        ? "bg-emerald-600 border-emerald-500 text-white"
+                        : "bg-red-600 border-red-500 text-white"
+                )}>
+                    <span className="text-base">{scanToast.type === 'ok' ? '✓' : '⚠'}</span>
+                    {scanToast.msg}
+                </div>
+            )}
+
+            {/* ── Open Shift Modal ── */}
             {showOpenShiftModal && (
                 <OpenShiftModal
                     vendedores={VENDEDORES}
@@ -840,12 +880,14 @@ export default function POSPage() {
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input
-                                placeholder="Buscar productos"
+                                placeholder="Buscar productos o ingresa código..."
                                 className="pl-9 h-10 bg-white border-border/60 rounded-xl focus-visible:ring-primary font-medium"
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
                             />
                         </div>
+                        {/* Barcode scanner button */}
+                        <BarcodeScannerButton onScan={handleBarcodeScan} />
                         {/* Shift status pill */}
                         <button
                             onClick={() => shiftOpen ? setShowCloseShiftModal(true) : setShowOpenShiftModal(true)}
