@@ -31,7 +31,6 @@ export function Footer() {
                     {/* Brand */}
                     <div className="col-span-2 md:col-span-1">
                         <Link href="/" className="flex items-center gap-2.5 mb-4 group">
-                            <div className="flex items-center justify-center text-3xl transition-transform group-hover:scale-110">🍭</div>
                             <span className="text-xl font-black tracking-tight">Lolli<span className="bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">pop</span></span>
                         </Link>
                         <p className="text-xs text-muted-foreground leading-relaxed mb-4 max-w-xs">Plataforma de facturacion electronica, contabilidad y gestion comercial para Republica Dominicana.</p>
