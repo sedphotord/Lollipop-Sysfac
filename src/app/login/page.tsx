@@ -20,7 +20,7 @@ const FEATURES = [
 export default function LoginPage() {
     const router = useRouter();
     const [email, setEmail] = useState("juan@lollipop.do");
-    const [pin, setPin] = useState("1234");
+    const [pin, setPin] = useState("");
     const [showPin, setShowPin] = useState(false);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
