@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Building2, Receipt, KeySquare, CheckCircle2, Upload, Image, Save, BadgeCheck, Palette, FileText, Mail, Phone, MapPin, Globe, X, Eye, LayoutTemplate, Shield, Users, Plus } from "lucide-react";
+import { Lock, Building2, Receipt, KeySquare, CheckCircle2, Upload, Image, Save, BadgeCheck, Palette, FileText, Mail, Phone, MapPin, Globe, X, Eye, LayoutTemplate, Shield, Users, Plus, Download, DatabaseBackup } from "lucide-react";
 import Link from "next/link";
 
 export default function SettingsPage() {
@@ -19,6 +19,8 @@ export default function SettingsPage() {
     const [saved, setSaved] = useState(false);
     const [logo, setLogo] = useState<string | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
+    const restoreRef = useRef<HTMLInputElement>(null);
+    const [backupStatus, setBackupStatus] = useState<"idle" | "done" | "error">("idle");
 
     useEffect(() => {
         const savedLogo = companyStorage.get('lollipop_company_logo');
@@ -99,19 +101,53 @@ export default function SettingsPage() {
     };
 
     const handleSave = () => {
-        // Persist company info so invoices can read it
         companyStorage.set('lollipop_company_settings', JSON.stringify({
-            name: razon,
-            comercialName: nombreComercial,
-            rnc,
-            address: direccion,
-            phone: telefono,
-            email,
-            web,
+            name: razon, comercialName: nombreComercial, rnc,
+            address: direccion, phone: telefono, email, web,
         }));
         companyStorage.set('sysfac_invoice_mode', invoiceMode);
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
+    };
+
+    // ── Backup / Restore ──
+    const handleExportBackup = () => {
+        const backup: Record<string, any> = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key) continue;
+            try { backup[key] = JSON.parse(localStorage.getItem(key) || 'null'); }
+            catch { backup[key] = localStorage.getItem(key); }
+        }
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `sysfac_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        setBackupStatus('done');
+        setTimeout(() => setBackupStatus('idle'), 3000);
+    };
+
+    const handleImportBackup = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+            try {
+                const data = JSON.parse(reader.result as string);
+                Object.entries(data).forEach(([k, v]) => {
+                    localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v));
+                });
+                setBackupStatus('done');
+                setTimeout(() => { setBackupStatus('idle'); window.location.reload(); }, 1500);
+            } catch {
+                setBackupStatus('error');
+                setTimeout(() => setBackupStatus('idle'), 3000);
+            }
+        };
+        reader.readAsText(file);
     };
 
     return (
@@ -138,13 +174,14 @@ export default function SettingsPage() {
             </div>
 
             <Tabs defaultValue="empresa" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 lg:w-[850px] h-auto p-1 bg-muted/50 backdrop-blur-md">
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-7 lg:w-[950px] h-auto p-1 bg-muted/50 backdrop-blur-md">
                     <TabsTrigger value="empresa" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Building2 className="w-4 h-4 mr-2" /> Empresa</TabsTrigger>
                     <TabsTrigger value="documentos" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><FileText className="w-4 h-4 mr-2" /> Documentos</TabsTrigger>
                     <TabsTrigger value="facturacion" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Receipt className="w-4 h-4 mr-2" /> e-CF / DGII</TabsTrigger>
                     <TabsTrigger value="certificacion" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Lock className="w-4 h-4 mr-2" /> Certificado</TabsTrigger>
                     <TabsTrigger value="api" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><KeySquare className="w-4 h-4 mr-2" /> API</TabsTrigger>
                     <TabsTrigger value="roles" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Shield className="w-4 h-4 mr-2" /> Roles</TabsTrigger>
+                    <TabsTrigger value="datos" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Download className="w-4 h-4 mr-2" /> Datos</TabsTrigger>
                 </TabsList>
 
                 {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ EMPRESA TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
@@ -543,6 +580,53 @@ export default function SettingsPage() {
                             </Card>
                         </div>
                     </div>
+                </TabsContent>
+                {/* ── DATOS / BACKUP TAB ── */}
+                <TabsContent value="datos" className="mt-6 space-y-6">
+                    <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Download className="w-5 h-5 text-blue-500" /> Exportar Backup de Datos</CardTitle>
+                            <CardDescription>Descarga un archivo JSON con todos los datos de esta empresa almacenados localmente (facturas, gastos, productos, clientes, etc.).</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/30 border border-border/40">
+                                <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
+                                    <Download className="w-5 h-5" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-semibold">Backup completo</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">Genera un archivo <code className="font-mono bg-muted px-1 rounded">sysfac_backup_FECHA.json</code> con todas las claves de localStorage.</p>
+                                </div>
+                                <Button onClick={handleExportBackup} className="shrink-0 gap-2" variant={backupStatus === 'done' ? 'default' : 'outline'}>
+                                    <Download className="w-4 h-4" />
+                                    {backupStatus === 'done' ? '¡Listo!' : 'Exportar JSON'}
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Upload className="w-5 h-5 text-emerald-500" /> Restaurar desde Backup</CardTitle>
+                            <CardDescription>Importa un archivo JSON de backup para restaurar todos los datos de una exportación anterior. La página se recargará al terminar.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/60">
+                                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                                    <Upload className="w-5 h-5" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">Precaución</p>
+                                    <p className="text-xs text-amber-700/80 dark:text-amber-300/80 mt-0.5">Esta acción reemplazará los datos actuales con los del archivo importado.</p>
+                                </div>
+                                <Button onClick={() => restoreRef.current?.click()} variant="outline" className="shrink-0 gap-2 border-amber-300 text-amber-700 hover:bg-amber-50">
+                                    <Upload className="w-4 h-4" />
+                                    {backupStatus === 'error' ? 'Error — JSON inválido' : 'Importar JSON'}
+                                </Button>
+                                <input ref={restoreRef} type="file" accept=".json" className="hidden" onChange={handleImportBackup} />
+                            </div>
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

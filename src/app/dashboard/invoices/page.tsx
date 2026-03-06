@@ -51,6 +51,8 @@ function InvoicesPageInner() {
     const [dateTo, setDateTo] = useState("");
     const [invoices, setInvoices] = useState<any[]>(MOCK_INVOICES);
     const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
+    const [page, setPage] = useState(1);
+    const PAGE_SIZE = 15;
 
     useEffect(() => {
         const result: any[] = [];
@@ -189,6 +191,12 @@ function InvoicesPageInner() {
         return matchSearch && matchStatus && matchFrom && matchTo;
     });
 
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+    // Reset to page 1 if filters change
+    const applyFilter = (fn: () => void) => { fn(); setPage(1); };
+
     const exportCSV = () => {
         const headers = ["ID", "e-CF/NCF", "Tipo", "Cliente", "RNC", "Fecha", "Vencimiento", "Total", "Estado DGII", "Cobro"];
         const rows = filtered.map(inv => [
@@ -316,7 +324,7 @@ function InvoicesPageInner() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filtered.map((inv) => {
+                            {paginated.map((inv) => {
                                 const st = STATUS_MAP[inv.status];
                                 const StIcon = st.icon;
                                 return (
@@ -441,6 +449,23 @@ function InvoicesPageInner() {
                         </TableBody>
                     </Table>
                 </div>
+                {/* Pagination controls */}
+                {filtered.length > PAGE_SIZE && (
+                    <div className="flex items-center justify-between px-4 py-3 border-t border-border/40 bg-muted/20">
+                        <span className="text-xs text-muted-foreground">
+                            Pág {page} de {totalPages} &middot; {filtered.length} facturas
+                        </span>
+                        <div className="flex items-center gap-1">
+                            <Button variant="outline" size="sm" className="h-7 text-xs" disabled={page === 1} onClick={() => setPage(p => Math.max(1, p - 1))}>Anterior</Button>
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).slice(
+                                Math.max(0, page - 3), Math.min(totalPages, page + 2)
+                            ).map(p => (
+                                <Button key={p} variant={p === page ? 'default' : 'outline'} size="sm" className="h-7 w-7 text-xs" onClick={() => setPage(p)}>{p}</Button>
+                            ))}
+                            <Button variant="outline" size="sm" className="h-7 text-xs" disabled={page === totalPages} onClick={() => setPage(p => Math.min(totalPages, p + 1))}>Siguiente</Button>
+                        </div>
+                    </div>
+                )}
             </Card>
 
             <AlertDialog open={!!invoiceToDelete} onOpenChange={(open) => !open && setInvoiceToDelete(null)}>
