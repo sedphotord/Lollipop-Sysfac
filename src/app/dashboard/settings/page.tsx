@@ -1,6 +1,7 @@
 "use client";
 import { companyStorage } from "@/lib/company-storage";
 import { useState, useRef, useEffect } from "react";
+import { useCompany } from "@/contexts/CompanyContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { Lock, Building2, Receipt, KeySquare, CheckCircle2, Upload, Image, Save,
 import Link from "next/link";
 
 export default function SettingsPage() {
+    const { activeCompany } = useCompany();
     const [saved, setSaved] = useState(false);
     const [logo, setLogo] = useState<string | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
@@ -21,7 +23,18 @@ export default function SettingsPage() {
     useEffect(() => {
         const savedLogo = companyStorage.get('lollipop_company_logo');
         if (savedLogo) setLogo(savedLogo);
-        // Restore company info
+
+        // First: seed defaults from the Company record
+        if (activeCompany) {
+            setRazon(activeCompany.name || '');
+            setNombreComercial(activeCompany.name || '');
+            setRnc(activeCompany.rnc || '');
+            setDireccion(activeCompany.address || '');
+            setTelefono(activeCompany.phone || '');
+            setEmail(activeCompany.email || '');
+        }
+
+        // Then: override with saved custom settings if they exist
         const raw = companyStorage.get('lollipop_company_settings');
         if (raw) {
             try {
@@ -39,16 +52,16 @@ export default function SettingsPage() {
         if (savedMode === 'tradicional' || savedMode === 'electronico') {
             setInvoiceMode(savedMode);
         }
-    }, []);
+    }, [activeCompany]);
 
-    // Company info state
-    const [razon, setRazon] = useState("Mi Empresa Dominicana SRL");
-    const [nombreComercial, setNombreComercial] = useState("Mi Empresa");
-    const [rnc, setRnc] = useState("130123456");
-    const [direccion, setDireccion] = useState("Av. Winston Churchill Esq. Sarasota, Distrito Nacional");
-    const [telefono, setTelefono] = useState("809-555-0000");
-    const [email, setEmail] = useState("recepcion@miempresa.com");
-    const [web, setWeb] = useState("www.miempresa.com.do");
+    // Company info state — defaults from Company record, overridden by saved custom settings
+    const [razon, setRazon] = useState("");
+    const [nombreComercial, setNombreComercial] = useState("");
+    const [rnc, setRnc] = useState("");
+    const [direccion, setDireccion] = useState("");
+    const [telefono, setTelefono] = useState("");
+    const [email, setEmail] = useState("");
+    const [web, setWeb] = useState("");
     const [municipio, setMunicipio] = useState("Distrito Nacional");
     const [provincia, setProvincia] = useState("Santo Domingo");
     const [invoiceMode, setInvoiceMode] = useState<'tradicional' | 'electronico'>('electronico');
@@ -105,8 +118,18 @@ export default function SettingsPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-5xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Configuracion</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Gestiona la informacion de la empresa, facturacion DGII y permisos.</p>
+                    <div className="flex items-center gap-2 mb-1">
+                        {activeCompany && (
+                            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+                                style={{ background: activeCompany.color || '#2563eb' }}>
+                                {activeCompany.name.slice(0, 2).toUpperCase()}
+                            </div>
+                        )}
+                        <h2 className="text-3xl font-bold tracking-tight">
+                            {activeCompany?.name ?? 'Configuracion'}
+                        </h2>
+                    </div>
+                    <p className="text-muted-foreground mt-1 text-sm">Configura la informacion, facturacion DGII y permisos de esta empresa.</p>
                 </div>
                 <Button onClick={handleSave} className="bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 gap-2">
                     {saved ? <BadgeCheck className="w-4 h-4" /> : <Save className="w-4 h-4" />}
