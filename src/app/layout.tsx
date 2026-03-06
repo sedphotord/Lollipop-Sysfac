@@ -8,7 +8,7 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://lollipop.app";
+const APP_URL = "https://lollipop-sysfac.vercel.app";
 
 export const metadata: Metadata = {
   title: {

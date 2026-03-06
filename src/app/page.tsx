@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Lollipop — Facturación Electrónica para RD" }],
     type: "website",
     locale: "es_DO",
+    url: "https://lollipop-sysfac.vercel.app",
   },
   twitter: {
     card: "summary_large_image",
