@@ -26,7 +26,6 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { OpenShiftModal } from "@/components/pos/OpenShiftModal";
-import { BarcodeScannerButton } from "@/components/BarcodeScannerButton";
 import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
 
 
@@ -886,8 +885,7 @@ export default function POSPage() {
                                 onChange={e => setSearch(e.target.value)}
                             />
                         </div>
-                        {/* Barcode scanner button */}
-                        <BarcodeScannerButton onScan={handleBarcodeScan} />
+                        {/* Barcode: scanned automatically via USB/HW — no button needed */}
                         {/* Shift status pill */}
                         <button
                             onClick={() => shiftOpen ? setShowCloseShiftModal(true) : setShowOpenShiftModal(true)}
