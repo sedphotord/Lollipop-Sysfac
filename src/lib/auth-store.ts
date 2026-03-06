@@ -19,7 +19,8 @@ export type AppUser = {
     id: string;
     name: string;
     email: string;
-    pin: string;               // 4-digit PIN
+    password: string;          // Login password (shown pre-filled on demo)
+    pin?: string;              // 4-digit PIN — only for destructive / sensitive actions
     globalRole: GlobalRole;
     companiesAccess: string[]; // company IDs this user can access
     createdBy: string;         // user ID who created this account

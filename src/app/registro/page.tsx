@@ -24,11 +24,11 @@ export default function RegistroPage() {
     // Pre-filled with demo main account data
     const [name, setName] = useState("Juan Pérez");
     const [email, setEmail] = useState("juan@lollipop.do");
-    const [pin, setPin] = useState("1234");
-    const [pinConfirm, setPinConfirm] = useState("1234");
+    const [password, setPassword] = useState("Lollipop2025!");
+    const [passwordConfirm, setPasswordConfirm] = useState("Lollipop2025!");
     const [companyName, setCompanyName] = useState("TechSolutions RD");
     const [rnc, setRnc] = useState("131-00168-5");
-    const [showPin, setShowPin] = useState(false);
+    const [showPwd, setShowPwd] = useState(false);
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState<1 | 2>(1);
@@ -36,9 +36,8 @@ export default function RegistroPage() {
     const handleNext = (e: React.FormEvent) => {
         e.preventDefault();
         if (!name.trim() || !email.trim()) { setError("Completa todos los campos."); return; }
-        if (pin.length !== 4) { setError("El PIN debe tener 4 dígitos."); return; }
-        if (pin !== pinConfirm) { setError("Los PINs no coinciden."); return; }
-        // Check email not taken
+        if (password.length < 6) { setError("La contraseña debe tener al menos 6 caracteres."); return; }
+        if (password !== passwordConfirm) { setError("Las contraseñas no coinciden."); return; }
         seedAllCompaniesData();
         const existing = getUsers().find(u => u.email.toLowerCase() === email.toLowerCase().trim());
         if (existing) { setError("Este correo ya está registrado."); return; }
@@ -71,7 +70,7 @@ export default function RegistroPage() {
             id: userId,
             name: name.trim(),
             email: email.toLowerCase().trim(),
-            pin,
+            password,
             globalRole: "contador",
             companiesAccess: [compId],
             createdBy: "self",
@@ -217,29 +216,27 @@ export default function RegistroPage() {
                                             placeholder="tu@correo.com"
                                             className="w-full border border-border rounded-xl px-4 py-3 text-sm bg-background outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" required />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">PIN (4 dígitos)</label>
-                                            <div className="relative">
-                                                <input type={showPin ? "text" : "password"} inputMode="numeric" maxLength={4}
-                                                    value={pin} onChange={e => { setPin(e.target.value.replace(/\D/g, "").slice(0, 4)); setError(""); }}
-                                                    placeholder="••••"
-                                                    className="w-full border border-border rounded-xl px-4 py-3 pr-10 text-sm font-mono tracking-[0.3em] bg-background outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" required />
-                                                <button type="button" onClick={() => setShowPin(s => !s)}
-                                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50">
-                                                    {showPin ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                                                </button>
-                                            </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Contraseña</label>
+                                        <div className="relative">
+                                            <input type={showPwd ? "text" : "password"} autoComplete="new-password"
+                                                value={password} onChange={e => { setPassword(e.target.value); setError(""); }}
+                                                placeholder="Mínimo 6 caracteres"
+                                                className="w-full border border-border rounded-xl px-4 py-3 pr-10 text-sm bg-background outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all" required />
+                                            <button type="button" onClick={() => setShowPwd(s => !s)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/50">
+                                                {showPwd ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                                            </button>
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Confirmar PIN</label>
-                                            <input type={showPin ? "text" : "password"} inputMode="numeric" maxLength={4}
-                                                value={pinConfirm} onChange={e => { setPinConfirm(e.target.value.replace(/\D/g, "").slice(0, 4)); setError(""); }}
-                                                placeholder="••••"
-                                                className={cn("w-full border rounded-xl px-4 py-3 text-sm font-mono tracking-[0.3em] bg-background outline-none focus:ring-2 transition-all",
-                                                    pinConfirm && pin !== pinConfirm ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : "border-border focus:border-blue-500 focus:ring-blue-500/20"
-                                                )} required />
-                                        </div>
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Confirmar contraseña</label>
+                                        <input type={showPwd ? "text" : "password"} autoComplete="new-password"
+                                            value={passwordConfirm} onChange={e => { setPasswordConfirm(e.target.value); setError(""); }}
+                                            placeholder="Repite tu contraseña"
+                                            className={cn("w-full border rounded-xl px-4 py-3 text-sm bg-background outline-none focus:ring-2 transition-all",
+                                                passwordConfirm && password !== passwordConfirm ? "border-red-400 focus:border-red-500 focus:ring-red-500/20" : "border-border focus:border-blue-500 focus:ring-blue-500/20"
+                                            )} required />
                                     </div>
 
                                     {error && (
@@ -249,7 +246,7 @@ export default function RegistroPage() {
                                     )}
 
                                     <button type="submit"
-                                        disabled={!name || !email || pin.length !== 4 || pin !== pinConfirm}
+                                        disabled={!name || !email || password.length < 6 || password !== passwordConfirm}
                                         className="w-full h-12 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/25 disabled:opacity-50 active:scale-[0.98]">
                                         Continuar →
                                     </button>

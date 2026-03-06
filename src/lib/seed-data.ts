@@ -166,11 +166,11 @@ function seedPena() {
 // ── USERS ─────────────────────────────────────────────────────────────────────
 function seedUsers(): void {
     saveUsers([
-        { id: 'usr-contador', name: 'Juan Pérez', email: 'juan@lollipop.do', pin: '1234', globalRole: 'contador', companiesAccess: ['comp-tech', 'comp-cafe', 'comp-pena'], createdBy: 'system', createdAt: '2024-01-01', color: '#2563eb' },
-        { id: 'usr-tech', name: 'Carlos Méndez', email: 'carlos@techsolutionsrd.com', pin: '4321', globalRole: 'propietario', companiesAccess: ['comp-tech'], createdBy: 'usr-contador', createdAt: '2024-01-15', color: '#0ea5e9' },
-        { id: 'usr-cafe', name: 'Pedro García', email: 'pedro@buensabor.do', pin: '5678', globalRole: 'propietario', companiesAccess: ['comp-cafe'], createdBy: 'usr-contador', createdAt: '2024-02-01', color: '#d97706' },
-        { id: 'usr-pena', name: 'Ana Peña', email: 'ana@penacpa.do', pin: '8765', globalRole: 'propietario', companiesAccess: ['comp-pena'], createdBy: 'usr-contador', createdAt: '2024-02-15', color: '#7c3aed' },
-        { id: 'usr-cajera', name: 'María Sánchez', email: 'maria@buensabor.do', pin: '0000', globalRole: 'empleado', companiesAccess: ['comp-cafe'], createdBy: 'usr-cafe', createdAt: '2024-03-01', color: '#10b981' },
+        { id: 'usr-contador', name: 'Juan Pérez', email: 'juan@lollipop.do', password: 'Lollipop2025!', pin: '1234', globalRole: 'contador', companiesAccess: ['comp-tech', 'comp-cafe', 'comp-pena'], createdBy: 'system', createdAt: '2024-01-01', color: '#2563eb' },
+        { id: 'usr-tech', name: 'Carlos Méndez', email: 'carlos@techsolutionsrd.com', password: 'TechRD2025!', pin: '4321', globalRole: 'propietario', companiesAccess: ['comp-tech'], createdBy: 'usr-contador', createdAt: '2024-01-15', color: '#0ea5e9' },
+        { id: 'usr-cafe', name: 'Pedro García', email: 'pedro@buensabor.do', password: 'BuenSabor25!', pin: '5678', globalRole: 'propietario', companiesAccess: ['comp-cafe'], createdBy: 'usr-contador', createdAt: '2024-02-01', color: '#d97706' },
+        { id: 'usr-pena', name: 'Ana Peña', email: 'ana@penacpa.do', password: 'PenaAsoc25!', pin: '8765', globalRole: 'propietario', companiesAccess: ['comp-pena'], createdBy: 'usr-contador', createdAt: '2024-02-15', color: '#7c3aed' },
+        { id: 'usr-cajera', name: 'María Sánchez', email: 'maria@buensabor.do', password: 'Cajera2025!', pin: '0000', globalRole: 'empleado', companiesAccess: ['comp-cafe'], createdBy: 'usr-cafe', createdAt: '2024-03-01', color: '#10b981' },
     ]);
     setUserCompanyRole('usr-contador', 'comp-tech', 'administrador');
     setUserCompanyRole('usr-contador', 'comp-cafe', 'administrador');
