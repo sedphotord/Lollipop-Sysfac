@@ -417,7 +417,7 @@ function InvoiceBuilderContent() {
             cliente: client?.name || 'Consumidor final',
             rnc: client?.rnc || '',
             date: date || new Date().toLocaleDateString('es-DO'),
-            vencimiento: dueDate || 'ÔÇö',
+            vencimiento: dueDate || '—',
             total: total,
             status: 'pending', // pending DGII acceptance
             paymentStatus: 'pendiente',
@@ -448,7 +448,7 @@ function InvoiceBuilderContent() {
         const previewData = {
             company: { name: companyName, rnc: companyRnc, logo: companyLogo, address: companyAddress, phone: companyPhone, email: companyEmail },
             client: { name: client?.name || "Consumidor final", rnc: client?.rnc || "", address: client?.address || "", phone: client?.phone || "", email: client?.email || "" },
-            document: { type: tipo === 'B01' ? 'Crédito Fiscal' : tipo === 'B02' ? 'Consumo' : tipo === 'B14' ? 'Régimen Especial' : tipo === 'B15' ? 'Gubernamental' : tipo, number: ncf, date: date || new Date().toLocaleDateString('es-DO'), dueDate: dueDate || 'ÔÇö', terms: paymentTerms, seller: vendedor, notes, footer, currency: moneda, mode: invoiceMode },
+            document: { type: tipo === 'B01' ? 'Crédito Fiscal' : tipo === 'B02' ? 'Consumo' : tipo === 'B14' ? 'Régimen Especial' : tipo === 'B15' ? 'Gubernamental' : tipo, number: ncf, date: date || new Date().toLocaleDateString('es-DO'), dueDate: dueDate || '—', terms: paymentTerms, seller: vendedor, notes, footer, currency: moneda, mode: invoiceMode },
             items: items.filter(i => i.name).map(i => ({
                 id: i.id,
                 name: i.name,
@@ -507,8 +507,8 @@ function InvoiceBuilderContent() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowExitModal(false)}>
                     <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
                         <div className="px-6 pt-6 pb-4">
-                            <h2 className="font-bold text-lg text-foreground">┬┐Salir de la factura?</h2>
-                            <p className="text-sm text-muted-foreground mt-1">Tienes cambios sin guardar. ┬┐Qué deseas hacer?</p>
+                            <h2 className="font-bold text-lg text-foreground">¿Salir de la factura?</h2>
+                            <p className="text-sm text-muted-foreground mt-1">Tienes cambios sin guardar. ¿Qué deseas hacer?</p>
                         </div>
                         <div className="px-6 pb-6 flex flex-col gap-3">
                             <Button
@@ -647,23 +647,23 @@ function InvoiceBuilderContent() {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="w-56">
-                                    {/* ÔöÇÔöÇ Facturas ÔöÇÔöÇ */}
-                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">ÔÇö Facturas</SelectItem>
-                                    <SelectItem value="InvoiceStandard">Est├índar</SelectItem>
+                                    {/* — Facturas — */}
+                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Facturas</SelectItem>
+                                    <SelectItem value="InvoiceStandard">Estándar</SelectItem>
                                     <SelectItem value="InvoiceModern">Moderno</SelectItem>
                                     <SelectItem value="InvoiceCorporate">Corporativo</SelectItem>
                                     <SelectItem value="InvoiceElegant">Elegante</SelectItem>
                                     <SelectItem value="InvoiceMinimal">Minimalista</SelectItem>
-                                    {/* ÔöÇÔöÇ Cotizaciones ÔöÇÔöÇ */}
-                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">ÔÇö Cotizaciones</SelectItem>
-                                    <SelectItem value="QuoteStandard">Cotización Est├índar</SelectItem>
+                                    {/* — Cotizaciones — */}
+                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Cotizaciones</SelectItem>
+                                    <SelectItem value="QuoteStandard">Cotización Estándar</SelectItem>
                                     <SelectItem value="QuoteDetailed">Cotización Detallada</SelectItem>
-                                    {/* ÔöÇÔöÇ Comprobantes ÔöÇÔöÇ */}
-                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">ÔÇö Comprobantes</SelectItem>
+                                    {/* — Comprobantes — */}
+                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Comprobantes</SelectItem>
                                     <SelectItem value="PaymentReceipt">Recibo de Pago</SelectItem>
                                     <SelectItem value="TicketPOS">Ticket POS (80mm)</SelectItem>
-                                    {/* ÔöÇÔöÇ Documentos ÔöÇÔöÇ */}
-                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">ÔÇö Documentos</SelectItem>
+                                    {/* — Documentos — */}
+                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Documentos</SelectItem>
                                     <SelectItem value="DeliveryNote">Conduce / Remisión</SelectItem>
                                     <SelectItem value="AccountStatement">Estado de Cuenta</SelectItem>
                                 </SelectContent>
@@ -694,7 +694,7 @@ function InvoiceBuilderContent() {
                                     <p className="text-xs text-muted-foreground mt-0.5">RNC: {companyRnc}</p>
                                     {companyAddress && <p className="text-xs text-muted-foreground">{companyAddress}</p>}
                                     {(companyPhone || companyEmail) && (
-                                        <p className="text-xs text-muted-foreground">{[companyPhone, companyEmail].filter(Boolean).join(' ┬À ')}</p>
+                                        <p className="text-xs text-muted-foreground">{[companyPhone, companyEmail].filter(Boolean).join(' · ')}</p>
                                     )}
                                 </div>
                             </div>
@@ -759,7 +759,7 @@ function InvoiceBuilderContent() {
                                                             onMouseDown={e => { e.preventDefault(); setClient(c); setClientOpen(false); setClientSearch(""); }}
                                                             className="w-full text-left px-4 py-2.5 hover:bg-muted/40 border-b border-border/30 last:border-0 flex flex-col gap-0.5 transition-colors">
                                                             <span className="font-medium text-sm">{c.trade || c.name}</span>
-                                                            <span className="text-xs text-muted-foreground font-mono">{c.name} ┬À RNC {c.rnc}</span>
+                                                            <span className="text-xs text-muted-foreground font-mono">{c.name} · RNC {c.rnc}</span>
                                                         </button>
                                                     ))
                                                 )}
@@ -980,7 +980,7 @@ function InvoiceBuilderContent() {
                                         <FileText className="w-4 h-4 text-amber-500" />
                                         <div>
                                             <p className="font-semibold text-sm">Guardar borrador</p>
-                                            <p className="text-xs text-muted-foreground">Continuar m├ís tarde</p>
+                                            <p className="text-xs text-muted-foreground">Continuar más tarde</p>
                                         </div>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="gap-2.5 cursor-pointer py-2.5" onClick={() => { handleSave(); }}>
@@ -1026,7 +1026,7 @@ function InvoiceBuilderContent() {
                                 <span className="font-semibold text-sm">{TIPOS.find(t => t.code === tipo)?.name}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-slate-600">Numeración autom├ítica:</span>
+                                <span className="text-sm text-slate-600">Numeración automática:</span>
                                 <input type="checkbox" checked={ncfForm.autoNum} onChange={e => setNcfForm(p => ({ ...p, autoNum: e.target.checked }))} className="w-4 h-4 accent-primary" />
                             </div>
                             <div className="space-y-1.5">

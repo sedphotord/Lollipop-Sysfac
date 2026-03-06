@@ -169,7 +169,7 @@ Atendido por: {{vendedor}}
 ];
 
 export default function PlantillasPage() {
-    const [template, setTemplate] = useState<"classic" | "modern" | "minimal" | "factura" | "proforma">("modern");
+    const [template, setTemplate] = useState<string>("InvoiceStandard");
     const [primaryColor, setPrimaryColor] = useState(THEME_COLORS[0].value);
     const [showLogo, setShowLogo] = useState(true);
     const [showDiscount, setShowDiscount] = useState(true);
@@ -249,30 +249,65 @@ export default function PlantillasPage() {
                 <TabsContent value="pdf" className="flex-1 flex overflow-hidden m-0 mt-0">
                     <div className="w-full md:w-[380px] border-r border-border/50 bg-muted/10 flex flex-col shrink-0 overflow-y-auto">
                         <div className="p-5 space-y-7">
-                            <div className="space-y-3">
-                                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">1. Disposición</p>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {([
-                                        { key: "modern", label: "Moderno" },
-                                        { key: "classic", label: "Clásico" },
-                                        { key: "minimal", label: "Minimal" },
-                                        { key: "factura", label: "Factura" },
-                                        { key: "proforma", label: "Proforma" },
-                                    ] as const).map(({ key, label }) => (
-                                        <button key={key} onClick={() => setTemplate(key)}
-                                            className={cn("border-2 rounded-xl p-2.5 cursor-pointer transition-all text-center", template === key ? "border-blue-600 bg-blue-50/50" : "border-border/50 hover:border-border")}
-                                        >
-                                            <div className="w-full h-10 bg-white rounded border border-border/40 mb-2 relative overflow-hidden">
-                                                {key === "modern" && <div className="absolute top-0 left-0 right-0 h-2.5 bg-blue-600" />}
-                                                {key === "classic" && <div className="absolute bottom-0 left-0 right-0 h-2.5 bg-slate-100 border-t border-slate-200" />}
-                                                {key === "minimal" && <div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-0.5 bg-slate-300" /></div>}
-                                                {key === "factura" && <><div className="absolute top-0 left-0 right-0 h-2 bg-emerald-600" /><div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-600/30" /></>}
-                                                {key === "proforma" && <div className="absolute inset-2 border border-dashed border-slate-300 rounded" />}
-                                            </div>
-                                            <span className={cn("text-[11px] font-semibold capitalize", template === key ? "text-blue-700" : "text-muted-foreground")}>{label}</span>
-                                        </button>
-                                    ))}
-                                </div>
+                            <div className="space-y-4">
+                                <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">1. Plantilla</p>
+                                {([
+                                    {
+                                        group: "Facturas", items: [
+                                            { key: "InvoiceStandard", label: "Estándar", preview: "top-band" },
+                                            { key: "InvoiceModern", label: "Moderno", preview: "gradient" },
+                                            { key: "InvoiceCorporate", label: "Corporativo", preview: "sidebar" },
+                                            { key: "InvoiceElegant", label: "Elegante", preview: "elegant" },
+                                            { key: "InvoiceMinimal", label: "Minimalista", preview: "minimal" },
+                                        ]
+                                    },
+                                    {
+                                        group: "Cotizaciones", items: [
+                                            { key: "QuoteStandard", label: "Cotización Estándar", preview: "top-band" },
+                                            { key: "QuoteDetailed", label: "Cotización Detallada", preview: "two-col" },
+                                        ]
+                                    },
+                                    {
+                                        group: "Comprobantes", items: [
+                                            { key: "PaymentReceipt", label: "Recibo de Pago", preview: "receipt" },
+                                            { key: "TicketPOS", label: "Ticket POS (80mm)", preview: "ticket" },
+                                        ]
+                                    },
+                                    {
+                                        group: "Documentos", items: [
+                                            { key: "DeliveryNote", label: "Conduce / Remisión", preview: "minimal" },
+                                            { key: "AccountStatement", label: "Estado de Cuenta", preview: "table" },
+                                        ]
+                                    },
+                                ] as const).map(({ group, items }) => (
+                                    <div key={group}>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2 flex items-center gap-2">
+                                            <span className="h-px flex-1 bg-border/50" />
+                                            {group}
+                                            <span className="h-px flex-1 bg-border/50" />
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {items.map(({ key, label, preview }) => (
+                                                <button key={key} onClick={() => setTemplate(key)}
+                                                    className={cn("border-2 rounded-xl p-2.5 cursor-pointer transition-all text-left", template === key ? "border-blue-600 bg-blue-50/50" : "border-border/50 hover:border-border")}
+                                                >
+                                                    <div className="w-full h-8 bg-white rounded border border-border/40 mb-1.5 relative overflow-hidden">
+                                                        {preview === "top-band" && <div className="absolute top-0 left-0 right-0 h-2" style={{ background: primaryColor }} />}
+                                                        {preview === "gradient" && <div className="absolute top-0 left-0 right-0 h-full opacity-20" style={{ background: `linear-gradient(135deg, ${primaryColor}, transparent)` }} />}
+                                                        {preview === "sidebar" && <div className="absolute top-0 left-0 bottom-0 w-3" style={{ background: primaryColor }} />}
+                                                        {preview === "elegant" && <><div className="absolute top-0 left-0 right-0 h-1" style={{ background: primaryColor }} /><div className="absolute bottom-0 left-0 right-0 h-1" style={{ background: primaryColor }} /></>}
+                                                        {preview === "minimal" && <div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-0.5 bg-slate-300" /></div>}
+                                                        {preview === "receipt" && <div className="absolute bottom-0 left-0 right-0 h-3 bg-emerald-600/20 border-t border-emerald-600/30" />}
+                                                        {preview === "ticket" && <><div className="absolute top-0 left-0 right-0 h-full bg-slate-50" /><div className="absolute inset-x-2 top-1 bottom-1 border border-dashed border-slate-300 rounded" /></>}
+                                                        {preview === "two-col" && <><div className="absolute top-0 left-0 bottom-0 w-1/3 bg-slate-100" /><div className="absolute top-0 left-0 right-0 h-2" style={{ background: primaryColor }} /></>}
+                                                        {preview === "table" && <><div className="absolute top-0 left-0 right-0 h-2 bg-slate-200" /><div className="absolute top-3 left-0 right-0 h-px bg-slate-200" /><div className="absolute top-5 left-0 right-0 h-px bg-slate-200" /></>}
+                                                    </div>
+                                                    <span className={cn("text-[10px] font-semibold leading-tight", template === key ? "text-blue-700" : "text-muted-foreground")}>{label}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="space-y-3">
@@ -332,13 +367,22 @@ export default function PlantillasPage() {
                     {/* PDF Preview */}
                     <div className="flex-1 bg-[#e2e8f0] dark:bg-[#0f172a] overflow-y-auto p-6 flex justify-center items-start">
                         <div className={cn("w-full max-w-[720px] bg-white shadow-2xl overflow-hidden min-h-[900px] relative text-slate-800 text-sm",
-                            template === "modern" && "border-t-[12px]", template === "classic" && "border-2 border-slate-200")}
-                            style={{ borderTopColor: template === "modern" ? primaryColor : undefined }}>
+                            ["InvoiceStandard", "InvoiceModern", "QuoteStandard", "QuoteDetailed", "DeliveryNote", "AccountStatement"].includes(template) && "border-t-[12px]",
+                            template === "InvoiceCorporate" && "border-l-[8px]",
+                            template === "InvoiceElegant" && "border-t-4 border-b-4",
+                            template === "TicketPOS" && "max-w-[200px] mx-auto",
+                            template === "PaymentReceipt" && "border-t-[6px]"
+                        )}
+                            style={{
+                                borderTopColor: ["InvoiceStandard", "InvoiceModern", "QuoteStandard", "QuoteDetailed", "DeliveryNote", "AccountStatement", "InvoiceElegant", "PaymentReceipt"].includes(template) ? primaryColor : undefined,
+                                borderLeftColor: template === "InvoiceCorporate" ? primaryColor : undefined,
+                                borderBottomColor: template === "InvoiceElegant" ? primaryColor : undefined,
+                            }}>
                             <div className="p-10">
                                 <div className={cn("flex justify-between items-start mb-10",
-                                    template === "minimal" && "flex-col gap-4 items-center text-center",
-                                    template === "classic" && "border-b-2 pb-5 border-slate-200",
-                                    template === "proforma" && "border-b border-dashed pb-5 border-slate-300"
+                                    template === "InvoiceMinimal" && "flex-col gap-4 items-center text-center",
+                                    template === "InvoiceCorporate" && "border-b-2 pb-5 border-slate-200",
+                                    template === "QuoteDetailed" && "border-b border-dashed pb-5 border-slate-300"
                                 )}>
                                     <div>
                                         {showLogo ? <div className="w-32 h-12 bg-slate-100 rounded flex items-center justify-center text-slate-400 border border-slate-200 mb-3"><ImageIcon className="w-4 h-4 mr-1" />Logo</div>
@@ -363,7 +407,7 @@ export default function PlantillasPage() {
                                 <table className="w-full text-xs mb-6">
                                     <thead>
                                         <tr className={cn("text-left", template === "modern" ? "text-white" : "border-b-2 border-slate-300 text-slate-600")}
-                                            style={{ backgroundColor: template === "modern" || template === "factura" || template === "proforma" ? (template === "factura" ? "#059669" : primaryColor) : "transparent" }}>
+                                            style={{ backgroundColor: ["InvoiceStandard", "InvoiceModern", "InvoiceCorporate", "InvoiceElegant", "QuoteStandard", "QuoteDetailed", "DeliveryNote", "AccountStatement"].includes(template) ? primaryColor : template === "PaymentReceipt" ? "#059669" : "transparent" }}>
                                             {showCodigo && <th className="p-2">Código</th>}
                                             <th className="p-2 w-1/2">Descripción</th>
                                             <th className="p-2 text-center">Cant</th>
