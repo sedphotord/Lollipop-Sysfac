@@ -211,8 +211,13 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                         <Button variant="outline" className="gap-2 shadow-sm font-medium bg-white" onClick={() => window.print()}>
                             <Download className="w-4 h-4 text-slate-500" /> Descargar PDF
                         </Button>
-                        <Button variant="outline" className="gap-2 shadow-sm font-medium bg-white">
-                            <Share2 className="w-4 h-4 text-slate-500" /> Compartir
+                        <Button variant="outline" className="gap-2 shadow-sm font-medium bg-white" onClick={() => {
+                            const msg = encodeURIComponent(
+                                `Estimado/a ${previewData?.cliente || 'cliente'},\n\nAdjunto comprobante *${previewData?.ecf || previewData?.id || ''}* por *RD$ ${(previewData?.total || 0).toLocaleString('es-DO', { minimumFractionDigits: 2 })}*.\n\nFavor realizar el pago antes de ${previewData?.vencimiento || 'la fecha indicada'}. \n\nGracias por su preferencia.`
+                            );
+                            window.open(`https://wa.me/?text=${msg}`, '_blank');
+                        }}>
+                            <Share2 className="w-4 h-4 text-emerald-600" /> WhatsApp
                         </Button>
                         {!isPaid && (
                             <Link href={`/dashboard/ingresos/pagos/new?invoiceId=${routeId}`}>

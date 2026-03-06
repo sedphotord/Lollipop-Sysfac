@@ -47,6 +47,8 @@ function InvoicesPageInner() {
     const searchParams = useSearchParams();
     const [search, setSearch] = useState(searchParams?.get("search") ?? "");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [dateFrom, setDateFrom] = useState("");
+    const [dateTo, setDateTo] = useState("");
     const [invoices, setInvoices] = useState<any[]>(MOCK_INVOICES);
     const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
 
@@ -160,8 +162,28 @@ function InvoicesPageInner() {
             (inv.id || '').toLowerCase().includes(s) ||
             (inv.ecf || inv.ncf || '').toLowerCase().includes(s);
         const matchStatus = statusFilter === "all" || inv.status === statusFilter;
-        return matchSearch && matchStatus;
+        const matchFrom = !dateFrom || inv.date >= dateFrom;
+        const matchTo = !dateTo || inv.date <= dateTo;
+        return matchSearch && matchStatus && matchFrom && matchTo;
     });
+
+    const exportCSV = () => {
+        const headers = ["ID", "e-CF/NCF", "Tipo", "Cliente", "RNC", "Fecha", "Vencimiento", "Total", "Estado DGII", "Cobro"];
+        const rows = filtered.map(inv => [
+            inv.id, inv.ecf || "—", inv.tipoName || inv.tipo || "—",
+            inv.cliente || "—", inv.rnc || "—",
+            inv.date || "—", inv.vencimiento || "—",
+            (inv.total || 0).toFixed(2),
+            inv.isDraft ? "Borrador" : (inv.status === "accepted" ? "Aceptado" : inv.status === "pending" ? "Pendiente" : "Rechazado"),
+            inv.paymentStatus || "—",
+        ]);
+        const csv = [headers, ...rows].map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `facturas_${new Date().toISOString().split("T")[0]}.csv`;
+        a.click(); URL.revokeObjectURL(url);
+    };
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
@@ -222,6 +244,20 @@ function InvoicesPageInner() {
                                 className="pl-10 bg-background"
                             />
                         </div>
+                        <Input
+                            type="date"
+                            value={dateFrom}
+                            onChange={e => setDateFrom(e.target.value)}
+                            className="w-full sm:w-36 bg-background text-xs"
+                            title="Desde"
+                        />
+                        <Input
+                            type="date"
+                            value={dateTo}
+                            onChange={e => setDateTo(e.target.value)}
+                            className="w-full sm:w-36 bg-background text-xs"
+                            title="Hasta"
+                        />
                         <Select value={statusFilter} onValueChange={setStatusFilter}>
                             <SelectTrigger className="w-full sm:w-[180px] bg-background">
                                 <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -235,7 +271,7 @@ function InvoicesPageInner() {
                                 <SelectItem value="draft">Borrador</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Button variant="outline" className="shrink-0"><Download className="w-4 h-4 mr-2" /> Exportar</Button>
+                        <Button variant="outline" className="shrink-0" onClick={exportCSV}><Download className="w-4 h-4 mr-2" /> CSV ({filtered.length})</Button>
                     </div>
                 </CardContent>
             </Card>

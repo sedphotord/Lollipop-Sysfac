@@ -9,11 +9,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-    ArrowLeftIcon, CheckCircleIcon, DocumentTextIcon, StarIcon
+    ArrowLeftIcon, CheckCircleIcon, DocumentTextIcon, StarIcon, ArrowRightIcon
 } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 
 const LS_COTS = "lollipop_cotizaciones";
+const LS_INV = "invoice_emitted";
 
 const STATUS_STYLES: Record<string, string> = {
     enviada: "text-blue-600 bg-blue-500/10 border-blue-500/20",
@@ -55,6 +56,57 @@ export default function CotizacionEditPage() {
     const setField = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
         setCot((p: any) => ({ ...p, [field]: e.target.value }));
 
+    const handleConvertToInvoice = () => {
+        try {
+            const raw = companyStorage.get(LS_INV);
+            const invList: any[] = raw ? JSON.parse(raw) : [];
+            const newId = `INV-${Date.now()}`;
+            const total = (cot.items || []).reduce((a: number, it: any) => a + (it.qty || 0) * (it.price || 0), 0);
+            const newInvoice = {
+                id: newId,
+                cliente: cot.clientData?.name || cot.cliente || "",
+                rnc: cot.clientData?.rnc || "",
+                date: new Date().toISOString().split("T")[0],
+                vencimiento: "",
+                ecf: "",
+                tipo: "B02",
+                tipoName: "Consumidor Final",
+                items: (cot.items || []).map((it: any) => ({
+                    id: it.id || Date.now().toString(),
+                    name: it.description || it.name || "",
+                    qty: it.qty || 1,
+                    price: it.price || 0,
+                    disc: 0,
+                    itbis: 18,
+                })),
+                totals: { subtotal: total, discount: 0, tax: total * 0.18, total: total * 1.18 },
+                total: total * 1.18,
+                paymentStatus: "pendiente",
+                cotizacionRef: cot.id,
+                isDraft: false,
+            };
+            invList.unshift(newInvoice);
+            companyStorage.set(LS_INV, JSON.stringify(invList));
+            // Update cot status
+            const rawCots = companyStorage.get(LS_COTS);
+            const cotList = rawCots ? JSON.parse(rawCots) : [];
+            const updatedCots = cotList.map((c: any) => c.id === cotId ? { ...c, status: "aceptada" } : c);
+            companyStorage.set(LS_COTS, JSON.stringify(updatedCots));
+            router.push(`/dashboard/invoices/${newId}`);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const handleWhatsApp = () => {
+        const total = (cot.items || []).reduce((a: number, it: any) => a + (it.qty || 0) * (it.price || 0), 0);
+        const msg = encodeURIComponent(
+            `Hola ${cot.clientData?.name || cot.cliente || ""}, te envío la cotización *${cot.id}* por un monto de *RD$ ${(total * 1.18).toLocaleString("es-DO", { minimumFractionDigits: 2 })}*. Válida hasta: ${cot.validez || "—"}. Favor confirmar para proceder.`
+        );
+        const phone = cot.clientData?.phone?.replace(/\D/g, "") || "";
+        window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
+    };
+
     if (notFound) {
         return (
             <div className="flex flex-col items-center justify-center py-24 space-y-4">
@@ -83,9 +135,17 @@ export default function CotizacionEditPage() {
                     </div>
                     <p className="text-muted-foreground text-sm">Editar cotización · {cot.fecha}</p>
                 </div>
-                <Button onClick={handleSave} className="bg-gradient-brand border-0 text-white gap-2">
-                    {saved ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</> : <>Guardar Cambios</>}
-                </Button>
+                <div className="flex gap-2">
+                    <Button variant="outline" onClick={handleWhatsApp} className="gap-2 text-emerald-600 border-emerald-500/30 hover:bg-emerald-50">
+                        <ArrowRightIcon className="w-4 h-4" /> WhatsApp
+                    </Button>
+                    <Button variant="outline" onClick={handleConvertToInvoice} className="gap-2 text-blue-600 border-blue-500/30 hover:bg-blue-50">
+                        <DocumentTextIcon className="w-4 h-4" /> Convertir a Factura
+                    </Button>
+                    <Button onClick={handleSave} className="bg-gradient-brand border-0 text-white gap-2">
+                        {saved ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</> : <>Guardar Cambios</>}
+                    </Button>
+                </div>
             </div>
 
             {/* Estado */}

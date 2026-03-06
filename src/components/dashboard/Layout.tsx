@@ -1,6 +1,6 @@
 "use client";
 // APP NAME: Lollipop
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -78,6 +78,7 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { CommandPalette } from "@/components/dashboard/CommandPalette";
 import { useCompany } from "@/contexts/CompanyContext";
+import { companyStorage } from "@/lib/company-storage";
 
 // ──────────────────────────────────────────
 //  NAV STRUCTURE
@@ -594,6 +595,49 @@ function ProfileDropdown() {
 //  HEADER
 // ──────────────────────────────────────────
 export function Header() {
+    const [isDark, setIsDark] = useState(false);
+    const [notifs, setNotifs] = useState<{ t: string; s: string; dot: string; time: string; href: string }[]>([]);
+
+    useEffect(() => {
+        // Dark mode: restore preference
+        const saved = localStorage.getItem("lollipop_dark_mode");
+        const dark = saved === "true" || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        setIsDark(dark);
+        document.documentElement.classList.toggle("dark", dark);
+    }, []);
+
+    useEffect(() => {
+        // Real notifications from invoice_emitted
+        try {
+            const raw = companyStorage.get("invoice_emitted");
+            const invoices: any[] = raw ? JSON.parse(raw) : [];
+            const today = new Date();
+            const todayStr = today.toISOString().split("T")[0];
+            const in7 = new Date(today); in7.setDate(today.getDate() + 7);
+            const in7Str = in7.toISOString().split("T")[0];
+
+            const built: typeof notifs = [];
+
+            invoices.filter(inv => !inv.isDraft && inv.paymentStatus !== "pagada").forEach(inv => {
+                const due = inv.vencimiento;
+                if (due && due < todayStr) {
+                    built.push({ t: `Factura vencida: ${inv.ecf || inv.id}`, s: `${inv.cliente} · RD$ ${(inv.total || 0).toLocaleString()}`, dot: "bg-rose-500", time: due, href: `/dashboard/invoices/${inv.id}` });
+                } else if (due && due <= in7Str) {
+                    built.push({ t: `Vence pronto: ${inv.ecf || inv.id}`, s: `${inv.cliente} · RD$ ${(inv.total || 0).toLocaleString()}`, dot: "bg-amber-500", time: due, href: `/dashboard/invoices/${inv.id}` });
+                }
+            });
+
+            setNotifs(built.slice(0, 5));
+        } catch { }
+    }, []);
+
+    const toggleDark = () => {
+        const next = !isDark;
+        setIsDark(next);
+        document.documentElement.classList.toggle("dark", next);
+        localStorage.setItem("lollipop_dark_mode", String(next));
+    };
+
     return (
         <>
             <header className="h-14 bg-white/80 dark:bg-[#09090f]/80 backdrop-blur-xl border-b border-blue-100/60 dark:border-blue-900/20 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-40 shrink-0">
@@ -628,40 +672,71 @@ export function Header() {
                     </div>
                 </div>
 
-                {/* Right: notifications + profile */}
+                {/* Right: dark mode + notifications + profile */}
                 <div className="flex items-center gap-1.5 ml-auto">
+
+                    {/* Dark mode toggle */}
+                    <Button
+                        variant="ghost" size="icon"
+                        onClick={toggleDark}
+                        className="relative text-muted-foreground hover:text-blue-600 hover:bg-blue-50/60 dark:hover:bg-blue-900/20 h-9 w-9 rounded-xl transition-colors"
+                        title={isDark ? "Modo claro" : "Modo oscuro"}
+                    >
+                        {isDark ? (
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <circle cx="12" cy="12" r="5" />
+                                <path strokeLinecap="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                            </svg>
+                        ) : (
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                            </svg>
+                        )}
+                    </Button>
+
+                    {/* Notifications */}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon"
                                 className="relative text-muted-foreground hover:text-blue-600 hover:bg-blue-50/60 dark:hover:bg-blue-900/20 h-9 w-9 rounded-xl transition-colors">
                                 <BellIcon className="w-4 h-4" />
-                                <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                                {notifs.length > 0 && (
+                                    <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse" />
+                                )}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-80 rounded-2xl shadow-xl shadow-blue-900/8 border border-blue-100/60 dark:border-blue-900/30">
                             <DropdownMenuLabel className="flex items-center justify-between">
                                 <span className="font-bold">Notificaciones</span>
-                                <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">3 nuevas</Badge>
+                                {notifs.length > 0 && (
+                                    <Badge variant="secondary" className="text-[10px] h-4 px-1.5 bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300">{notifs.length} alertas</Badge>
+                                )}
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            {[
-                                { t: "Factura 0047 pagada", s: "CLARO DO pagó RD$ 605,800", dot: "bg-emerald-500", time: "hace 5 min" },
-                                { t: "DGII: Formato 607 pendiente", s: "Vence en 3 días · Octubre 2024", dot: "bg-amber-500", time: "hace 1 h" },
-                                { t: "Nuevo usuario registrado", s: "Ana García fue invitada al sistema", dot: "bg-blue-500", time: "hace 2 h" },
-                            ].map((n, i) => (
-                                <DropdownMenuItem key={i} className="flex flex-col items-start gap-0.5 py-2.5 cursor-pointer rounded-lg">
-                                    <div className="flex items-center gap-2 w-full">
-                                        <span className={cn("w-2 h-2 rounded-full shrink-0", n.dot)} />
-                                        <span className="font-semibold text-xs flex-1">{n.t}</span>
-                                        <span className="text-[10px] text-muted-foreground shrink-0">{n.time}</span>
-                                    </div>
-                                    <p className="text-[11px] text-muted-foreground pl-4">{n.s}</p>
-                                </DropdownMenuItem>
-                            ))}
+                            {notifs.length === 0 ? (
+                                <div className="py-6 text-center text-sm text-muted-foreground">
+                                    <BellIcon className="w-8 h-8 mx-auto mb-2 opacity-20" />
+                                    <p>Todo al día 🎉</p>
+                                    <p className="text-xs mt-1">No hay facturas vencidas ni alertas.</p>
+                                </div>
+                            ) : (
+                                notifs.map((n, i) => (
+                                    <Link key={i} href={n.href}>
+                                        <DropdownMenuItem className="flex flex-col items-start gap-0.5 py-2.5 cursor-pointer rounded-lg">
+                                            <div className="flex items-center gap-2 w-full">
+                                                <span className={cn("w-2 h-2 rounded-full shrink-0", n.dot)} />
+                                                <span className="font-semibold text-xs flex-1">{n.t}</span>
+                                                <span className="text-[10px] text-muted-foreground shrink-0">{n.time}</span>
+                                            </div>
+                                            <p className="text-[11px] text-muted-foreground pl-4">{n.s}</p>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                ))
+                            )}
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                                <Link href="/dashboard/settings/notificaciones" className="w-full justify-center text-xs text-blue-600 font-semibold py-2 hover:bg-blue-50/60 transition-colors rounded-lg">
-                                    Ver todas las notificaciones →
+                                <Link href="/dashboard/invoices" className="w-full justify-center text-xs text-blue-600 font-semibold py-2 hover:bg-blue-50/60 transition-colors rounded-lg">
+                                    Ver todas las facturas →
                                 </Link>
                             </DropdownMenuItem>
                         </DropdownMenuContent>
