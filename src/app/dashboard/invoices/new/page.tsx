@@ -271,7 +271,7 @@ function InvoiceBuilderContent() {
     const [ncf, setNcf] = useState("");
     const [ncfModalOpen, setNcfModalOpen] = useState(false);
     const [ncfForm, setNcfForm] = useState({ autoNum: true, tipoNcf: "B01", siguienteNum: "1", fechaVenc: `${new Date().getFullYear() + 1}-03-03`, pieFactura: "" });
-    const [plantilla, setPlantilla] = useState("InvoiceStandard");
+    const [plantilla, setPlantilla] = useState("standard");
     const [clients, setClients] = useState(DEFAULT_CLIENTS);
     const [client, setClient] = useState<Client | null>(null);
     const [clientSearch, setClientSearch] = useState("");
@@ -646,26 +646,13 @@ function InvoiceBuilderContent() {
                                 <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto min-w-[120px]">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className="w-56">
-                                    {/* — Facturas — */}
-                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Facturas</SelectItem>
-                                    <SelectItem value="InvoiceStandard">Estándar</SelectItem>
-                                    <SelectItem value="InvoiceModern">Moderno</SelectItem>
-                                    <SelectItem value="InvoiceCorporate">Corporativo</SelectItem>
-                                    <SelectItem value="InvoiceElegant">Elegante</SelectItem>
-                                    <SelectItem value="InvoiceMinimal">Minimalista</SelectItem>
-                                    {/* — Cotizaciones — */}
-                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Cotizaciones</SelectItem>
-                                    <SelectItem value="QuoteStandard">Cotización Estándar</SelectItem>
-                                    <SelectItem value="QuoteDetailed">Cotización Detallada</SelectItem>
-                                    {/* — Comprobantes — */}
-                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Comprobantes</SelectItem>
-                                    <SelectItem value="PaymentReceipt">Recibo de Pago</SelectItem>
-                                    <SelectItem value="TicketPOS">Ticket POS (80mm)</SelectItem>
-                                    {/* — Documentos — */}
-                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Documentos</SelectItem>
-                                    <SelectItem value="DeliveryNote">Conduce / Remisión</SelectItem>
-                                    <SelectItem value="AccountStatement">Estado de Cuenta</SelectItem>
+                                <SelectContent className="w-44">
+                                    <SelectItem value="standard">Estándar</SelectItem>
+                                    <SelectItem value="modern">Moderno</SelectItem>
+                                    <SelectItem value="corporate">Corporativo</SelectItem>
+                                    <SelectItem value="elegant">Elegante</SelectItem>
+                                    <SelectItem value="minimal">Minimalista</SelectItem>
+                                    <SelectItem value="ticket80">Ticket 80mm</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
