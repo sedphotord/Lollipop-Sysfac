@@ -1,9 +1,9 @@
-// Seed data for 3 example companies — v7
-// Runs once on first app load (guarded by lollipop_seeded_v7)
+// Seed data for 3 example companies — v8
+// Runs once on first app load (guarded by lollipop_seeded_v8)
 import { saveCompanies, setActiveCompanyId, Company } from './company-store';
 import { saveUsers, setUserCompanyRole } from './auth-store';
 
-const SEED_KEY = 'lollipop_seeded_v7';
+const SEED_KEY = 'lollipop_seeded_v8';
 
 export const SEED_COMPANIES: Company[] = [
     { id: 'comp-tech', name: 'TechSolutions RD SRL', role: 'Administrador', rnc: '1-31-23456-7', sector: 'Tecnología', color: '#2563eb', email: 'admin@techsolutionsrd.com', phone: '809-555-1000', address: 'Av. 27 de Febrero #251, Santo Domingo', createdAt: '2023-01-15' },
