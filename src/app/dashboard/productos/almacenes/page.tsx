@@ -30,9 +30,9 @@ type Almacen = {
 };
 
 const SEED: Almacen[] = [
-    { id: "ALM-001", nombre: "Almac├®n Principal", ubicacion: "Av. 27 de Febrero #251, Santo Domingo", responsable: "Luis Fern├índez", descripcion: "Almac├®n central de operaciones.", capacidadMax: 1000, productos: 124, status: "activo", creadoEn: "2024-01-10" },
+    { id: "ALM-001", nombre: "Almacén Principal", ubicacion: "Av. 27 de Febrero #251, Santo Domingo", responsable: "Luis Fern├índez", descripcion: "Almacén central de operaciones.", capacidadMax: 1000, productos: 124, status: "activo", creadoEn: "2024-01-10" },
     { id: "ALM-002", nombre: "Sucursal Santiago", ubicacion: "Calle del Sol #80, Santiago", responsable: "Pedro Torres", descripcion: "Bodega de la sucursal norte.", capacidadMax: 500, productos: 68, status: "activo", creadoEn: "2024-03-15" },
-    { id: "ALM-003", nombre: "Dep├│sito La Romana", ubicacion: "Parque Industrial, La Romana", responsable: "Mar├¡a Santos", descripcion: "Almac├®n secundario de la regi├│n este.", capacidadMax: 300, productos: 31, status: "inactivo", creadoEn: "2023-11-01" },
+    { id: "ALM-003", nombre: "Depósito La Romana", ubicacion: "Parque Industrial, La Romana", responsable: "María Santos", descripcion: "Almacén secundario de la región este.", capacidadMax: 300, productos: 31, status: "inactivo", creadoEn: "2023-11-01" },
 ];
 
 const EMPTY = { nombre: "", ubicacion: "", responsable: "", descripcion: "", capacidadMax: "" };
@@ -136,10 +136,10 @@ export default function AlmacenesPage() {
             <div className="flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Almacenes</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Gestiona ubicaciones de inventario y controla el stock por almac├®n.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Gestiona ubicaciones de inventario y controla el stock por almacén.</p>
                 </div>
                 <Button className="bg-primary shadow-lg shadow-primary/20 gap-2" onClick={openCreate}>
-                    <PlusIcon className="w-4 h-4" /> Nuevo Almac├®n
+                    <PlusIcon className="w-4 h-4" /> Nuevo Almacén
                 </Button>
             </div>
 
@@ -169,7 +169,7 @@ export default function AlmacenesPage() {
             {/* Search */}
             <div className="relative max-w-sm">
                 <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Buscar almac├®n, ubicaci├│n o responsable..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
+                <Input placeholder="Buscar almacén, ubicación o responsable..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
             </div>
 
             {/* Grid */}
@@ -177,7 +177,7 @@ export default function AlmacenesPage() {
                 <div className="py-16 text-center text-muted-foreground">
                     <BuildingStorefrontIcon className="w-10 h-10 mx-auto mb-3 opacity-30" />
                     <p className="font-semibold">No hay almacenes{search ? " que coincidan" : ""}.</p>
-                    {!search && <Button variant="outline" className="mt-4" onClick={openCreate}>Crear primer almac├®n</Button>}
+                    {!search && <Button variant="outline" className="mt-4" onClick={openCreate}>Crear primer almacén</Button>}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -256,25 +256,25 @@ export default function AlmacenesPage() {
             <Dialog open={dialogMode !== null} onOpenChange={o => { if (!o) setDialogMode(null); }}>
                 <DialogContent className="sm:max-w-[480px]">
                     <DialogHeader>
-                        <DialogTitle>{dialogMode === "create" ? "Nuevo Almac├®n" : "Editar Almac├®n"}</DialogTitle>
+                        <DialogTitle>{dialogMode === "create" ? "Nuevo Almacén" : "Editar Almacén"}</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-2">
                         <div className="space-y-1.5">
-                            <Label>Nombre del almac├®n *</Label>
-                            <Input placeholder="Almac├®n Principal" value={form.nombre} onChange={f("nombre")} />
+                            <Label>Nombre del almacén *</Label>
+                            <Input placeholder="Almacén Principal" value={form.nombre} onChange={f("nombre")} />
                         </div>
                         <div className="space-y-1.5">
-                            <Label>Descripci├│n</Label>
+                            <Label>Descripción</Label>
                             <Input placeholder="Bodega central de operaciones" value={form.descripcion} onChange={f("descripcion")} />
                         </div>
                         <div className="space-y-1.5">
-                            <Label>Ubicaci├│n / Direcci├│n</Label>
+                            <Label>Ubicación / Dirección</Label>
                             <Input placeholder="Av. 27 de Febrero #251, Santo Domingo" value={form.ubicacion} onChange={f("ubicacion")} />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1.5">
                                 <Label>Responsable</Label>
-                                <Input placeholder="Juan P├®rez" value={form.responsable} onChange={f("responsable")} />
+                                <Input placeholder="Juan Pérez" value={form.responsable} onChange={f("responsable")} />
                             </div>
                             <div className="space-y-1.5">
                                 <Label>Capacidad m├íxima (unidades)</Label>
@@ -291,7 +291,7 @@ export default function AlmacenesPage() {
                         >
                             {saved
                                 ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</>
-                                : <><PlusIcon className="w-4 h-4" />{dialogMode === "create" ? "Crear Almac├®n" : "Guardar Cambios"}</>}
+                                : <><PlusIcon className="w-4 h-4" />{dialogMode === "create" ? "Crear Almacén" : "Guardar Cambios"}</>}
                         </Button>
                     </div>
                 </DialogContent>

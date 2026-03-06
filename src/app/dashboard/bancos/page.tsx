@@ -19,7 +19,7 @@ const LS_BANCOS = "lollipop_bancos";
 function IncomesChart({ period }: { period: "6M" | "3M" | "7D" }) {
     const months6 = ["Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo"];
     const months3 = ["Enero", "Febrero", "Marzo"];
-    const days7 = ["Lun", "Mar", "Mi├®", "Jue", "Vie", "S├íb", "Dom"];
+    const days7 = ["Lun", "Mar", "Mié", "Jue", "Vie", "S├íb", "Dom"];
     const labels = period === "6M" ? months6 : period === "3M" ? months3 : days7;
     const points = period === "6M"
         ? [0, 0, 0, 0, 0, 0]
@@ -76,14 +76,14 @@ type Cuenta = {
 };
 
 const INIT_CUENTAS: Cuenta[] = [
-    { id: "1", name: "Tarjeta de cr├®dito empresarial", tipo: "Tarjeta de cr├®dito", numero: "", saldo: 0, currency: "DOP", connected: false },
+    { id: "1", name: "Tarjeta de crédito empresarial", tipo: "Tarjeta de crédito", numero: "", saldo: 0, currency: "DOP", connected: false },
     { id: "2", name: "Banco 1", tipo: "Banco", numero: "", saldo: 0, currency: "DOP", connected: false },
     { id: "3", name: "Caja general", tipo: "Efectivo", numero: "", saldo: 0, currency: "DOP", connected: false },
 ];
 
 const TIPO_OPTS = [
-    { value: "Banco", label: "Banco", sub: "Cuenta bancaria nacional tarjeta de d├®bito" },
-    { value: "Tarjeta de cr├®dito", label: "Tarjeta de cr├®dito", sub: "Tarjeta de cr├®dito" },
+    { value: "Banco", label: "Banco", sub: "Cuenta bancaria nacional tarjeta de débito" },
+    { value: "Tarjeta de crédito", label: "Tarjeta de crédito", sub: "Tarjeta de crédito" },
     { value: "Efectivo", label: "Efectivo", sub: "Caja general o caja menor" },
 ];
 
@@ -156,7 +156,7 @@ function AgregarBancoModal({ onClose, onSave }: { onClose: () => void; onSave: (
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden animate-in zoom-in-95 fade-in duration-200" onClick={e => e.stopPropagation()}>
                 <div className="px-6 pt-6 pb-4">
                     <h2 className="text-lg font-bold text-slate-800">Agregar banco</h2>
-                    <p className="text-sm text-slate-500 mt-0.5">Crea tus cuentas de banco, efectivo o tarjetas de cr├®dito.</p>
+                    <p className="text-sm text-slate-500 mt-0.5">Crea tus cuentas de banco, efectivo o tarjetas de crédito.</p>
                 </div>
 
                 <div className="px-6 pb-6 space-y-4">
@@ -197,10 +197,10 @@ function AgregarBancoModal({ onClose, onSave }: { onClose: () => void; onSave: (
                         </div>
                     </div>
 
-                    {/* Row 2: N├║mero de cuenta */}
+                    {/* Row 2: Número de cuenta */}
                     <div className="space-y-1.5">
-                        <Label className="text-xs font-semibold text-slate-600">N├║mero de cuenta</Label>
-                        <Input placeholder="N├║mero de cuenta" value={form.numero} onChange={e => set("numero")(e.target.value)} className="h-10" />
+                        <Label className="text-xs font-semibold text-slate-600">Número de cuenta</Label>
+                        <Input placeholder="Número de cuenta" value={form.numero} onChange={e => set("numero")(e.target.value)} className="h-10" />
                     </div>
 
                     {/* Row 3: Saldo inicial + Fecha */}
@@ -239,10 +239,10 @@ function AgregarBancoModal({ onClose, onSave }: { onClose: () => void; onSave: (
                         </div>
                     </div>
 
-                    {/* Descripci├│n */}
+                    {/* Descripción */}
                     <div className="space-y-1.5">
-                        <Label className="text-xs font-semibold text-slate-600">Descripci├│n</Label>
-                        <Input placeholder="Descripci├│n" value={form.descripcion} onChange={e => set("descripcion")(e.target.value)} className="h-10" />
+                        <Label className="text-xs font-semibold text-slate-600">Descripción</Label>
+                        <Input placeholder="Descripción" value={form.descripcion} onChange={e => set("descripcion")(e.target.value)} className="h-10" />
                     </div>
                 </div>
 
@@ -282,8 +282,8 @@ export default function BancosPage() {
         try { companyStorage.set(LS_BANCOS, JSON.stringify(data)); } catch { }
     };
 
-    const totalBancos = cuentas.filter(c => c.tipo !== "Tarjeta de cr├®dito").reduce((a, c) => a + c.saldo, 0);
-    const totalTarjetas = cuentas.filter(c => c.tipo === "Tarjeta de cr├®dito").reduce((a, c) => a + c.saldo, 0);
+    const totalBancos = cuentas.filter(c => c.tipo !== "Tarjeta de crédito").reduce((a, c) => a + c.saldo, 0);
+    const totalTarjetas = cuentas.filter(c => c.tipo === "Tarjeta de crédito").reduce((a, c) => a + c.saldo, 0);
     const filtered = cuentas.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
     const handleSave = (f: BancoForm) => {
@@ -307,7 +307,7 @@ export default function BancosPage() {
                     <h2 className="text-2xl font-bold tracking-tight">Bancos</h2>
                     <p className="text-sm text-muted-foreground mt-0.5">
                         Controla los movimientos de{" "}
-                        <span className="text-primary font-medium">dinero con tus cuentas de banco, efectivo y tarjetas de cr├®dito.</span>
+                        <span className="text-primary font-medium">dinero con tus cuentas de banco, efectivo y tarjetas de crédito.</span>
                     </p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -329,14 +329,14 @@ export default function BancosPage() {
                         <p className="text-2xl font-black text-primary mt-1">
                             RD${totalBancos.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualizaci├│n: <span className="font-semibold text-foreground">No hay datos</span></p>
+                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
                     </div>
                     <div className="bg-card border border-border/60 rounded-xl p-5 shadow-sm">
-                        <p className="text-sm text-muted-foreground">Deuda en tarjetas de cr├®dito</p>
+                        <p className="text-sm text-muted-foreground">Deuda en tarjetas de crédito</p>
                         <p className="text-2xl font-black text-rose-500 mt-1">
                             RD${totalTarjetas.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
                         </p>
-                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualizaci├│n: <span className="font-semibold text-foreground">No hay datos</span></p>
+                        <p className="text-xs text-muted-foreground mt-1">├Ültima actualización: <span className="font-semibold text-foreground">No hay datos</span></p>
                     </div>
                 </div>
 
@@ -387,7 +387,7 @@ export default function BancosPage() {
                         <tr className="border-b border-border/60 bg-muted/20">
                             <th className="text-left px-4 py-2.5 font-semibold text-xs text-primary">Nombre</th>
                             <th className="text-left px-4 py-2.5 font-semibold text-xs text-muted-foreground">Tipo de cuenta</th>
-                            <th className="text-left px-4 py-2.5 font-semibold text-xs text-muted-foreground">N├║mero de cuenta</th>
+                            <th className="text-left px-4 py-2.5 font-semibold text-xs text-muted-foreground">Número de cuenta</th>
                             <th className="text-left px-4 py-2.5 font-semibold text-xs text-muted-foreground">Estado</th>
                             <th className="text-right px-4 py-2.5 font-semibold text-xs text-muted-foreground">Saldo</th>
                             <th className="w-16" />

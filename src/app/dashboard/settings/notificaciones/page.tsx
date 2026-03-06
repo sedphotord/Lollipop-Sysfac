@@ -21,8 +21,8 @@ type Config = { id: string; label: string; email: boolean; push: boolean };
 const DEFAULTS: Config[] = [
     { id: "factura_nueva", label: "Nueva factura emitida", email: true, push: true },
     { id: "pago_recibido", label: "Pago recibido", email: true, push: true },
-    { id: "factura_vencida", label: "Factura pr├│xima a vencer", email: true, push: false },
-    { id: "cotizacion_aceptada", label: "Cotizaci├│n aceptada por cliente", email: true, push: true },
+    { id: "factura_vencida", label: "Factura próxima a vencer", email: true, push: false },
+    { id: "cotizacion_aceptada", label: "Cotización aceptada por cliente", email: true, push: true },
     { id: "inventario_bajo", label: "Producto con inventario bajo", email: false, push: true },
     { id: "turno_cerrado", label: "Cierre de turno POS", email: false, push: true },
     { id: "gasto_registrado", label: "Nuevo gasto registrado", email: true, push: false },
@@ -54,7 +54,7 @@ export default function NotificacionesPage() {
             <div className="flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Notificaciones</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Configura qu├® eventos activan notificaciones por email y push.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Configura qué eventos activan notificaciones por email y push.</p>
                 </div>
                 <Button onClick={persist} className="bg-gradient-brand border-0 text-white gap-2">
                     {saved ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</> : <><BellIcon className="w-4 h-4" />Guardar</>}
@@ -67,15 +67,15 @@ export default function NotificacionesPage() {
                         <BellIcon className="w-4 h-4 text-blue-500" /> Preferencias Generales
                     </h3>
                     <div className="space-y-2">
-                        <Label>Avisar vencimiento de facturas (d├¡as antes)</Label>
+                        <Label>Avisar vencimiento de facturas (días antes)</Label>
                         <Select value={dias} onValueChange={setDias}>
                             <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="1">1 d├¡a</SelectItem>
-                                <SelectItem value="3">3 d├¡as</SelectItem>
-                                <SelectItem value="5">5 d├¡as</SelectItem>
-                                <SelectItem value="7">7 d├¡as</SelectItem>
-                                <SelectItem value="15">15 d├¡as</SelectItem>
+                                <SelectItem value="1">1 día</SelectItem>
+                                <SelectItem value="3">3 días</SelectItem>
+                                <SelectItem value="5">5 días</SelectItem>
+                                <SelectItem value="7">7 días</SelectItem>
+                                <SelectItem value="15">15 días</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

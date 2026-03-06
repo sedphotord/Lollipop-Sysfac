@@ -38,11 +38,11 @@ type CatalogItem = {
 // ÔöÇÔöÇÔöÇ Initial data ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const INITIAL_ITEMS: CatalogItem[] = [
     {
-        id: "1", type: "servicio", code: "SRV-001", name: "Consultor├¡a IT",
-        description: "Asesor├¡a t├®cnica especializada en infraestructura y Cloud.",
-        category: "Consultor├¡a", cost: 2500, price: 5000, itbis: 18,
+        id: "1", type: "servicio", code: "SRV-001", name: "Consultoría IT",
+        description: "Asesoría técnica especializada en infraestructura y Cloud.",
+        category: "Consultoría", cost: 2500, price: 5000, itbis: 18,
         status: "active", attributes: [],
-        serviceType: "T├®cnico", billingMode: "Por hora", duration: "40 horas",
+        serviceType: "Técnico", billingMode: "Por hora", duration: "40 horas",
         sla: "24 horas", coverage: "L-V 8am-6pm", deliverable: "Informe ejecutivo"
     },
     {
@@ -56,13 +56,13 @@ const INITIAL_ITEMS: CatalogItem[] = [
     {
         id: "3", type: "producto", code: "PRD-003", name: "Libro de Contabilidad",
         description: "Manual pr├íctico de contabilidad b├ísica para PYMES.",
-        category: "Papeler├¡a", cost: 900, price: 1500, itbis: 0,
+        category: "Papelería", cost: 900, price: 1500, itbis: 0,
         status: "active", attributes: [],
-        brand: "Editora Nacional", supplier: "Papeler├¡a Herrera", warehouse: "Dep├│sito 1",
+        brand: "Editora Nacional", supplier: "Papelería Herrera", warehouse: "Depósito 1",
         unitType: "Unidad", size: "A4", stock: 24
     },
     {
-        id: "4", type: "servicio", code: "SRV-004", name: "Soporte T├®cnico Mensual",
+        id: "4", type: "servicio", code: "SRV-004", name: "Soporte Técnico Mensual",
         description: "Plan de mantenimiento preventivo y correctivo mensual.",
         category: "Soporte", cost: 6000, price: 12000, itbis: 18,
         status: "active", attributes: [],
@@ -73,13 +73,13 @@ const INITIAL_ITEMS: CatalogItem[] = [
 
 const CATEGORY_COLORS: Record<string, string> = {
     "Servicio": "bg-violet-500/10 text-violet-600 border-violet-500/20",
-    "Consultor├¡a": "bg-violet-500/10 text-violet-600 border-violet-500/20",
+    "Consultoría": "bg-violet-500/10 text-violet-600 border-violet-500/20",
     "Soporte": "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
-    "Dise├▒o": "bg-pink-500/10 text-pink-600 border-pink-500/20",
+    "Diseño": "bg-pink-500/10 text-pink-600 border-pink-500/20",
     "Hardware": "bg-blue-500/10 text-blue-600 border-blue-500/20",
     "Software": "bg-sky-500/10 text-sky-600 border-sky-500/20",
-    "Papeler├¡a": "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    "Electr├│nica": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    "Papelería": "bg-amber-500/10 text-amber-600 border-amber-500/20",
+    "Electrónica": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
 };
 
 type ViewMode = "grid" | "list";
@@ -89,15 +89,15 @@ const emptyProduct = (): CatalogItem => ({
     id: "", type: "producto", code: "", name: "", description: "",
     category: "Hardware", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
-    brand: "", supplier: "", warehouse: "Almac├®n Central",
+    brand: "", supplier: "", warehouse: "Almacén Central",
     unitType: "Unidad", size: "", stock: 0
 });
 
 const emptyService = (): CatalogItem => ({
     id: "", type: "servicio", code: "", name: "", description: "",
-    category: "Consultor├¡a", cost: 0, price: 0, itbis: 18,
+    category: "Consultoría", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
-    serviceType: "T├®cnico", billingMode: "Por hora", duration: "",
+    serviceType: "Técnico", billingMode: "Por hora", duration: "",
     sla: "", coverage: "L-V 8am-6pm", deliverable: ""
 });
 
@@ -194,7 +194,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </div>
                 <div>
                     <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
-                        <Box className="w-3.5 h-3.5" /> Identificaci├│n
+                        <Box className="w-3.5 h-3.5" /> Identificación
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5 col-span-2">
@@ -202,16 +202,16 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                             <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Laptop Dell XPS 15" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>C├│digo / SKU</FieldLabel>
+                            <FieldLabel>Código / SKU</FieldLabel>
                             <FieldInput value={form.code} onChange={F("code")} placeholder="PRD-001" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Categor├¡a</FieldLabel>
+                            <FieldLabel>Categoría</FieldLabel>
                             <FieldSelect value={form.category} onChange={F("category")} options={[
                                 { value: "Hardware", label: "Hardware" },
                                 { value: "Software", label: "Software" },
-                                { value: "Papeler├¡a", label: "Papeler├¡a" },
-                                { value: "Electr├│nica", label: "Electr├│nica" },
+                                { value: "Papelería", label: "Papelería" },
+                                { value: "Electrónica", label: "Electrónica" },
                                 { value: "Otro", label: "Otro" },
                             ]} />
                         </div>
@@ -222,15 +222,15 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             {/* Stock & Logistics */}
             <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-xl p-4">
                 <p className="text-xs font-bold text-blue-600 mb-3 flex items-center gap-1.5">
-                    <Package className="w-3.5 h-3.5" /> Log├¡stica e Inventario
+                    <Package className="w-3.5 h-3.5" /> Logística e Inventario
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                     <div className="space-y-1.5">
-                        <FieldLabel>Almac├®n</FieldLabel>
-                        <FieldSelect value={form.warehouse || "Almac├®n Central"} onChange={F("warehouse")} options={[
-                            { value: "Almac├®n Central", label: "Almac├®n Central" },
+                        <FieldLabel>Almacén</FieldLabel>
+                        <FieldSelect value={form.warehouse || "Almacén Central"} onChange={F("warehouse")} options={[
+                            { value: "Almacén Central", label: "Almacén Central" },
                             { value: "Tienda Principal", label: "Tienda Principal" },
-                            { value: "Dep├│sito 1", label: "Dep├│sito 1" },
+                            { value: "Depósito 1", label: "Depósito 1" },
                         ]} />
                     </div>
                     <div className="space-y-1.5">
@@ -256,7 +256,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                         <FieldInput value={form.supplier || ""} onChange={F("supplier")} placeholder="Nombre del suplidor" />
                     </div>
                     <div className="space-y-1.5">
-                        <FieldLabel>Talla / Tama├▒o</FieldLabel>
+                        <FieldLabel>Talla / Tamaño</FieldLabel>
                         <FieldInput value={form.size || ""} onChange={F("size")} placeholder={'15.6", A4, XL...'} />
                     </div>
                 </div>
@@ -300,11 +300,11 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <FieldLabel>Atributos personalizados</FieldLabel>
                     <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
                         onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
-                        <Plus className="w-3 h-3 mr-1" /> A├▒adir
+                        <Plus className="w-3 h-3 mr-1" /> Añadir
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos ÔÇö Ej. Color, Material, Garant├¡a</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos ÔÇö Ej. Color, Material, Garantía</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
@@ -326,12 +326,12 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
 
             {/* Description */}
             <div className="space-y-1.5">
-                <FieldLabel>Descripci├│n</FieldLabel>
+                <FieldLabel>Descripción</FieldLabel>
                 <textarea
                     className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
                     value={form.description}
                     onChange={e => setForm({ ...form, description: e.target.value })}
-                    placeholder="Descripci├│n detallada del producto..."
+                    placeholder="Descripción detallada del producto..."
                 />
             </div>
         </div>
@@ -351,25 +351,25 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </div>
                 <div>
                     <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5" /> Identificaci├│n del Servicio
+                        <Sparkles className="w-3.5 h-3.5" /> Identificación del Servicio
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5 col-span-2">
                             <FieldLabel>Nombre del Servicio *</FieldLabel>
-                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Soporte T├®cnico Mensual" />
+                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Soporte Técnico Mensual" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>C├│digo</FieldLabel>
+                            <FieldLabel>Código</FieldLabel>
                             <FieldInput value={form.code} onChange={F("code")} placeholder="SRV-001" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Categor├¡a de Servicio</FieldLabel>
+                            <FieldLabel>Categoría de Servicio</FieldLabel>
                             <FieldSelect value={form.category} onChange={F("category")} options={[
-                                { value: "Consultor├¡a", label: "Consultor├¡a" },
-                                { value: "Soporte", label: "Soporte T├®cnico" },
-                                { value: "Dise├▒o", label: "Dise├▒o y Creatividad" },
+                                { value: "Consultoría", label: "Consultoría" },
+                                { value: "Soporte", label: "Soporte Técnico" },
+                                { value: "Diseño", label: "Diseño y Creatividad" },
                                 { value: "Desarrollo", label: "Desarrollo de Software" },
-                                { value: "Capacitaci├│n", label: "Capacitaci├│n y Training" },
+                                { value: "Capacitación", label: "Capacitación y Training" },
                                 { value: "Legal", label: "Legal y Compliance" },
                                 { value: "Contabilidad", label: "Contabilidad" },
                                 { value: "Marketing", label: "Marketing" },
@@ -383,8 +383,8 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                     <FieldLabel>Tipo de Servicio</FieldLabel>
-                    <FieldSelect value={form.serviceType || "T├®cnico"} onChange={F("serviceType")} options={[
-                        { value: "T├®cnico", label: "­ƒöº T├®cnico" },
+                    <FieldSelect value={form.serviceType || "Técnico"} onChange={F("serviceType")} options={[
+                        { value: "Técnico", label: "­ƒöº Técnico" },
                         { value: "Profesional", label: "­ƒÆ╝ Profesional" },
                         { value: "Creativo", label: "­ƒÄ¿ Creativo" },
                         { value: "Administrativo", label: "­ƒôï Administrativo" },
@@ -398,7 +398,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                         { value: "Por proyecto", label: "­ƒôü Por proyecto (fijo)" },
                         { value: "Mensual", label: "­ƒôå Mensual (recurrente)" },
                         { value: "Anual", label: "­ƒôà Anual (recurrente)" },
-                        { value: "Por sesi├│n", label: "­ƒÄ» Por sesi├│n" },
+                        { value: "Por sesión", label: "­ƒÄ» Por sesión" },
                         { value: "Por entregable", label: "­ƒôª Por entregable" },
                     ]} />
                 </div>
@@ -411,7 +411,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                        <FieldLabel>Duraci├│n Estimada</FieldLabel>
+                        <FieldLabel>Duración Estimada</FieldLabel>
                         <FieldInput value={form.duration || ""} onChange={F("duration")} placeholder="Ej. 40 horas, 1 mes..." />
                     </div>
                     <div className="space-y-1.5">
@@ -437,7 +437,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     </div>
                     <div className="space-y-1.5">
                         <FieldLabel>Entregable Principal</FieldLabel>
-                        <FieldInput value={form.deliverable || ""} onChange={F("deliverable")} placeholder="Informe, c├│digo, dise├▒o..." />
+                        <FieldInput value={form.deliverable || ""} onChange={F("deliverable")} placeholder="Informe, código, diseño..." />
                     </div>
                 </div>
             </div>
@@ -477,19 +477,19 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             {/* Attributes */}
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                    <FieldLabel>Caracter├¡sticas adicionales</FieldLabel>
+                    <FieldLabel>Características adicionales</FieldLabel>
                     <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
                         onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
-                        <Plus className="w-3 h-3 mr-1" /> A├▒adir
+                        <Plus className="w-3 h-3 mr-1" /> Añadir
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin caracter├¡sticas ÔÇö Ej. N├║mero de usuarios, Idioma, Plataforma</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin características ÔÇö Ej. Número de usuarios, Idioma, Plataforma</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
                             <div key={idx} className="flex gap-2 items-center">
-                                <Input className="h-8 text-xs" placeholder="Caracter├¡stica" value={attr.key} onChange={e => {
+                                <Input className="h-8 text-xs" placeholder="Característica" value={attr.key} onChange={e => {
                                     const a = [...form.attributes]; a[idx].key = e.target.value; setForm({ ...form, attributes: a });
                                 }} />
                                 <Input className="h-8 text-xs" placeholder="Valor" value={attr.value} onChange={e => {
@@ -506,12 +506,12 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
 
             {/* Description */}
             <div className="space-y-1.5">
-                <FieldLabel>Descripci├│n del Servicio</FieldLabel>
+                <FieldLabel>Descripción del Servicio</FieldLabel>
                 <textarea
                     className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
                     value={form.description}
                     onChange={e => setForm({ ...form, description: e.target.value })}
-                    placeholder="Descripci├│n detallada: alcance, limitaciones, condiciones..."
+                    placeholder="Descripción detallada: alcance, limitaciones, condiciones..."
                 />
             </div>
         </div>
@@ -554,9 +554,9 @@ function CatalogModal({
                                         }
                                     </DialogTitle>
                                     <p className="text-xs text-muted-foreground mt-0.5">
-                                        {isEditing ? form.name : (isProduct ? 'Completa los datos del producto f├¡sico' : 'Define las caracter├¡sticas del servicio')}
+                                        {isEditing ? form.name : (isProduct ? 'Completa los datos del producto físico' : 'Define las características del servicio')}
                                     </p>
-                                    <DialogDescription className="sr-only">Modal de creaci├│n/edici├│n</DialogDescription>
+                                    <DialogDescription className="sr-only">Modal de creación/edición</DialogDescription>
                                 </div>
                             </div>
                             {isEditing && (
@@ -693,7 +693,7 @@ export default function ProductsPage() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Cat├ílogo</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Productos f├¡sicos y servicios con ITBIS configurado.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Productos físicos y servicios con ITBIS configurado.</p>
                 </div>
                 <div className="flex gap-2">
                     <Button onClick={() => openCreate("producto")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20">
@@ -733,7 +733,7 @@ export default function ProductsPage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input placeholder="Buscar por nombre o c├│digo..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-background" />
+                            <Input placeholder="Buscar por nombre o código..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-background" />
                         </div>
                         {/* Type filter tabs */}
                         <div className="flex gap-1 border rounded-lg p-1 bg-background h-10 shrink-0">
@@ -749,7 +749,7 @@ export default function ProductsPage() {
                         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                             <SelectTrigger className="w-full sm:w-[160px] bg-background">
                                 <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
-                                <SelectValue placeholder="Categor├¡a" />
+                                <SelectValue placeholder="Categoría" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas</SelectItem>
@@ -846,7 +846,7 @@ export default function ProductsPage() {
                                 <TableRow>
                                     <TableHead>Nombre</TableHead>
                                     <TableHead>Tipo</TableHead>
-                                    <TableHead>Categor├¡a</TableHead>
+                                    <TableHead>Categoría</TableHead>
                                     <TableHead className="text-right">Costo</TableHead>
                                     <TableHead className="text-right">Precio</TableHead>
                                     <TableHead>Margen</TableHead>

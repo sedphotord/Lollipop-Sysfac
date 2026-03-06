@@ -120,7 +120,7 @@ export default function FacturasRecurrentesPage() {
                                     <p className="text-xs text-muted-foreground mt-0.5">{r.cliente} ┬À {r.creadas} facturas generadas</p>
                                 </div>
                                 <div className="text-center hidden sm:block">
-                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Pr├│xima</p>
+                                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Próxima</p>
                                     <p className="text-xs font-bold tabular-nums mt-0.5 flex items-center gap-1"><CalendarDaysIcon className="w-3 h-3" />{r.proximaFecha}</p>
                                 </div>
                                 <div className="text-right hidden sm:block">

@@ -51,37 +51,37 @@ const CONSUMIDOR_FINAL = { id: "CF", rnc: "00000000000", name: "Consumidor Final
 const DEFAULT_CLIENTS = [
     CONSUMIDOR_FINAL,
     { id: "1", rnc: "101010101", name: "COMPA├æIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo" },
-    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona F├¡sica", status: "Activo" },
+    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona Física", status: "Activo" },
     { id: "3", rnc: "130819985", name: "ALTICE DOMINICANA S.A.", trade: "ALTICE", type: "SRL", status: "Activo" },
 ];
 
 const INITIAL_PRODUCTS = [
-    { id: "1", code: "PRD-001", name: "Laptop Dell XPS 15", description: "Potente laptop con pantalla InfinityEdge de 15 pulgadas y procesador de ├║ltima generaci├│n.", price: 85000, itbis: 18, category: "Hardware", image: "/laptop_product_photo_1772472640429.png" },
-    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resoluci├│n QHD y tasa de refresco de 144Hz para m├íxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
+    { id: "1", code: "PRD-001", name: "Laptop Dell XPS 15", description: "Potente laptop con pantalla InfinityEdge de 15 pulgadas y procesador de última generación.", price: 85000, itbis: 18, category: "Hardware", image: "/laptop_product_photo_1772472640429.png" },
+    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resolución QHD y tasa de refresco de 144Hz para m├íxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
     { id: "3", code: "PRD-003", name: "Teclado Mec├ínico", description: "Teclado RGB con switches t├íctiles, ideal para productividad y gaming intensivo.", price: 8500, itbis: 18, category: "Hardware", image: "/keyboard_product_photo_1772472671935.png" },
-    { id: "4", code: "SRV-001", name: "Consultor├¡a IT (hora)", description: "Asesor├¡a especializada en infraestructura, seguridad y optimizaci├│n de sistemas.", price: 5000, itbis: 18, category: "Servicio", image: "/laptop_product_photo_1772472640429.png" },
-    { id: "5", code: "PRD-005", name: "UPS APC 1500VA", description: "Respaldo de energ├¡a confiable con regulaci├│n de voltaje para equipos cr├¡ticos.", price: 18000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
-    { id: "6", code: "SFT-001", name: "MS Office 365 (a├▒o)", description: "Suscripci├│n anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
+    { id: "4", code: "SRV-001", name: "Consultoría IT (hora)", description: "Asesoría especializada en infraestructura, seguridad y optimización de sistemas.", price: 5000, itbis: 18, category: "Servicio", image: "/laptop_product_photo_1772472640429.png" },
+    { id: "5", code: "PRD-005", name: "UPS APC 1500VA", description: "Respaldo de energía confiable con regulación de voltaje para equipos críticos.", price: 18000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
+    { id: "6", code: "SFT-001", name: "MS Office 365 (año)", description: "Suscripción anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
 ];
 
 const TIPOS_NCF_TRADICIONAL = [
-    { code: "B01", name: "Cr├®dito Fiscal" },
+    { code: "B01", name: "Crédito Fiscal" },
     { code: "B02", name: "Consumo" },
     { code: "B14", name: "Gubernamental" },
-    { code: "B15", name: "Exportaci├│n" },
+    { code: "B15", name: "Exportación" },
 ];
 
 const TIPOS_NCF_ELECTRONICO = [
-    { code: "E31", name: "Cr├®dito Fiscal (e-CF)" },
+    { code: "E31", name: "Crédito Fiscal (e-CF)" },
     { code: "E32", name: "Consumidor Final (e-CF)" },
     { code: "E44", name: "Gubernamental (e-CF)" },
-    { code: "E45", name: "Exportaci├│n (e-CF)" },
+    { code: "E45", name: "Exportación (e-CF)" },
 ];
 
 // Unified list for lookups (used in print templates)
 const TIPOS_NCF = [...TIPOS_NCF_TRADICIONAL, ...TIPOS_NCF_ELECTRONICO];
 
-const BANCOS = ["Popular", "BHD Le├│n", "Banreservas", "Scotiabank"];
+const BANCOS = ["Popular", "BHD León", "Banreservas", "Scotiabank"];
 const DEFAULT_VENDEDORES_NAMES = ["Marcos Perez", "Ana Rodriguez", "Jose Manuel"];
 
 type CartItem = { id: string; name: string; description?: string; price: number; itbis: number; qty: number; image: string };
@@ -380,9 +380,9 @@ export default function POSPage() {
             ['Monto apertura', rec.openingFloat],
             ['Total vendido', rec.totalSales],
             ['Total efectivo contado', rec.cashCountTotal],
-            ['N├║m. ventas', rec.salesCount],
+            ['Núm. ventas', rec.salesCount],
             [],
-            ['ID Venta', 'M├®todo', 'Hora', 'Total'],
+            ['ID Venta', 'Método', 'Hora', 'Total'],
             ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total]),
         ];
         const csv = rows.map(r => r.join(',')).join('\n');
@@ -404,12 +404,12 @@ export default function POSPage() {
             ['Monto apertura', rec.openingFloat],
             ['Total vendido', rec.totalSales],
             ['Total efectivo contado', rec.cashCountTotal],
-            ['N├║m. ventas', rec.salesCount],
+            ['Núm. ventas', rec.salesCount],
         ];
         const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
         XLSX.utils.book_append_sheet(wb, ws1, 'Resumen');
         // Sales sheet
-        const salesData = [['ID', 'M├®todo', 'Hora', 'Total'], ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total])];
+        const salesData = [['ID', 'Método', 'Hora', 'Total'], ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total])];
         const ws2 = XLSX.utils.aoa_to_sheet(salesData);
         XLSX.utils.book_append_sheet(wb, ws2, 'Ventas');
         XLSX.writeFile(wb, `cierre-${rec.id}.xlsx`);
@@ -430,7 +430,7 @@ export default function POSPage() {
             <tr><td>Diferencia</td><td>RD$ ${(rec.cashCountTotal - rec.openingFloat - rec.totalSales).toFixed(2)}</td></tr>
             </table>
             <h3 style="margin-top:20px">Ventas del turno (${rec.salesCount})</h3>
-            <table><thead><tr><th>ID</th><th>M├®todo</th><th>Hora</th><th>Total</th></tr></thead>
+            <table><thead><tr><th>ID</th><th>Método</th><th>Hora</th><th>Total</th></tr></thead>
             <tbody>${rec.sales.map((s: any) => `<tr><td>${s.id}</td><td>${s.method}</td><td>${s.time}</td><td>RD$ ${s.total.toFixed(2)}</td></tr>`).join('')}</tbody>
             <tfoot><tr><td colspan="3">Total</td><td>RD$ ${rec.totalSales.toFixed(2)}</td></tr></tfoot></table>
             </body></html>`);
@@ -862,11 +862,11 @@ export default function POSPage() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="h-10 gap-1.5 text-xs font-bold">
-                                    <Package className="w-4 h-4" /> M├│dulos
+                                    <Package className="w-4 h-4" /> Módulos
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>M├│dulos POS</DropdownMenuLabel>
+                                <DropdownMenuLabel>Módulos POS</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link href="/dashboard/pos/turnos" className="gap-2 cursor-pointer flex items-center">
@@ -987,7 +987,7 @@ export default function POSPage() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => setIsConfigOpen(true)} className="gap-2 cursor-pointer py-2.5">
                                     <Sliders className="w-4 h-4 text-primary" />
-                                    <span className="font-semibold text-sm">Configuraci├│n</span>
+                                    <span className="font-semibold text-sm">Configuración</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handlePrint('ticket')} className="gap-2 cursor-pointer py-2.5">
                                     <Printer className="w-4 h-4 text-emerald-600" />
@@ -1018,7 +1018,7 @@ export default function POSPage() {
                                 </Select>
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Numeraci├│n</Label>
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Numeración</Label>
                                 <Select value={ncfType} onValueChange={setNcfType}>
                                     <SelectTrigger className="h-10 bg-white border-border/60 rounded-xl text-xs font-bold">
                                         <SelectValue />
@@ -1042,7 +1042,7 @@ export default function POSPage() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="electronico">
-                                            <span className="flex items-center gap-2"><Bolt className="w-3.5 h-3.5 text-amber-500" /> e-CF (Electr├│nico)</span>
+                                            <span className="flex items-center gap-2"><Bolt className="w-3.5 h-3.5 text-amber-500" /> e-CF (Electrónico)</span>
                                         </SelectItem>
                                         <SelectItem value="tradicional">
                                             <span className="flex items-center gap-2"><Printer className="w-3.5 h-3.5 text-muted-foreground" /> Tradicional</span>
@@ -1051,14 +1051,14 @@ export default function POSPage() {
                                 </Select>
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pr├│ximo comprobante</Label>
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Próximo comprobante</Label>
                                 {showSeqEditor ? (
                                     <div className="flex gap-1.5">
                                         <Input
                                             autoFocus
                                             type="number"
                                             min={1}
-                                            placeholder="N├║mero inicio"
+                                            placeholder="Número inicio"
                                             className="h-10 text-xs font-mono font-bold bg-white border-border/60 rounded-xl"
                                             value={seqEditValue}
                                             onChange={e => setSeqEditValue(e.target.value)}
@@ -1158,7 +1158,7 @@ export default function POSPage() {
                                 <div className="w-20 h-20 rounded-3xl bg-muted/30 flex items-center justify-center mb-6">
                                     <ShoppingBag className="w-10 h-10 opacity-30" />
                                 </div>
-                                <h3 className="text-sm font-bold text-muted-foreground/60 mb-2">Carrito vac├¡o</h3>
+                                <h3 className="text-sm font-bold text-muted-foreground/60 mb-2">Carrito vacío</h3>
                                 <p className="text-[11px] font-bold leading-relaxed max-w-[200px] uppercase tracking-tighter">Selecciona productos del cat├ílogo para iniciar una venta.</p>
                             </div>
                         ) : (
@@ -1257,7 +1257,7 @@ export default function POSPage() {
                             {shiftOpen ? <ShoppingCart className="w-5 h-5 ml-2" /> : <Lock className="w-5 h-5 ml-2" />}
                         </Button>
                         <div className="flex items-center justify-between text-[11px] px-2 font-bold uppercase tracking-wider text-muted-foreground/60">
-                            <span>{cart.length} Art├¡culos</span>
+                            <span>{cart.length} Artículos</span>
                             <button onClick={() => setCart([])} className="hover:text-destructive transition-colors">Cancelar venta</button>
                         </div>
                     </div>
@@ -1291,7 +1291,7 @@ export default function POSPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categor├¡a</Label>
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categoría</Label>
                                     <Select value={newProdCat} onValueChange={setNewProdCat}>
                                         <SelectTrigger className="h-12 bg-white border-border/60 rounded-xl text-sm font-bold">
                                             <SelectValue />
@@ -1312,7 +1312,7 @@ export default function POSPage() {
                                 className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase rounded-xl shadow-brand"
                                 onClick={handleNewProduct}
                             >
-                                A├▒adir a la venta
+                                Añadir a la venta
                             </Button>
                         </div>
                     </DialogContent>
@@ -1387,7 +1387,7 @@ export default function POSPage() {
                         </div>
                         <div className="p-8 space-y-5">
                             <div className="space-y-2">
-                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nombre / Raz├│n Social</Label>
+                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nombre / Razón Social</Label>
                                 <Input
                                     placeholder="Ej: Juan Perez"
                                     className="h-12 text-sm font-medium bg-white border-border/60 rounded-xl focus-visible:ring-primary shadow-sm"
@@ -1397,7 +1397,7 @@ export default function POSPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">C├®dula o RNC</Label>
+                                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cédula o RNC</Label>
                                     <Input
                                         placeholder="402XXXXXXX"
                                         className="h-12 font-mono text-sm bg-white border-border/60 rounded-xl focus-visible:ring-primary shadow-sm"
@@ -1449,11 +1449,11 @@ export default function POSPage() {
                                     <div className="grid grid-cols-3 gap-5">
                                         {[
                                             { id: 'efectivo', label: 'Efectivo', icon: DollarSign },
-                                            { id: 'tarjeta-credito', label: 'Tarjeta de cr├®dito', icon: CreditCard },
+                                            { id: 'tarjeta-credito', label: 'Tarjeta de crédito', icon: CreditCard },
                                             { id: 'transferencia', label: 'Transferencia', icon: RefreshCw },
-                                            { id: 'tarjeta-debito', label: 'Tarjeta d├®bito', icon: CreditCard },
+                                            { id: 'tarjeta-debito', label: 'Tarjeta débito', icon: CreditCard },
                                             { id: 'combinado', label: 'Combinado', icon: DollarSign },
-                                            { id: 'otros', label: 'Otros m├®todos', icon: Settings },
+                                            { id: 'otros', label: 'Otros métodos', icon: Settings },
                                         ].map(m => (
                                             <button
                                                 key={m.id}
@@ -1472,7 +1472,7 @@ export default function POSPage() {
                                         ))}
                                     </div>
                                     <div className="pt-4 flex justify-center">
-                                        <button onClick={() => setShowPayModal(false)} className="text-[11px] font-bold uppercase text-muted-foreground/60 hover:text-foreground tracking-wider border-b border-transparent hover:border-foreground transition-all">Cancelar transacci├│n</button>
+                                        <button onClick={() => setShowPayModal(false)} className="text-[11px] font-bold uppercase text-muted-foreground/60 hover:text-foreground tracking-wider border-b border-transparent hover:border-foreground transition-all">Cancelar transacción</button>
                                     </div>
                                 </div>
                             )}
@@ -1485,7 +1485,7 @@ export default function POSPage() {
                                             <h3 className="text-3xl font-bold text-foreground">{formatCurrency(total)}</h3>
                                         </div>
                                         <button onClick={() => setCheckoutStep("methods")} className="text-xs font-bold text-primary flex items-center gap-2 hover:bg-primary/5 px-4 py-2 rounded-xl transition-all border border-primary/20">
-                                            <RefreshCw className="w-4 h-4" /> Cambiar m├®todo
+                                            <RefreshCw className="w-4 h-4" /> Cambiar método
                                         </button>
                                     </div>
 
@@ -1495,7 +1495,7 @@ export default function POSPage() {
                                                 <div className="space-y-4">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-2">
-                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">M├®todo</Label>
+                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Método</Label>
                                                             <Select value={splitMethod} onValueChange={setSplitMethod}>
                                                                 <SelectTrigger className="h-12 border-border/60 rounded-xl font-bold bg-white">
                                                                     <SelectValue />
@@ -1599,7 +1599,7 @@ export default function POSPage() {
                                                 </Select>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Observaci├│n</Label>
+                                                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Observación</Label>
                                                 <textarea
                                                     className="w-full h-24 bg-white border border-border/60 rounded-2xl p-4 text-sm font-medium focus:ring-primary outline-none resize-none shadow-sm"
                                                     placeholder="..."
@@ -1676,7 +1676,7 @@ export default function POSPage() {
                     <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none rounded-3xl shadow-3xl glass">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
                             <DialogTitle className="text-xl font-bold text-foreground tracking-tight">
-                                Configuraci├│n de POS
+                                Configuración de POS
                             </DialogTitle>
                         </div>
                         <div className="p-8 space-y-8">
@@ -1688,14 +1688,14 @@ export default function POSPage() {
                                         <input type="checkbox" className="w-8 h-4 rounded-full accent-primary" />
                                     </div>
                                     <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
-                                        Las facturas se cobrar├ín autom├íticamente con el m├®todo predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
+                                        Las facturas se cobrar├ín autom├íticamente con el método predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">M├®todo de pago por defecto</Label>
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Método de pago por defecto</Label>
                                     <Select>
                                         <SelectTrigger className="h-12 bg-white border-border/60 rounded-xl font-bold">
                                             <SelectValue placeholder="Seleccionar..." />

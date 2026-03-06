@@ -85,7 +85,7 @@ export default function RecepcionComprobantesPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Recepci├│n de Comprobantes</h2>
+                    <h2 className="text-3xl font-bold tracking-tight">Recepción de Comprobantes</h2>
                     <p className="text-muted-foreground mt-1 text-sm">Registro de facturas de proveedores para el Formato 606 DGII.</p>
                 </div>
                 <div className="flex gap-2">

@@ -63,8 +63,8 @@ function InvoicePreviewContent() {
     const TemplateComponent = TEMPLATES[templateId] || TEMPLATES["InvoiceStandard"];
 
     const TIPO_NAMES: Record<string, string> = {
-        B01: "Cr├®dito Fiscal", B02: "Consumo", B14: "Gubernamental", B15: "Exportaci├│n",
-        E31: "Cr├®dito Fiscal (e-CF)", E32: "Consumidor Final (e-CF)", E44: "Gubernamental (e-CF)", E45: "Exportaci├│n (e-CF)",
+        B01: "Crédito Fiscal", B02: "Consumo", B14: "Gubernamental", B15: "Exportación",
+        E31: "Crédito Fiscal (e-CF)", E32: "Consumidor Final (e-CF)", E44: "Gubernamental (e-CF)", E45: "Exportación (e-CF)",
     };
 
     const templateProps = {
@@ -114,7 +114,7 @@ function InvoicePreviewContent() {
                     <Button variant="outline" className="gap-2 text-sm" onClick={handlePrint}>
                         <PrinterIcon className="w-4 h-4" /> Imprimir / PDF
                     </Button>
-                    <Button variant="outline" className="gap-2 text-sm" disabled title="Pr├│ximamente">
+                    <Button variant="outline" className="gap-2 text-sm" disabled title="Próximamente">
                         <EnvelopeIcon className="w-4 h-4" /> Enviar por correo
                     </Button>
                 </div>

@@ -223,7 +223,7 @@ export default function SettingsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-lg group-hover:text-blue-600 transition-colors">Constructor de Plantillas PDF</h3>
-                                        <p className="text-sm text-muted-foreground mt-0.5">Dise├▒a visualmente tus facturas y ajusta columnas, colores y tipograf├¡a.</p>
+                                        <p className="text-sm text-muted-foreground mt-0.5">Diseña visualmente tus facturas y ajusta columnas, colores y tipografía.</p>
                                     </div>
                                 </div>
                                 <Button variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
@@ -347,19 +347,19 @@ export default function SettingsPage() {
                 <TabsContent value="facturacion" className="mt-6 space-y-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle>R├®gimen y Modalidad de Facturaci├│n</CardTitle>
-                            <CardDescription>Selecciona si tu empresa opera bajo Facturaci├│n Electr├│nica (e-CF) o si usas NCFs tradicionales.</CardDescription>
+                            <CardTitle>Régimen y Modalidad de Facturación</CardTitle>
+                            <CardDescription>Selecciona si tu empresa opera bajo Facturación Electrónica (e-CF) o si usas NCFs tradicionales.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                <Label>Modalidad de Emisi├│n</Label>
+                                <Label>Modalidad de Emisión</Label>
                                 <Select value={invoiceMode} onValueChange={(v: 'tradicional' | 'electronico') => setInvoiceMode(v)}>
                                     <SelectTrigger className="w-full md:w-1/2">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="electronico">Facturaci├│n Electr├│nica DGII (e-CF)</SelectItem>
-                                        <SelectItem value="tradicional">Facturaci├│n Tradicional (Impresora Fiscal / Pre-impreso B01)</SelectItem>
+                                        <SelectItem value="electronico">Facturación Electrónica DGII (e-CF)</SelectItem>
+                                        <SelectItem value="tradicional">Facturación Tradicional (Impresora Fiscal / Pre-impreso B01)</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 {invoiceMode === 'tradicional' && (
@@ -369,7 +369,7 @@ export default function SettingsPage() {
                                 )}
                                 {invoiceMode === 'electronico' && (
                                     <p className="text-sm text-muted-foreground mt-2 border-l-2 border-blue-500 pl-3">
-                                        Se generar├ín comprobantes electr├│nicos (ej. E310000000001). Certificaci├│n automatizada con conexi├│n DGII.
+                                        Se generar├ín comprobantes electrónicos (ej. E310000000001). Certificación automatizada con conexión DGII.
                                     </p>
                                 )}
                             </div>
@@ -464,7 +464,7 @@ export default function SettingsPage() {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle className="text-xl">Permisos: Cajero</CardTitle>
-                                            <CardDescription>Define qu├® m├│dulos y acciones puede ejecutar este rol.</CardDescription>
+                                            <CardDescription>Define qué módulos y acciones puede ejecutar este rol.</CardDescription>
                                         </div>
                                         <Button className="bg-primary hover:bg-primary/90 text-white shadow-md h-9 text-sm">Guardar Permisos</Button>
                                     </div>
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                                         <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Receipt className="w-4 h-4 text-blue-600" />
-                                                <h4 className="font-semibold text-sm">M├│dulo de Ventas</h4>
+                                                <h4 className="font-semibold text-sm">Módulo de Ventas</h4>
                                             </div>
                                             <Switch defaultChecked />
                                         </div>
@@ -492,7 +492,7 @@ export default function SettingsPage() {
                                         <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between opacity-70">
                                             <div className="flex items-center gap-2">
                                                 <Building2 className="w-4 h-4 text-muted-foreground" />
-                                                <h4 className="font-semibold text-sm">M├│dulo de Compras / Gastos</h4>
+                                                <h4 className="font-semibold text-sm">Módulo de Compras / Gastos</h4>
                                             </div>
                                             <Switch checked={false} />
                                         </div>

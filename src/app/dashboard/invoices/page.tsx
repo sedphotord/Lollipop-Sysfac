@@ -80,7 +80,7 @@ function InvoicesPageInner() {
             id: d.id || `DRAFT-${i + 1}`,
             ecf: d.ecf || d.ncf || 'ÔÇö',
             tipo: d.tipo || 'ÔÇö',
-            tipoName: d.tipo === 'B01' ? 'Cr├®dito Fiscal' : d.tipo === 'B02' ? 'Consumo' : d.tipo || 'ÔÇö',
+            tipoName: d.tipo === 'B01' ? 'Crédito Fiscal' : d.tipo === 'B02' ? 'Consumo' : d.tipo || 'ÔÇö',
             cliente: d.cliente || d.client?.name || 'Sin cliente',
             rnc: d.rnc || d.client?.rnc || '',
             date: d.date || new Date().toLocaleDateString('es-DO'),
@@ -168,8 +168,8 @@ function InvoicesPageInner() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Facturaci├│n</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Gesti├│n de comprobantes fiscales electr├│nicos (e-CF).</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Facturación</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Gestión de comprobantes fiscales electrónicos (e-CF).</p>
                 </div>
                 <Link href="/dashboard/invoices/new">
                     <Button className="bg-primary shadow-lg shadow-primary/20 hover:bg-primary/90">
@@ -382,13 +382,13 @@ function InvoicesPageInner() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>┬┐Eliminar factura?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Esta acci├│n eliminar├í la factura <strong>{invoiceToDelete?.ecf !== 'ÔÇö' ? invoiceToDelete?.ecf : invoiceToDelete?.id}</strong> de <strong>{invoiceToDelete?.cliente}</strong> de forma permanente del sistema local.
+                            Esta acción eliminar├í la factura <strong>{invoiceToDelete?.ecf !== 'ÔÇö' ? invoiceToDelete?.ecf : invoiceToDelete?.id}</strong> de <strong>{invoiceToDelete?.cliente}</strong> de forma permanente del sistema local.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Mantener</AlertDialogCancel>
                         <AlertDialogAction onClick={handleDeleteInvoice} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                            S├¡, eliminar
+                            Sí, eliminar
                         </AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>

@@ -115,7 +115,7 @@ export default function TurnosPage() {
             ["Vendedor apertura", rec.openVendedor || "ÔÇö"], ["Vendedor cierre", rec.closeVendedor || "ÔÇö"],
             ["Monto apertura", rec.openingFloat], ["Total vendido", rec.totalSales],
             ["Efectivo contado", rec.cashCountTotal], ["Num ventas", rec.salesCount],
-            [], ["ID Venta", "M├®todo", "Hora", "Total"],
+            [], ["ID Venta", "Método", "Hora", "Total"],
             ...rec.sales.map(s => [s.id, s.method, s.time, s.total]),
         ];
         const blob = new Blob([rows.map(r => r.join(",")).join("\n")], { type: "text/csv;charset=utf-8;" });
@@ -129,7 +129,7 @@ export default function TurnosPage() {
         ["Vendedor apertura", rec.openVendedor || "ÔÇö"], ["Vendedor cierre", rec.closeVendedor || "ÔÇö"],
         ["Monto apertura", rec.openingFloat], ["Total vendido", rec.totalSales], ["Efectivo contado", rec.cashCountTotal]];
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), "Resumen");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([["ID", "M├®todo", "Hora", "Total"], ...rec.sales.map(s => [s.id, s.method, s.time, s.total])]), "Ventas");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([["ID", "Método", "Hora", "Total"], ...rec.sales.map(s => [s.id, s.method, s.time, s.total])]), "Ventas");
         XLSX.writeFile(wb, `cierre-${rec.id}.xlsx`);
     };
 
@@ -147,7 +147,7 @@ export default function TurnosPage() {
         <tr><td>Efectivo contado</td><td>${fmt(rec.cashCountTotal)}</td></tr>
         <tr><td>Diferencia</td><td>${fmt(rec.cashCountTotal - rec.openingFloat - rec.totalSales)}</td></tr></table>
         <h3 style="margin-top:20px">Ventas (${rec.salesCount})</h3>
-        <table><thead><tr><th>ID</th><th>M├®todo</th><th>Hora</th><th>Total</th></tr></thead>
+        <table><thead><tr><th>ID</th><th>Método</th><th>Hora</th><th>Total</th></tr></thead>
         <tbody>${rec.sales.map(s => `<tr><td>${s.id}</td><td>${s.method}</td><td>${s.time}</td><td>${fmt(s.total)}</td></tr>`).join("")}</tbody>
         <tfoot><tr><td colspan="3">TOTAL</td><td>${fmt(rec.totalSales)}</td></tr></tfoot></table>
         </body></html>`);
@@ -168,7 +168,7 @@ export default function TurnosPage() {
             ["ID", "Fecha", "Apertura", "Cierre", "V. Apertura", "V. Cierre", "Float", "Vendido", "Contado", "Ventas"],
             ...history.map(r => [r.id, r.closeDate, r.openTime, r.closeTime, r.openVendedor || "ÔÇö", r.closeVendedor || "ÔÇö", r.openingFloat, r.totalSales, r.cashCountTotal, r.salesCount])
         ]), "Turnos");
-        const allSalesRows: any[][] = [["Turno", "Fecha", "ID Venta", "M├®todo", "Hora", "Total"]];
+        const allSalesRows: any[][] = [["Turno", "Fecha", "ID Venta", "Método", "Hora", "Total"]];
         history.forEach(r => r.sales.forEach(s => allSalesRows.push([r.id, r.closeDate, s.id, s.method, s.time, s.total])));
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(allSalesRows), "Todas las Ventas");
         XLSX.writeFile(wb, "historial-turnos.xlsx");
@@ -182,7 +182,7 @@ export default function TurnosPage() {
                     <Link href="/dashboard/pos"><button className="p-2 rounded-xl hover:bg-muted/60 text-muted-foreground"><ArrowLeft className="w-5 h-5" /></button></Link>
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight">Historial de Turnos</h2>
-                        <p className="text-sm text-muted-foreground">Hist├│rico permanente de cierres, ventas y reportes del POS</p>
+                        <p className="text-sm text-muted-foreground">Histórico permanente de cierres, ventas y reportes del POS</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -241,7 +241,7 @@ export default function TurnosPage() {
                                 <TableBody>
                                     {filtered.length === 0 && (
                                         <TableRow><TableCell colSpan={9} className="text-center text-muted-foreground py-12">
-                                            {history.length === 0 ? "No hay turnos cerrados a├║n." : "Sin resultados."}
+                                            {history.length === 0 ? "No hay turnos cerrados aún." : "Sin resultados."}
                                         </TableCell></TableRow>
                                     )}
                                     {filtered.map(rec => (
@@ -276,7 +276,7 @@ export default function TurnosPage() {
                 {/* ÔöÇÔöÇ TAB 2: Ventas por turno ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 <TabsContent value="ventas" className="space-y-4 mt-4">
                     {history.length === 0 ? (
-                        <Card className="p-12 text-center text-muted-foreground bg-card/50 border-border/60">No hay turnos a├║n.</Card>
+                        <Card className="p-12 text-center text-muted-foreground bg-card/50 border-border/60">No hay turnos aún.</Card>
                     ) : history.map(rec => (
                         <Card key={rec.id} className="bg-card/50 border-border/60 shadow-sm overflow-hidden">
                             <div className="px-5 py-4 bg-muted/30 border-b flex items-center justify-between gap-4 flex-wrap">
@@ -297,7 +297,7 @@ export default function TurnosPage() {
                                     <TableHeader className="bg-muted/20">
                                         <TableRow>
                                             <TableHead>ID Factura</TableHead>
-                                            <TableHead>M├®todo de pago</TableHead>
+                                            <TableHead>Método de pago</TableHead>
                                             <TableHead>Hora</TableHead>
                                             <TableHead className="text-right">Total</TableHead>
                                             <TableHead className="w-12"></TableHead>
@@ -332,14 +332,14 @@ export default function TurnosPage() {
                 <TabsContent value="reportes" className="space-y-6 mt-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                        {/* Reporte por m├®todo de pago */}
+                        {/* Reporte por método de pago */}
                         <Card className="bg-card/50 border-border/60 shadow-sm">
                             <div className="px-5 py-4 border-b flex items-center gap-2">
                                 <BarChart3 className="w-4 h-4 text-primary" />
-                                <h3 className="font-bold text-sm">Ventas por M├®todo de Pago</h3>
+                                <h3 className="font-bold text-sm">Ventas por Método de Pago</h3>
                             </div>
                             <div className="p-5 space-y-3">
-                                {byMethod.length === 0 ? <p className="text-xs text-muted-foreground text-center py-4">Sin datos a├║n.</p>
+                                {byMethod.length === 0 ? <p className="text-xs text-muted-foreground text-center py-4">Sin datos aún.</p>
                                     : byMethod.map(([method, { count, total }]) => {
                                         const pct = totalAllTime ? Math.round((total / totalAllTime) * 100) : 0;
                                         return (
@@ -369,7 +369,7 @@ export default function TurnosPage() {
                                 <h3 className="font-bold text-sm">Rendimiento por Vendedor</h3>
                             </div>
                             <div className="p-5 space-y-3">
-                                {byVendedor.length === 0 ? <p className="text-xs text-muted-foreground text-center py-4">Sin datos a├║n.</p>
+                                {byVendedor.length === 0 ? <p className="text-xs text-muted-foreground text-center py-4">Sin datos aún.</p>
                                     : byVendedor.map(([vendedor, { shifts, total }]) => {
                                         const pct = totalAllTime ? Math.round((total / totalAllTime) * 100) : 0;
                                         return (
@@ -395,7 +395,7 @@ export default function TurnosPage() {
                             <div className="px-5 py-4 border-b flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <TrendingUp className="w-4 h-4 text-primary" />
-                                    <h3 className="font-bold text-sm">Ventas por D├¡a</h3>
+                                    <h3 className="font-bold text-sm">Ventas por Día</h3>
                                 </div>
                                 <Button variant="outline" size="sm" className="gap-2 text-xs" onClick={exportAllCSV}>
                                     <Download className="w-3.5 h-3.5" /> Exportar
@@ -413,7 +413,7 @@ export default function TurnosPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {byDate.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin datos a├║n.</TableCell></TableRow>}
+                                        {byDate.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground py-8">Sin datos aún.</TableCell></TableRow>}
                                         {byDate.map(([date, { count, total }]) => {
                                             const turnosOnDay = history.filter(r => r.closeDate === date).length;
                                             return (

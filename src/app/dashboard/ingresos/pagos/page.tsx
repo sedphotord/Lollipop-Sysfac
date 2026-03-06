@@ -29,7 +29,7 @@ const SAMPLE: Pago[] = [
     { id: "3", fecha: "2025-03-01", cliente: "Joey Mantia", facturaRef: "E310000000044", metodo: "Efectivo", monto: 12500, moneda: "DOP", notas: "" },
 ];
 
-const METODOS = ["Efectivo", "Transferencia Bancaria", "Cheque", "Tarjeta de Cr├®dito/D├®bito", "Dep├│sito Bancario", "PayPal", "Otro"];
+const METODOS = ["Efectivo", "Transferencia Bancaria", "Cheque", "Tarjeta de Crédito/Débito", "Depósito Bancario", "PayPal", "Otro"];
 const EMPTY_FORM = { fecha: new Date().toISOString().split("T")[0], cliente: "", facturaRef: "", metodo: "Transferencia Bancaria", monto: "", moneda: "DOP", notas: "" };
 
 export default function PagosRecibidosPage() {
@@ -75,7 +75,7 @@ export default function PagosRecibidosPage() {
     );
 
     const totalMes = list.reduce((a, c) => a + c.monto, 0);
-    const metodoColors: Record<string, string> = { "Efectivo": "bg-emerald-500/10 text-emerald-600", "Transferencia Bancaria": "bg-blue-500/10 text-blue-600", "Cheque": "bg-violet-500/10 text-violet-600", "Tarjeta de Cr├®dito/D├®bito": "bg-amber-500/10 text-amber-600" };
+    const metodoColors: Record<string, string> = { "Efectivo": "bg-emerald-500/10 text-emerald-600", "Transferencia Bancaria": "bg-blue-500/10 text-blue-600", "Cheque": "bg-violet-500/10 text-violet-600", "Tarjeta de Crédito/Débito": "bg-amber-500/10 text-amber-600" };
     const metodoIcon = (m: string) => m === "Efectivo" ? WalletIcon : m.includes("Tarjeta") ? CreditCardIcon : BanknotesIcon;
 
     return (
@@ -123,7 +123,7 @@ export default function PagosRecibidosPage() {
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Cliente</TableHead>
                                     <TableHead>Factura / Ref.</TableHead>
-                                    <TableHead>M├®todo</TableHead>
+                                    <TableHead>Método</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
                                     <TableHead>Notas</TableHead>
                                     <TableHead className="w-10" />
@@ -181,7 +181,7 @@ export default function PagosRecibidosPage() {
                                 <Label>Moneda</Label>
                                 <Select value={form.moneda} onValueChange={set("moneda")}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent><SelectItem value="DOP">DOP ÔÇô Peso</SelectItem><SelectItem value="USD">USD ÔÇô D├│lar</SelectItem><SelectItem value="EUR">EUR ÔÇô Euro</SelectItem></SelectContent>
+                                    <SelectContent><SelectItem value="DOP">DOP ÔÇô Peso</SelectItem><SelectItem value="USD">USD ÔÇô Dólar</SelectItem><SelectItem value="EUR">EUR ÔÇô Euro</SelectItem></SelectContent>
                                 </Select>
                             </div>
                         </div>
@@ -199,7 +199,7 @@ export default function PagosRecibidosPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>M├®todo de Pago</Label>
+                                <Label>Método de Pago</Label>
                                 <Select value={form.metodo} onValueChange={set("metodo")}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>{METODOS.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}</SelectContent>
@@ -207,7 +207,7 @@ export default function PagosRecibidosPage() {
                             </div>
                             <div className="space-y-2"><Label>Monto *</Label><Input type="number" placeholder="0.00" value={form.monto} onChange={e => set("monto")(e.target.value)} /></div>
                         </div>
-                        <div className="space-y-2"><Label>Notas</Label><Input placeholder="N├║mero de cheque, referencia, etc." value={form.notas} onChange={e => set("notas")(e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Notas</Label><Input placeholder="Número de cheque, referencia, etc." value={form.notas} onChange={e => set("notas")(e.target.value)} /></div>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">
                         <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>

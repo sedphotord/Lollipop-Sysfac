@@ -21,13 +21,13 @@ const MOCK_PRODUCTS = [
     { id: "P-005", code: "MA-APL", name: "Apple Magic Mouse", price: 5500, cost: 4100, stock: 30, unit: "und" },
 ];
 
-const ALMACENES = ["Principal", "Tienda Norte", "Almac├®n Secundario", "Veh├¡culo Reparto"];
+const ALMACENES = ["Principal", "Tienda Norte", "Almacén Secundario", "Vehículo Reparto"];
 const MOTIVOS = [
-    "Conteo F├¡sico (Inventario)",
-    "Mercanc├¡a Da├▒ada / Aver├¡a",
+    "Conteo Físico (Inventario)",
+    "Mercancía Dañada / Avería",
     "Uso Interno de la Empresa",
-    "Mercanc├¡a Vencida",
-    "P├®rdida / Robo",
+    "Mercancía Vencida",
+    "Pérdida / Robo",
     "Ajuste Inicial de Sistema"
 ];
 
@@ -120,7 +120,7 @@ function AjusteBuilderContent() {
                             {tipo === 'incremento' ? <ArrowDown className="w-5 h-5 text-emerald-600" /> : <ArrowUp className="w-5 h-5 text-rose-600" />}
                             Nuevo Ajuste de Inventario
                         </h1>
-                        <p className="text-sm text-muted-foreground">Incrementa o reduce mercanc├¡a sin generar factura.</p>
+                        <p className="text-sm text-muted-foreground">Incrementa o reduce mercancía sin generar factura.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ function AjusteBuilderContent() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium flex items-center gap-1.5"><Box className="w-3.5 h-3.5" /> Almac├®n Afectado *</Label>
+                            <Label className="text-sm font-medium flex items-center gap-1.5"><Box className="w-3.5 h-3.5" /> Almacén Afectado *</Label>
                             <Select value={almacen} onValueChange={setAlmacen}>
                                 <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -176,7 +176,7 @@ function AjusteBuilderContent() {
                         <div className="space-y-2">
                             <Label className="text-sm font-medium flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Motivo del Ajuste *</Label>
                             <Select value={motivo} onValueChange={setMotivo}>
-                                <SelectTrigger className="h-10"><SelectValue placeholder="Seleccione la raz├│n" /></SelectTrigger>
+                                <SelectTrigger className="h-10"><SelectValue placeholder="Seleccione la razón" /></SelectTrigger>
                                 <SelectContent>
                                     {MOTIVOS.map(m => (
                                         <SelectItem key={m} value={m}>{m}</SelectItem>
@@ -189,7 +189,7 @@ function AjusteBuilderContent() {
                             <Label className="text-sm font-medium">Notas Adicionales</Label>
                             <textarea
                                 className="w-full text-sm min-h-[100px] resize-none bg-muted/10 border rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                                placeholder="Justificaci├│n o detalles..."
+                                placeholder="Justificación o detalles..."
                                 value={notas}
                                 onChange={e => setNotas(e.target.value)}
                             />
@@ -203,8 +203,8 @@ function AjusteBuilderContent() {
                         </div>
                         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                             {tipo === 'incremento'
-                                ? "Este monto incrementar├í la valoraci├│n total del inventario en contabilidad."
-                                : "Este monto se registrar├í como gasto/p├®rdida afectando los estados financieros."}
+                                ? "Este monto incrementar├í la valoración total del inventario en contabilidad."
+                                : "Este monto se registrar├í como gasto/pérdida afectando los estados financieros."}
                         </p>
                     </div>
                 </div>
@@ -221,7 +221,7 @@ function AjusteBuilderContent() {
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Buscar producto a modificar por nombre o c├│digo..."
+                                    placeholder="Buscar producto a modificar por nombre o código..."
                                     value={searchQuery}
                                     onChange={e => { setSearchQuery(e.target.value); setShowProducts(true); }}
                                     onFocus={() => setShowProducts(true)}
@@ -275,7 +275,7 @@ function AjusteBuilderContent() {
                         {items.length === 0 ? (
                             <div className="border-2 border-dashed rounded-xl py-16 flex flex-col items-center justify-center text-muted-foreground/50 bg-muted/5">
                                 <Box className="w-12 h-12 mb-4" />
-                                <p className="font-medium text-foreground">A├║n no hay productos en la lista</p>
+                                <p className="font-medium text-foreground">Aún no hay productos en la lista</p>
                                 <p className="text-sm mt-1 max-w-sm text-center">Busca y selecciona los productos a los que deseas realizar el ajuste de inventario.</p>
                             </div>
                         ) : (

@@ -270,8 +270,8 @@ export default function POSFacturasPage() {
                                 <TableRow>
                                     <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
                                         <ShoppingCart className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                        <p>No hay facturas del POS a├║n.</p>
-                                        <p className="text-xs mt-1">Las ventas del terminal aparecer├ín aqu├¡ autom├íticamente.</p>
+                                        <p>No hay facturas del POS aún.</p>
+                                        <p className="text-xs mt-1">Las ventas del terminal aparecer├ín aquí autom├íticamente.</p>
                                     </TableCell>
                                 </TableRow>
                             )}

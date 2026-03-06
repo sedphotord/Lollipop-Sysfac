@@ -152,14 +152,14 @@ export default function VendedoresPOSPage() {
                 <DialogContent className="sm:max-w-[440px]">
                     <DialogHeader><DialogTitle>Nuevo Vendedor POS</DialogTitle></DialogHeader>
                     <div className="grid gap-4 py-2">
-                        <div className="space-y-2"><Label>Nombre completo *</Label><Input placeholder="Juan P├®rez" value={form.nombre} onChange={e => set("nombre")(e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Nombre completo *</Label><Input placeholder="Juan Pérez" value={form.nombre} onChange={e => set("nombre")(e.target.value)} /></div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="juan@empresa.com" value={form.email} onChange={e => set("email")(e.target.value)} /></div>
-                            <div className="space-y-2"><Label>Tel├®fono</Label><Input placeholder="809-555-0100" value={form.telefono} onChange={e => set("telefono")(e.target.value)} /></div>
+                            <div className="space-y-2"><Label>Teléfono</Label><Input placeholder="809-555-0100" value={form.telefono} onChange={e => set("telefono")(e.target.value)} /></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Meta Mensual (RD$)</Label><Input type="number" placeholder="150000" value={form.meta} onChange={e => set("meta")(e.target.value)} /></div>
-                            <div className="space-y-2"><Label>PIN de Acceso POS</Label><Input placeholder="4 d├¡gitos" maxLength={4} value={form.pin} onChange={e => set("pin")(e.target.value)} /></div>
+                            <div className="space-y-2"><Label>PIN de Acceso POS</Label><Input placeholder="4 dígitos" maxLength={4} value={form.pin} onChange={e => set("pin")(e.target.value)} /></div>
                         </div>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">

@@ -53,11 +53,11 @@ const TEMPLATE_LABELS: Record<string, string> = {
     'InvoiceMinimal': 'Factura Minimalista',
     'InvoiceModern': 'Factura Moderna',
     'InvoiceElegant': 'Factura Elegante',
-    'QuoteStandard': 'Cotizaci├│n Est├índar',
-    'QuoteDetailed': 'Cotizaci├│n Detallada',
+    'QuoteStandard': 'Cotización Est├índar',
+    'QuoteDetailed': 'Cotización Detallada',
     'PaymentReceipt': 'Recibo de Pago',
     'TicketPOS': 'Ticket POS',
-    'DeliveryNote': 'Conduce / Remisi├│n',
+    'DeliveryNote': 'Conduce / Remisión',
     'AccountStatement': 'Estado de Cuenta',
 };
 
@@ -159,7 +159,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
             email: previewData.client?.email || "",
         },
         document: {
-            type: previewData.tipoName || previewData.tipo || "Cr├®dito Fiscal",
+            type: previewData.tipoName || previewData.tipo || "Crédito Fiscal",
             number: previewData.ecf || previewData.ncf || "",
             date: previewData.date || "",
             dueDate: previewData.vencimiento || previewData.dueDate || "",
@@ -235,7 +235,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                 <DropdownMenuItem className="cursor-pointer py-2">Anular</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Cerrar sin pago</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2 text-muted-foreground" disabled>Aplicar anticipos</DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer py-2">Aplicar nota de cr├®dito</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer py-2">Aplicar nota de crédito</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2 border-t mt-1">Imprimir como copia</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Descargar como copia</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Enviar como copia</DropdownMenuItem>
@@ -343,7 +343,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                                 <FileDown className="w-8 h-8 opacity-50" />
                                             </div>
                                             <div className="flex items-center gap-4">
-                                                <p className="text-sm font-medium text-slate-500">Tu venta a├║n no tiene pagos recibidos</p>
+                                                <p className="text-sm font-medium text-slate-500">Tu venta aún no tiene pagos recibidos</p>
                                                 <Link href={`/dashboard/ingresos/pagos/new?invoiceId=${routeId}`}>
                                                     <Button variant="outline" size="sm" className="gap-2 font-medium">
                                                         <Plus className="w-4 h-4" /> Agregar pago
@@ -354,7 +354,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                     )}
                                 </TabsContent>
                                 <TabsContent value="contabilidad" className="p-8 m-0 text-center text-muted-foreground text-sm">
-                                    Aqu├¡ podr├ís ver el asiento contable asociado a esta venta.
+                                    Aquí podr├ís ver el asiento contable asociado a esta venta.
                                 </TabsContent>
                             </Tabs>
                         </div>
@@ -362,14 +362,14 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                         {/* Right side Info */}
                         <div className="space-y-6">
                             <div className="bg-white border rounded-xl overflow-hidden shadow-sm p-5">
-                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Informaci├│n Adicional</h3>
+                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Información Adicional</h3>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Lista de precios</span>
                                         <span className="font-medium text-slate-700">{previewData?.listaPrecios || 'General'}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500">Almac├®n</span>
+                                        <span className="text-slate-500">Almacén</span>
                                         <span className="font-medium text-slate-700">{previewData?.almacen || 'Principal'}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
@@ -382,7 +382,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                 <Paperclip className="w-8 h-8 text-slate-300 group-hover:text-slate-400 transition-colors" />
                                 <div>
                                     <p className="font-medium text-sm text-slate-600">Adjuntar archivos</p>
-                                    <p className="text-xs text-slate-400">Tama├▒o m├íximo 10MB</p>
+                                    <p className="text-xs text-slate-400">Tamaño m├íximo 10MB</p>
                                 </div>
                             </div>
                         </div>
