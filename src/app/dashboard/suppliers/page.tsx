@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,6 +34,11 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { companyStorage } from "@/lib/company-storage";
+import { toast } from "sonner";
+
+const LS_KEY = "proveedores";
+
 
 type Supplier = {
     id: string;
@@ -63,9 +68,35 @@ const EMPTY_SUPPLIER: Supplier = {
 };
 
 export default function SuppliersPage() {
-    const [suppliers, setSuppliers] = useState<Supplier[]>(INITIAL_SUPPLIERS);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [search, setSearch] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [gasto_summary, setGastoSummary] = useState<Record<string, number>>({});
+
+    // Load from localStorage (fall back to demo data on first load)
+    useEffect(() => {
+        try {
+            const raw = companyStorage.get(LS_KEY);
+            setSuppliers(raw ? JSON.parse(raw) : INITIAL_SUPPLIERS);
+        } catch { setSuppliers(INITIAL_SUPPLIERS); }
+        // Build total comprado from gastos
+        try {
+            const raw = companyStorage.get("gastos");
+            const gs: any[] = raw ? JSON.parse(raw) : [];
+            const summary: Record<string, number> = {};
+            gs.forEach(g => {
+                const k = (g.proveedor || "").toLowerCase();
+                if (!summary[k]) summary[k] = 0;
+                summary[k] += g.monto || 0;
+            });
+            setGastoSummary(summary);
+        } catch { }
+    }, []);
+
+    function save(list: Supplier[]) {
+        setSuppliers(list);
+        companyStorage.set(LS_KEY, JSON.stringify(list));
+    }
 
     // Detail modal
     const [detailOpen, setDetailOpen] = useState(false);
@@ -91,46 +122,36 @@ export default function SuppliersPage() {
     });
 
     const totalActivos = suppliers.filter(s => s.status === "Activo").length;
-    const totalComprado = suppliers.reduce((a, s) => a + s.totalComprado, 0);
+    const totalComprado = suppliers.reduce((a, s) => a + (gasto_summary[(s.comercialName || s.name).toLowerCase()] || gasto_summary[(s.name).toLowerCase()] || s.totalComprado || 0), 0);
 
-    function openDetail(s: Supplier) {
-        setSelectedSupplier(s);
-        setDetailOpen(true);
-    }
-
-    function openCreate() {
-        setFormData({ ...EMPTY_SUPPLIER, id: Date.now().toString() });
-        setIsEditing(false);
-        setFormOpen(true);
-    }
-
-    function openEdit(s: Supplier) {
-        setFormData({ ...s });
-        setIsEditing(true);
-        setFormOpen(true);
-    }
-
-    function openDelete(s: Supplier) {
-        setToDelete(s);
-        setDeleteOpen(true);
-    }
+    function openDetail(s: Supplier) { setSelectedSupplier(s); setDetailOpen(true); }
+    function openCreate() { setFormData({ ...EMPTY_SUPPLIER, id: Date.now().toString() }); setIsEditing(false); setFormOpen(true); }
+    function openEdit(s: Supplier) { setFormData({ ...s }); setIsEditing(true); setFormOpen(true); }
+    function openDelete(s: Supplier) { setToDelete(s); setDeleteOpen(true); }
 
     function handleSave() {
-        if (isEditing) {
-            setSuppliers(prev => prev.map(s => s.id === formData.id ? formData : s));
-            if (selectedSupplier?.id === formData.id) setSelectedSupplier(formData);
-        } else {
-            setSuppliers(prev => [...prev, formData]);
-        }
+        const list: Supplier[] = isEditing ? suppliers.map(s => s.id === formData.id ? formData : s) : [...suppliers, formData];
+        save(list);
+        if (selectedSupplier?.id === formData.id) setSelectedSupplier(formData);
         setFormOpen(false);
+        toast.success(isEditing ? "Proveedor actualizado" : "Proveedor creado", { description: formData.comercialName || formData.name });
     }
 
     function handleDelete() {
         if (!toDelete) return;
-        setSuppliers(prev => prev.filter(s => s.id !== toDelete.id));
+        save(suppliers.filter(s => s.id !== toDelete.id));
         if (selectedSupplier?.id === toDelete.id) setDetailOpen(false);
-        setDeleteOpen(false);
-        setToDelete(null);
+        setDeleteOpen(false); setToDelete(null);
+        toast.success("Proveedor eliminado");
+    }
+
+    function exportCSV() {
+        const headers = ["ID", "Nombre", "Nombre Comercial", "RNC", "Tipo", "Estado", "Contacto", "Teléfono", "Email"];
+        const rows = suppliers.map(s => [s.id, s.name, s.comercialName, s.rnc, s.type, s.status, s.contactPerson, s.phone, s.email]);
+        const csv = [headers, ...rows].map(r => r.map(v => `"${String(v || "").replace(/"/g, '""')}"`).join(",")).join("\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = "proveedores.csv"; a.click(); URL.revokeObjectURL(url);
     }
 
     return (
@@ -196,8 +217,8 @@ export default function SuppliersPage() {
                                 <SelectItem value="Suspendido">Suspendidos</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Button variant="outline" className="shrink-0">
-                            <Download className="w-4 h-4 mr-2" /> Exportar
+                        <Button variant="outline" className="shrink-0" onClick={exportCSV}>
+                            <Download className="w-4 h-4 mr-2" /> CSV
                         </Button>
                     </div>
                 </CardContent>
