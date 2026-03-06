@@ -1,8 +1,9 @@
 // Seed data for 3 example companies
-// Runs once on first app load (guarded by lollipop_seeded_v4)
+// Runs once on first app load (guarded by lollipop_seeded_v5)
 import { saveCompanies, setActiveCompanyId, prefixedKey, Company } from './company-store';
+import { saveUsers, setUserCompanyRole } from './auth-store';
 
-const SEED_KEY = 'lollipop_seeded_v5';
+const SEED_KEY = 'lollipop_seeded_v6';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  COMPANY DEFINITIONS
@@ -302,6 +303,79 @@ function seedPena() {
     set(cid, 'pos_shift_history', shifts);
 }
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  SEED USERS
+// ─────────────────────────────────────────────────────────────────────────────
+function seedUsers(): void {
+    saveUsers([
+        {
+            id: 'usr-contador',
+            name: 'Juan Pérez',
+            email: 'juan@lollipop.do',
+            pin: '1234',
+            globalRole: 'contador',
+            companiesAccess: ['comp-tech', 'comp-cafe', 'comp-pena'],
+            createdBy: 'system',
+            createdAt: '2024-01-01',
+            color: '#2563eb',
+        },
+        {
+            id: 'usr-tech',
+            name: 'Carlos Méndez',
+            email: 'carlos@techsolutionsrd.com',
+            pin: '4321',
+            globalRole: 'propietario',
+            companiesAccess: ['comp-tech'],
+            createdBy: 'usr-contador',
+            createdAt: '2024-01-15',
+            color: '#0ea5e9',
+        },
+        {
+            id: 'usr-cafe',
+            name: 'Pedro García',
+            email: 'pedro@buensabor.do',
+            pin: '5678',
+            globalRole: 'propietario',
+            companiesAccess: ['comp-cafe'],
+            createdBy: 'usr-contador',
+            createdAt: '2024-02-01',
+            color: '#d97706',
+        },
+        {
+            id: 'usr-pena',
+            name: 'Ana Peña',
+            email: 'ana@penacpa.do',
+            pin: '8765',
+            globalRole: 'propietario',
+            companiesAccess: ['comp-pena'],
+            createdBy: 'usr-contador',
+            createdAt: '2024-02-15',
+            color: '#7c3aed',
+        },
+        {
+            id: 'usr-cajera',
+            name: 'María Sánchez',
+            email: 'maria@buensabor.do',
+            pin: '0000',
+            globalRole: 'empleado',
+            companiesAccess: ['comp-cafe'],
+            createdBy: 'usr-cafe',
+            createdAt: '2024-03-01',
+            color: '#10b981',
+        },
+    ]);
+
+    // Assign company-level roles
+    setUserCompanyRole('usr-contador', 'comp-tech', 'administrador');
+    setUserCompanyRole('usr-contador', 'comp-cafe', 'administrador');
+    setUserCompanyRole('usr-contador', 'comp-pena', 'administrador');
+    setUserCompanyRole('usr-tech', 'comp-tech', 'administrador');
+    setUserCompanyRole('usr-cafe', 'comp-cafe', 'administrador');
+    setUserCompanyRole('usr-pena', 'comp-pena', 'administrador');
+    setUserCompanyRole('usr-cajera', 'comp-cafe', 'cajero');
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 //  ENTRY POINT — call once on app mount
 // ─────────────────────────────────────────────────────────────────────────────
@@ -313,6 +387,7 @@ export function seedAllCompaniesData(): void {
     seedTech();
     seedCafe();
     seedPena();
+    seedUsers();
 
     // Default active company: TechSolutions
     setActiveCompanyId('comp-tech');
@@ -320,3 +395,4 @@ export function seedAllCompaniesData(): void {
     // No mirroring needed — companyStorage auto-reads from company-prefixed keys
     localStorage.setItem(SEED_KEY, '1');
 }
+

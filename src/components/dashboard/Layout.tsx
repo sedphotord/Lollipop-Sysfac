@@ -3,6 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { clearSession } from "@/lib/auth-store";
+import { canAccess, HREF_MODULE_MAP, ROLE_LABELS, type AppModule } from "@/lib/permissions";
+
 
 // ── Heroicons (outline) ──
 import {
@@ -274,6 +278,35 @@ function SidebarLogo() {
 //  SIDEBAR CONTENT
 // ──────────────────────────────────────────
 function SidebarContent() {
+    const { activeRole } = useAuth();
+
+    // Filter nav items based on the user's active role
+    const visibleNav = NAV.filter(item => {
+        // Items with children: show if at least one child is accessible
+        if (item.children) {
+            const anyChild = item.children.some(child => {
+                const mod = HREF_MODULE_MAP[child.href] as AppModule | undefined;
+                if (!mod) return true; // unknown = show
+                return canAccess(activeRole, mod);
+            });
+            return anyChild;
+        }
+        // Top-level item
+        const mod = item.href ? HREF_MODULE_MAP[item.href] as AppModule | undefined : undefined;
+        if (!mod) return true;
+        return canAccess(activeRole, mod);
+    }).map(item => {
+        if (!item.children) return item;
+        return {
+            ...item,
+            children: item.children.filter(child => {
+                const mod = HREF_MODULE_MAP[child.href] as AppModule | undefined;
+                if (!mod) return true;
+                return canAccess(activeRole, mod);
+            }),
+        };
+    });
+
     return (
         <div className="flex flex-col h-full bg-[#181C25] text-white">
             {/* Logo */}
@@ -283,7 +316,7 @@ function SidebarContent() {
 
             {/* Nav list */}
             <div className="flex-1 py-3 px-3 space-y-0.5 overflow-y-auto custom-scrollbar">
-                {NAV.map((item) => (
+                {visibleNav.map(item => (
                     <NavSection key={item.label} item={item} />
                 ))}
             </div>
@@ -389,9 +422,18 @@ function QuickAddDropdown() {
 function ProfileDropdown() {
     const router = useRouter();
     const { companies, activeCompany, switchCompany } = useCompany();
+    const { currentUser, activeRole, logout } = useAuth();
     const [showCompanyModal, setShowCompanyModal] = useState(false);
 
+    const handleLogout = () => {
+        logout();
+        clearSession();
+        router.push("/login");
+    };
+
     const initials = (name: string) => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const displayName = currentUser?.name ?? 'Usuario';
+    const displayRole = ROLE_LABELS[activeRole] ?? activeRole;
 
     return (
         <>
@@ -399,8 +441,8 @@ function ProfileDropdown() {
                 <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-blue-50/60 dark:hover:bg-blue-900/20 transition-colors outline-none group">
                         <div className="hidden sm:block text-right">
-                            <p className="text-xs font-semibold leading-none">Juan Pérez</p>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{activeCompany?.name ?? 'Cargando...'}</p>
+                            <p className="text-xs font-semibold leading-none">{displayName}</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">{displayRole} · {activeCompany?.name ?? 'Cargando...'}</p>
                         </div>
                         <Avatar className="h-8 w-8 border-2 border-blue-200/60 dark:border-blue-700/40 group-hover:border-blue-400/60 transition-colors">
                             <AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-sky-500/20 text-blue-700 dark:text-blue-300 font-bold text-xs">JP</AvatarFallback>
@@ -413,11 +455,11 @@ function ProfileDropdown() {
                     <div className="px-3 pt-3 pb-2.5">
                         <div className="flex items-center gap-3">
                             <Avatar className="h-10 w-10 border-2 border-blue-200/50 shrink-0">
-                                <AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-sky-500/20 text-blue-700 dark:text-blue-300 font-bold text-sm">JP</AvatarFallback>
+                                <AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-sky-500/20 text-blue-700 dark:text-blue-300 font-bold text-sm">{initials(displayName)}</AvatarFallback>
                             </Avatar>
                             <div className="min-w-0">
-                                <p className="font-bold text-sm leading-tight truncate">Juan Pérez</p>
-                                <p className="text-xs text-muted-foreground truncate">{activeCompany?.email ?? 'admin@lollipop.do'}</p>
+                                <p className="font-bold text-sm leading-tight truncate">{displayName}</p>
+                                <p className="text-xs text-muted-foreground truncate">{displayRole}</p>
                             </div>
                         </div>
 
@@ -476,7 +518,7 @@ function ProfileDropdown() {
                     <DropdownMenuSeparator className="bg-blue-100/60 dark:bg-blue-800/20" />
 
                     <DropdownMenuItem
-                        onClick={() => router.push("/login")}
+                        onClick={handleLogout}
                         className="flex items-center gap-2.5 cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-500/8 rounded-lg"
                     >
                         <ArrowRightOnRectangleIcon className="w-4 h-4" />
