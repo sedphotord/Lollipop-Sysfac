@@ -618,7 +618,7 @@ export function Header() {
                         <div className="relative flex-1 group cursor-pointer" onClick={() => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', metaKey: true }))}>
                             <MagnifyingGlassIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-blue-400 group-hover:text-blue-600 transition-colors" />
                             <div className="w-full bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200/50 dark:border-blue-800/30 pl-10 pr-4 h-9 rounded-xl flex items-center justify-between group-hover:border-blue-300 transition-all">
-                                <span className="text-sm text-blue-400/80 group-hover:text-blue-500/80">Buscar rápidos...</span>
+                                <span className="text-sm text-blue-400/80 group-hover:text-blue-500/80">Buscar facturas, clientes, productos...</span>
                                 <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded bg-blue-100/80 dark:bg-blue-800/30 px-1.5 font-mono text-[10px] font-medium text-blue-600 dark:text-blue-300">
                                     <span className="text-xs">⌘</span>K
                                 </kbd>
