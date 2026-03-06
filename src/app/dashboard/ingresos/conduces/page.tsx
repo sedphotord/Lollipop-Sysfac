@@ -76,7 +76,7 @@ export default function ConducesPage() {
             <div className="flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Conduces de Entrega</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Notas de entrega y remisiones para controlar el despacho de mercancías.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Notas de entrega y remisiones para controlar el despacho de mercanc├¡as.</p>
                 </div>
                 <Button className="bg-gradient-brand border-0 text-white gap-2" onClick={() => setOpen(true)}>
                     <PlusIcon className="w-4 h-4" /> Nuevo Conduce
@@ -123,10 +123,10 @@ export default function ConducesPage() {
                         <Table>
                             <TableHeader className="bg-muted/50">
                                 <TableRow>
-                                    <TableHead>Número</TableHead>
+                                    <TableHead>N├║mero</TableHead>
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Cliente</TableHead>
-                                    <TableHead>Dirección</TableHead>
+                                    <TableHead>Direcci├│n</TableHead>
                                     <TableHead>Factura Ref.</TableHead>
                                     <TableHead>Estado</TableHead>
                                     <TableHead className="w-10" />
@@ -138,8 +138,8 @@ export default function ConducesPage() {
                                         <TableCell className="font-mono text-xs font-semibold text-primary">{c.numero}</TableCell>
                                         <TableCell className="text-sm text-muted-foreground">{c.fecha}</TableCell>
                                         <TableCell className="font-semibold">{c.cliente}</TableCell>
-                                        <TableCell className="text-sm text-muted-foreground max-w-[140px] truncate">{c.direccion || "—"}</TableCell>
-                                        <TableCell className="font-mono text-xs text-primary">{c.facturaRef || "—"}</TableCell>
+                                        <TableCell className="text-sm text-muted-foreground max-w-[140px] truncate">{c.direccion || "ÔÇö"}</TableCell>
+                                        <TableCell className="font-mono text-xs text-primary">{c.facturaRef || "ÔÇö"}</TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className={cn("text-xs capitalize", STATUS_STYLES[c.estado])}>{c.estado}</Badge>
                                         </TableCell>
@@ -177,11 +177,11 @@ export default function ConducesPage() {
                     <DialogHeader><DialogTitle>Nuevo Conduce de Entrega</DialogTitle></DialogHeader>
                     <div className="grid gap-4 py-2">
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2"><Label>Número</Label><Input value={nextNum(list)} readOnly className="bg-muted font-mono" /></div>
+                            <div className="space-y-2"><Label>N├║mero</Label><Input value={nextNum(list)} readOnly className="bg-muted font-mono" /></div>
                             <div className="space-y-2"><Label>Fecha</Label><Input type="date" value={form.fecha} onChange={e => set("fecha")(e.target.value)} /></div>
                         </div>
                         <div className="space-y-2"><Label>Cliente *</Label><Input placeholder="Nombre del cliente" value={form.cliente} onChange={e => set("cliente")(e.target.value)} /></div>
-                        <div className="space-y-2"><Label>Dirección de Entrega</Label><Input placeholder="Av. Ejemplo 123, Ciudad" value={form.direccion} onChange={e => set("direccion")(e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Direcci├│n de Entrega</Label><Input placeholder="Av. Ejemplo 123, Ciudad" value={form.direccion} onChange={e => set("direccion")(e.target.value)} /></div>
                         <div className="space-y-2"><Label>Factura Referenciada</Label><Input placeholder="NCF de factura" className="font-mono" value={form.facturaRef} onChange={e => set("facturaRef")(e.target.value)} /></div>
                         <div className="space-y-2"><Label>Notas</Label><Input placeholder="Instrucciones especiales..." value={form.notas} onChange={e => set("notas")(e.target.value)} /></div>
                     </div>

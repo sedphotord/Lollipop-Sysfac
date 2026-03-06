@@ -108,7 +108,7 @@ export default function PagosProvedoresPage() {
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Proveedor</TableHead>
                                     <TableHead>Factura Ref.</TableHead>
-                                    <TableHead>Método</TableHead>
+                                    <TableHead>M├®todo</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
                                     <TableHead>Estado</TableHead>
                                 </TableRow>
@@ -152,7 +152,7 @@ export default function PagosProvedoresPage() {
                                     <Printer className="w-4 h-4 text-muted-foreground" />
                                 </Button>
                                 <Button variant="ghost" size="icon" onClick={() => setSelectedPayment(null)} className="w-8 h-8 hover:bg-muted text-muted-foreground text-xl leading-none">
-                                    ×
+                                    ├ù
                                 </Button>
                             </div>
                         </div>
@@ -181,7 +181,7 @@ export default function PagosProvedoresPage() {
                                             <Input type="number" value={editForm.monto} onChange={e => setEditForm({ ...editForm, monto: e.target.value })} className="h-9 font-bold text-emerald-600" />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <Label className="text-xs text-muted-foreground">Método</Label>
+                                            <Label className="text-xs text-muted-foreground">M├®todo</Label>
                                             <Select value={editForm.metodo} onValueChange={v => setEditForm({ ...editForm, metodo: v })}>
                                                 <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
                                                 <SelectContent>
@@ -218,7 +218,7 @@ export default function PagosProvedoresPage() {
                                         <span className="text-sm font-mono text-primary font-medium">{selectedPayment.factura}</span>
                                     </div>
                                     <div className="flex justify-between items-center py-2 border-b border-border/40 items-start">
-                                        <span className="text-sm text-muted-foreground mt-0.5">Método</span>
+                                        <span className="text-sm text-muted-foreground mt-0.5">M├®todo</span>
                                         <div className="text-right">
                                             <span className="text-sm font-medium block">{selectedPayment.metodo}</span>
                                             {selectedPayment.referencia && <span className="text-xs text-muted-foreground font-mono block mt-1">Ref: {selectedPayment.referencia}</span>}
@@ -235,7 +235,7 @@ export default function PagosProvedoresPage() {
                         {!isEditingPayment && (
                             <div className="bg-muted/30 p-6 text-center print:hidden border-t">
                                 <p className="text-xs text-muted-foreground">
-                                    Este recibo es un comprobante de egreso. No tiene validez fiscal por sí solo.
+                                    Este recibo es un comprobante de egreso. No tiene validez fiscal por s├¡ solo.
                                 </p>
                             </div>
                         )}

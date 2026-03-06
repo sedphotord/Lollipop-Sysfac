@@ -59,7 +59,7 @@ export default function CotizacionEditPage() {
         return (
             <div className="flex flex-col items-center justify-center py-24 space-y-4">
                 <DocumentTextIcon className="w-16 h-16 text-muted-foreground/30" />
-                <h2 className="text-xl font-bold">Cotización no encontrada</h2>
+                <h2 className="text-xl font-bold">Cotizaci├│n no encontrada</h2>
                 <p className="text-muted-foreground text-sm">El ID <code className="bg-muted px-2 py-0.5 rounded font-mono">{cotId}</code> no existe en el sistema.</p>
                 <Button variant="outline" onClick={() => router.push("/dashboard/ingresos/cotizaciones")} className="gap-2">
                     <ArrowLeftIcon className="w-4 h-4" /> Volver a Cotizaciones
@@ -81,7 +81,7 @@ export default function CotizacionEditPage() {
                         <h2 className="text-2xl font-bold">{cot.id}</h2>
                         <Badge variant="outline" className={cn("text-xs capitalize", STATUS_STYLES[cot.status] || "bg-muted")}>{cot.status}</Badge>
                     </div>
-                    <p className="text-muted-foreground text-sm">Editar cotización · {cot.fecha}</p>
+                    <p className="text-muted-foreground text-sm">Editar cotizaci├│n ┬À {cot.fecha}</p>
                 </div>
                 <Button onClick={handleSave} className="bg-gradient-brand border-0 text-white gap-2">
                     {saved ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</> : <>Guardar Cambios</>}
@@ -91,7 +91,7 @@ export default function CotizacionEditPage() {
             {/* Estado */}
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-5 space-y-3">
-                    <h3 className="font-bold text-sm">Estado de la Cotización</h3>
+                    <h3 className="font-bold text-sm">Estado de la Cotizaci├│n</h3>
                     <div className="flex flex-wrap gap-2">
                         {["borrador", "enviada", "aceptada", "vencida"].map(s => (
                             <button key={s} onClick={() => setStatus(s)}
@@ -121,7 +121,7 @@ export default function CotizacionEditPage() {
                             <Input type="email" value={cot.clientData?.email || ""} onChange={e => setCot((p: any) => ({ ...p, clientData: { ...(p.clientData || {}), email: e.target.value } }))} />
                         </div>
                         <div className="space-y-2">
-                            <Label>Teléfono</Label>
+                            <Label>Tel├®fono</Label>
                             <Input value={cot.clientData?.phone || ""} onChange={e => setCot((p: any) => ({ ...p, clientData: { ...(p.clientData || {}), phone: e.target.value } }))} />
                         </div>
                     </div>
@@ -131,18 +131,18 @@ export default function CotizacionEditPage() {
             {/* Detalles */}
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-5 space-y-4">
-                    <h3 className="font-bold text-sm">Detalles de la Cotización</h3>
+                    <h3 className="font-bold text-sm">Detalles de la Cotizaci├│n</h3>
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label>Fecha</Label>
                             <Input value={cot.fecha || ""} onChange={setField("fecha")} />
                         </div>
                         <div className="space-y-2">
-                            <Label>Válida hasta</Label>
+                            <Label>V├ílida hasta</Label>
                             <Input value={cot.validez || ""} onChange={setField("validez")} />
                         </div>
                         <div className="col-span-2 space-y-2">
-                            <Label>Concepto / Descripción</Label>
+                            <Label>Concepto / Descripci├│n</Label>
                             <Input value={cot.concepto || ""} onChange={setField("concepto")} />
                         </div>
                     </div>
@@ -158,7 +158,7 @@ export default function CotizacionEditPage() {
                             <div key={i} className="pt-2 first:pt-0">
                                 <div className="grid grid-cols-4 gap-3">
                                     <div className="col-span-2 space-y-1">
-                                        <Label className="text-xs">Descripción</Label>
+                                        <Label className="text-xs">Descripci├│n</Label>
                                         <Input value={item.description || ""} onChange={e => setCot((p: any) => {
                                             const items = [...p.items]; items[i] = { ...items[i], description: e.target.value }; return { ...p, items };
                                         })} />

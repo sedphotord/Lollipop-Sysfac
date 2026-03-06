@@ -40,7 +40,7 @@ export default function POSFacturasPage() {
         const load = () => {
             try {
                 const allInvoices: any[] = JSON.parse(companyStorage.get("invoice_emitted") || "[]");
-                // Only POS invoices — those with source:'pos' OR id starting with 'POS-'
+                // Only POS invoices ÔÇö those with source:'pos' OR id starting with 'POS-'
                 const posOnly = allInvoices.filter((inv: any) =>
                     inv.source === "pos" || String(inv.id).startsWith("POS-")
                 );
@@ -220,7 +220,7 @@ export default function POSFacturasPage() {
                                                     </div>
                                                     <span className="text-xs font-medium truncate max-w-[90px]">{inv.vendedor}</span>
                                                 </div>
-                                            ) : <span className="text-xs text-muted-foreground">—</span>}
+                                            ) : <span className="text-xs text-muted-foreground">ÔÇö</span>}
                                         </TableCell>
                                         <TableCell>
                                             <p className="text-sm">{inv.date}</p>
@@ -270,8 +270,8 @@ export default function POSFacturasPage() {
                                 <TableRow>
                                     <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
                                         <ShoppingCart className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                                        <p>No hay facturas del POS aún.</p>
-                                        <p className="text-xs mt-1">Las ventas del terminal aparecerán aquí automáticamente.</p>
+                                        <p>No hay facturas del POS a├║n.</p>
+                                        <p className="text-xs mt-1">Las ventas del terminal aparecer├ín aqu├¡ autom├íticamente.</p>
                                     </TableCell>
                                 </TableRow>
                             )}

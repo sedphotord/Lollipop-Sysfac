@@ -63,8 +63,8 @@ function InvoicePreviewContent() {
     const TemplateComponent = TEMPLATES[templateId] || TEMPLATES["InvoiceStandard"];
 
     const TIPO_NAMES: Record<string, string> = {
-        B01: "Crédito Fiscal", B02: "Consumo", B14: "Gubernamental", B15: "Exportación",
-        E31: "Crédito Fiscal (e-CF)", E32: "Consumidor Final (e-CF)", E44: "Gubernamental (e-CF)", E45: "Exportación (e-CF)",
+        B01: "Cr├®dito Fiscal", B02: "Consumo", B14: "Gubernamental", B15: "Exportaci├│n",
+        E31: "Cr├®dito Fiscal (e-CF)", E32: "Consumidor Final (e-CF)", E44: "Gubernamental (e-CF)", E45: "Exportaci├│n (e-CF)",
     };
 
     const templateProps = {
@@ -81,7 +81,7 @@ function InvoicePreviewContent() {
             type: TIPO_NAMES[data.tipo] || data.tipo || "Consumo",
             number: data.ncf || "",
             date: data.date || new Date().toLocaleDateString("es-DO"),
-            dueDate: data.dueDate || "—",
+            dueDate: data.dueDate || "ÔÇö",
             terms: data.paymentTerms || "",
             seller: data.vendedor || "",
             notes: data.notes || "",
@@ -96,7 +96,7 @@ function InvoicePreviewContent() {
 
     return (
         <div className="min-h-screen bg-muted/30">
-            {/* ── Top Toolbar ── */}
+            {/* ÔöÇÔöÇ Top Toolbar ÔöÇÔöÇ */}
             <div className="bg-background border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm print:hidden">
                 <div className="flex items-center gap-3">
                     <button
@@ -107,20 +107,20 @@ function InvoicePreviewContent() {
                     </button>
                     <div>
                         <h1 className="text-base font-bold text-foreground">Vista previa</h1>
-                        <p className="text-xs text-muted-foreground">{templateId} · {data.ncf || "Sin NCF"}</p>
+                        <p className="text-xs text-muted-foreground">{templateId} ┬À {data.ncf || "Sin NCF"}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <Button variant="outline" className="gap-2 text-sm" onClick={handlePrint}>
                         <PrinterIcon className="w-4 h-4" /> Imprimir / PDF
                     </Button>
-                    <Button variant="outline" className="gap-2 text-sm" disabled title="Próximamente">
+                    <Button variant="outline" className="gap-2 text-sm" disabled title="Pr├│ximamente">
                         <EnvelopeIcon className="w-4 h-4" /> Enviar por correo
                     </Button>
                 </div>
             </div>
 
-            {/* ── Invoice Preview Area ── */}
+            {/* ÔöÇÔöÇ Invoice Preview Area ÔöÇÔöÇ */}
             <div className="max-w-5xl mx-auto py-8 px-4">
                 <div
                     id="invoice-print-area"

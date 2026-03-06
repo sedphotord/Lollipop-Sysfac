@@ -48,16 +48,16 @@ const TEMPLATES: Record<string, React.ComponentType<{ data: any }>> = {
 };
 
 const TEMPLATE_LABELS: Record<string, string> = {
-    'InvoiceStandard': 'Factura Estándar',
+    'InvoiceStandard': 'Factura Est├índar',
     'InvoiceCorporate': 'Factura Corporativa',
     'InvoiceMinimal': 'Factura Minimalista',
     'InvoiceModern': 'Factura Moderna',
     'InvoiceElegant': 'Factura Elegante',
-    'QuoteStandard': 'Cotización Estándar',
-    'QuoteDetailed': 'Cotización Detallada',
+    'QuoteStandard': 'Cotizaci├│n Est├índar',
+    'QuoteDetailed': 'Cotizaci├│n Detallada',
     'PaymentReceipt': 'Recibo de Pago',
     'TicketPOS': 'Ticket POS',
-    'DeliveryNote': 'Conduce / Remisión',
+    'DeliveryNote': 'Conduce / Remisi├│n',
     'AccountStatement': 'Estado de Cuenta',
 };
 
@@ -152,26 +152,26 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
             phone: company.phone,
         },
         client: {
-            name: previewData.cliente || previewData.client?.name || "—",
+            name: previewData.cliente || previewData.client?.name || "ÔÇö",
             rnc: previewData.rnc || previewData.client?.rnc || "",
             address: previewData.client?.address || "",
             phone: previewData.client?.phone || "",
             email: previewData.client?.email || "",
         },
         document: {
-            type: previewData.tipoName || previewData.tipo || "Crédito Fiscal",
+            type: previewData.tipoName || previewData.tipo || "Cr├®dito Fiscal",
             number: previewData.ecf || previewData.ncf || "",
             date: previewData.date || "",
             dueDate: previewData.vencimiento || previewData.dueDate || "",
             ncf: previewData.ecf || previewData.ncf || "",
             terms: previewData.paymentTerms || "Vencimiento manual",
-            seller: previewData.vendedor || "—",
+            seller: previewData.vendedor || "ÔÇö",
             notes: previewData.notes || "",
             footer: previewData.footer || "",
         },
         items: previewData.items?.map((i: any) => ({
             id: i.id,
-            description: i.name || i.description || "—",
+            description: i.name || i.description || "ÔÇö",
             qty: i.qty || 1,
             price: i.price || 0,
             discount: i.price * i.qty * ((i.disc || 0) / 100),
@@ -224,7 +224,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="gap-2 shadow-sm font-medium bg-white ml-auto">
-                                    Más acciones <ChevronDown className="w-4 h-4" />
+                                    M├ís acciones <ChevronDown className="w-4 h-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 text-sm font-medium text-slate-700">
@@ -235,7 +235,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                 <DropdownMenuItem className="cursor-pointer py-2">Anular</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Cerrar sin pago</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2 text-muted-foreground" disabled>Aplicar anticipos</DropdownMenuItem>
-                                <DropdownMenuItem className="cursor-pointer py-2">Aplicar nota de crédito</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer py-2">Aplicar nota de cr├®dito</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2 border-t mt-1">Imprimir como copia</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Descargar como copia</DropdownMenuItem>
                                 <DropdownMenuItem className="cursor-pointer py-2">Enviar como copia</DropdownMenuItem>
@@ -343,7 +343,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                                 <FileDown className="w-8 h-8 opacity-50" />
                                             </div>
                                             <div className="flex items-center gap-4">
-                                                <p className="text-sm font-medium text-slate-500">Tu venta aún no tiene pagos recibidos</p>
+                                                <p className="text-sm font-medium text-slate-500">Tu venta a├║n no tiene pagos recibidos</p>
                                                 <Link href={`/dashboard/ingresos/pagos/new?invoiceId=${routeId}`}>
                                                     <Button variant="outline" size="sm" className="gap-2 font-medium">
                                                         <Plus className="w-4 h-4" /> Agregar pago
@@ -354,7 +354,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                     )}
                                 </TabsContent>
                                 <TabsContent value="contabilidad" className="p-8 m-0 text-center text-muted-foreground text-sm">
-                                    Aquí podrás ver el asiento contable asociado a esta venta.
+                                    Aqu├¡ podr├ís ver el asiento contable asociado a esta venta.
                                 </TabsContent>
                             </Tabs>
                         </div>
@@ -362,19 +362,19 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                         {/* Right side Info */}
                         <div className="space-y-6">
                             <div className="bg-white border rounded-xl overflow-hidden shadow-sm p-5">
-                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Información Adicional</h3>
+                                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Informaci├│n Adicional</h3>
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Lista de precios</span>
                                         <span className="font-medium text-slate-700">{previewData?.listaPrecios || 'General'}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-500">Almacén</span>
+                                        <span className="text-slate-500">Almac├®n</span>
                                         <span className="font-medium text-slate-700">{previewData?.almacen || 'Principal'}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Vendedor</span>
-                                        <span className="font-medium text-slate-700">{previewData?.vendedor || '—'}</span>
+                                        <span className="font-medium text-slate-700">{previewData?.vendedor || 'ÔÇö'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -382,7 +382,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                 <Paperclip className="w-8 h-8 text-slate-300 group-hover:text-slate-400 transition-colors" />
                                 <div>
                                     <p className="font-medium text-sm text-slate-600">Adjuntar archivos</p>
-                                    <p className="text-xs text-slate-400">Tamaño máximo 10MB</p>
+                                    <p className="text-xs text-slate-400">Tama├▒o m├íximo 10MB</p>
                                 </div>
                             </div>
                         </div>

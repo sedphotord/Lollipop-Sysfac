@@ -28,7 +28,7 @@ import {
 import { OpenShiftModal } from "@/components/pos/OpenShiftModal";
 
 
-// Lazy-load invoice templates — only needed when printing, not on initial page load
+// Lazy-load invoice templates ÔÇö only needed when printing, not on initial page load
 const InvoiceStandard = dynamic(() => import("@/components/templates/InvoiceStandard").then(m => m.InvoiceStandard), { ssr: false });
 const InvoiceCorporate = dynamic(() => import("@/components/templates/InvoiceCorporate").then(m => m.InvoiceCorporate), { ssr: false });
 const InvoiceMinimal = dynamic(() => import("@/components/templates/InvoiceMinimal").then(m => m.InvoiceMinimal), { ssr: false });
@@ -43,45 +43,45 @@ const INVOICE_TEMPLATES = {
     'inv-elegant': InvoiceElegant,
 };
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  MOCK DATA (Shared with Invoice System)
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const CONSUMIDOR_FINAL = { id: "CF", rnc: "00000000000", name: "Consumidor Final", trade: "", type: "Consumidor Final", status: "Activo" };
 
 const DEFAULT_CLIENTS = [
     CONSUMIDOR_FINAL,
-    { id: "1", rnc: "101010101", name: "COMPAÑIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo" },
-    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona Física", status: "Activo" },
+    { id: "1", rnc: "101010101", name: "COMPA├æIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo" },
+    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona F├¡sica", status: "Activo" },
     { id: "3", rnc: "130819985", name: "ALTICE DOMINICANA S.A.", trade: "ALTICE", type: "SRL", status: "Activo" },
 ];
 
 const INITIAL_PRODUCTS = [
-    { id: "1", code: "PRD-001", name: "Laptop Dell XPS 15", description: "Potente laptop con pantalla InfinityEdge de 15 pulgadas y procesador de última generación.", price: 85000, itbis: 18, category: "Hardware", image: "/laptop_product_photo_1772472640429.png" },
-    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resolución QHD y tasa de refresco de 144Hz para máxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
-    { id: "3", code: "PRD-003", name: "Teclado Mecánico", description: "Teclado RGB con switches táctiles, ideal para productividad y gaming intensivo.", price: 8500, itbis: 18, category: "Hardware", image: "/keyboard_product_photo_1772472671935.png" },
-    { id: "4", code: "SRV-001", name: "Consultoría IT (hora)", description: "Asesoría especializada en infraestructura, seguridad y optimización de sistemas.", price: 5000, itbis: 18, category: "Servicio", image: "/laptop_product_photo_1772472640429.png" },
-    { id: "5", code: "PRD-005", name: "UPS APC 1500VA", description: "Respaldo de energía confiable con regulación de voltaje para equipos críticos.", price: 18000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
-    { id: "6", code: "SFT-001", name: "MS Office 365 (año)", description: "Suscripción anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
+    { id: "1", code: "PRD-001", name: "Laptop Dell XPS 15", description: "Potente laptop con pantalla InfinityEdge de 15 pulgadas y procesador de ├║ltima generaci├│n.", price: 85000, itbis: 18, category: "Hardware", image: "/laptop_product_photo_1772472640429.png" },
+    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resoluci├│n QHD y tasa de refresco de 144Hz para m├íxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
+    { id: "3", code: "PRD-003", name: "Teclado Mec├ínico", description: "Teclado RGB con switches t├íctiles, ideal para productividad y gaming intensivo.", price: 8500, itbis: 18, category: "Hardware", image: "/keyboard_product_photo_1772472671935.png" },
+    { id: "4", code: "SRV-001", name: "Consultor├¡a IT (hora)", description: "Asesor├¡a especializada en infraestructura, seguridad y optimizaci├│n de sistemas.", price: 5000, itbis: 18, category: "Servicio", image: "/laptop_product_photo_1772472640429.png" },
+    { id: "5", code: "PRD-005", name: "UPS APC 1500VA", description: "Respaldo de energ├¡a confiable con regulaci├│n de voltaje para equipos cr├¡ticos.", price: 18000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
+    { id: "6", code: "SFT-001", name: "MS Office 365 (a├▒o)", description: "Suscripci├│n anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
 ];
 
 const TIPOS_NCF_TRADICIONAL = [
-    { code: "B01", name: "Crédito Fiscal" },
+    { code: "B01", name: "Cr├®dito Fiscal" },
     { code: "B02", name: "Consumo" },
     { code: "B14", name: "Gubernamental" },
-    { code: "B15", name: "Exportación" },
+    { code: "B15", name: "Exportaci├│n" },
 ];
 
 const TIPOS_NCF_ELECTRONICO = [
-    { code: "E31", name: "Crédito Fiscal (e-CF)" },
+    { code: "E31", name: "Cr├®dito Fiscal (e-CF)" },
     { code: "E32", name: "Consumidor Final (e-CF)" },
     { code: "E44", name: "Gubernamental (e-CF)" },
-    { code: "E45", name: "Exportación (e-CF)" },
+    { code: "E45", name: "Exportaci├│n (e-CF)" },
 ];
 
 // Unified list for lookups (used in print templates)
 const TIPOS_NCF = [...TIPOS_NCF_TRADICIONAL, ...TIPOS_NCF_ELECTRONICO];
 
-const BANCOS = ["Popular", "BHD León", "Banreservas", "Scotiabank"];
+const BANCOS = ["Popular", "BHD Le├│n", "Banreservas", "Scotiabank"];
 const DEFAULT_VENDEDORES_NAMES = ["Marcos Perez", "Ana Rodriguez", "Jose Manuel"];
 
 type CartItem = { id: string; name: string; description?: string; price: number; itbis: number; qty: number; image: string };
@@ -116,7 +116,7 @@ export default function POSPage() {
     const [newProdPrice, setNewProdPrice] = useState("");
     const [newProdCat, setNewProdCat] = useState("Hardware");
 
-    // Form states for Custom Service (ephemeral — not added to catalog)
+    // Form states for Custom Service (ephemeral ÔÇö not added to catalog)
     const [showNewServiceModal, setShowNewServiceModal] = useState(false);
     const [newSvcName, setNewSvcName] = useState("");
     const [newSvcPrice, setNewSvcPrice] = useState("");
@@ -275,7 +275,7 @@ export default function POSPage() {
             id: Math.random().toString(),
             code: "TMP-" + Math.floor(Math.random() * 1000),
             name: newProdName,
-            description: "Producto de venta rápida",
+            description: "Producto de venta r├ípida",
             price: parseFloat(newProdPrice),
             itbis: 18,
             category: newProdCat,
@@ -380,9 +380,9 @@ export default function POSPage() {
             ['Monto apertura', rec.openingFloat],
             ['Total vendido', rec.totalSales],
             ['Total efectivo contado', rec.cashCountTotal],
-            ['Núm. ventas', rec.salesCount],
+            ['N├║m. ventas', rec.salesCount],
             [],
-            ['ID Venta', 'Método', 'Hora', 'Total'],
+            ['ID Venta', 'M├®todo', 'Hora', 'Total'],
             ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total]),
         ];
         const csv = rows.map(r => r.join(',')).join('\n');
@@ -404,12 +404,12 @@ export default function POSPage() {
             ['Monto apertura', rec.openingFloat],
             ['Total vendido', rec.totalSales],
             ['Total efectivo contado', rec.cashCountTotal],
-            ['Núm. ventas', rec.salesCount],
+            ['N├║m. ventas', rec.salesCount],
         ];
         const ws1 = XLSX.utils.aoa_to_sheet(summaryData);
         XLSX.utils.book_append_sheet(wb, ws1, 'Resumen');
         // Sales sheet
-        const salesData = [['ID', 'Método', 'Hora', 'Total'], ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total])];
+        const salesData = [['ID', 'M├®todo', 'Hora', 'Total'], ...rec.sales.map((s: any) => [s.id, s.method, s.time, s.total])];
         const ws2 = XLSX.utils.aoa_to_sheet(salesData);
         XLSX.utils.book_append_sheet(wb, ws2, 'Ventas');
         XLSX.writeFile(wb, `cierre-${rec.id}.xlsx`);
@@ -421,7 +421,7 @@ export default function POSPage() {
             <html><head><title>Cierre ${rec.id}</title>
             <style>body{font-family:Arial,sans-serif;padding:24px;font-size:13px}h1{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ddd;padding:6px 10px;text-align:left}th{background:#f5f5f5}tfoot td{font-weight:bold}</style>
             </head><body>
-            <h1>Cierre de Turno — ${rec.id}</h1>
+            <h1>Cierre de Turno ÔÇö ${rec.id}</h1>
             <p>Fecha: ${rec.closeDate} | Apertura: ${rec.openTime} | Cierre: ${rec.closeTime}</p>
             <table><tr><th>Concepto</th><th>Valor</th></tr>
             <tr><td>Monto apertura</td><td>RD$ ${rec.openingFloat.toFixed(2)}</td></tr>
@@ -430,7 +430,7 @@ export default function POSPage() {
             <tr><td>Diferencia</td><td>RD$ ${(rec.cashCountTotal - rec.openingFloat - rec.totalSales).toFixed(2)}</td></tr>
             </table>
             <h3 style="margin-top:20px">Ventas del turno (${rec.salesCount})</h3>
-            <table><thead><tr><th>ID</th><th>Método</th><th>Hora</th><th>Total</th></tr></thead>
+            <table><thead><tr><th>ID</th><th>M├®todo</th><th>Hora</th><th>Total</th></tr></thead>
             <tbody>${rec.sales.map((s: any) => `<tr><td>${s.id}</td><td>${s.method}</td><td>${s.time}</td><td>RD$ ${s.total.toFixed(2)}</td></tr>`).join('')}</tbody>
             <tfoot><tr><td colspan="3">Total</td><td>RD$ ${rec.totalSales.toFixed(2)}</td></tr></tfoot></table>
             </body></html>`);
@@ -540,7 +540,7 @@ export default function POSPage() {
 
     return (
         <>
-            {/* ── Open Shift Modal ── */}
+            {/* ÔöÇÔöÇ Open Shift Modal ÔöÇÔöÇ */}
             {showOpenShiftModal && (
                 <OpenShiftModal
                     vendedores={VENDEDORES}
@@ -560,7 +560,7 @@ export default function POSPage() {
                 />
             )}
 
-            {/* ── Close Shift / Cuadre de Caja Modal ── */}
+            {/* ÔöÇÔöÇ Close Shift / Cuadre de Caja Modal ÔöÇÔöÇ */}
             {showCloseShiftModal && (() => {
                 // NCF numerations grouped by tipo
                 const ncfByTipo: Record<string, { first: string; last: string; count: number }> = {};
@@ -570,7 +570,7 @@ export default function POSPage() {
                     ncfByTipo[s.tipo].last = s.ncf;
                     ncfByTipo[s.tipo].count++;
                 });
-                const PAD_CLOSE = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
+                const PAD_CLOSE = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "Ôî½"];
 
                 const verifyClosePin = (pin: string) => {
                     try {
@@ -602,7 +602,7 @@ export default function POSPage() {
                                         <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center"><Lock className="w-5 h-5" /></div>
                                         <div>
                                             <h2 className="font-bold text-lg">Cierre de Turno</h2>
-                                            <p className="text-xs text-muted-foreground">Abierto a las {shiftOpenTime} · {shiftSales.length} venta{shiftSales.length !== 1 ? 's' : ''}</p>
+                                            <p className="text-xs text-muted-foreground">Abierto a las {shiftOpenTime} ┬À {shiftSales.length} venta{shiftSales.length !== 1 ? 's' : ''}</p>
                                         </div>
                                     </div>
                                     <button onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); setCloseShiftPin(''); }} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
@@ -633,7 +633,7 @@ export default function POSPage() {
                                         <Button variant="outline" className="flex-1" onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); }}>Cancelar</Button>
                                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" disabled={!shiftCloseVendedor}
                                             onClick={() => { setCloseShiftPin(''); setCloseShiftPinError(false); setCloseShiftStep('pin'); }}>
-                                            Continuar →
+                                            Continuar ÔåÆ
                                         </Button>
                                     </div>
                                 </div>
@@ -656,13 +656,13 @@ export default function POSPage() {
                                                 i < closeShiftPin.length
                                                     ? closeShiftPinError ? "border-red-500 bg-red-500 text-white" : "border-red-600 bg-red-600 text-white"
                                                     : "border-border"
-                                            )}>{i < closeShiftPin.length ? '•' : ''}</div>
+                                            )}>{i < closeShiftPin.length ? 'ÔÇó' : ''}</div>
                                         ))}
                                     </div>
-                                    {closeShiftPinError && <p className="text-center text-xs text-red-500 font-semibold">❌ PIN incorrecto — intenta de nuevo</p>}
+                                    {closeShiftPinError && <p className="text-center text-xs text-red-500 font-semibold">ÔØî PIN incorrecto ÔÇö intenta de nuevo</p>}
                                     <div className="grid grid-cols-3 gap-2">
                                         {PAD_CLOSE.map((k, i) => k === '' ? <div key={i} /> :
-                                            k === '⌫' ? (
+                                            k === 'Ôî½' ? (
                                                 <button key={i} onClick={() => setCloseShiftPin(p => p.slice(0, -1))}
                                                     className="h-12 rounded-xl bg-muted hover:bg-muted/70 flex items-center justify-center transition-colors">
                                                     <Delete className="w-5 h-5 text-muted-foreground" />
@@ -679,7 +679,7 @@ export default function POSPage() {
                                         )}
                                     </div>
                                     <div className="flex gap-3">
-                                        <Button variant="outline" className="flex-1" onClick={() => { setCloseShiftStep('select'); setCloseShiftPin(''); }}>← Atrás</Button>
+                                        <Button variant="outline" className="flex-1" onClick={() => { setCloseShiftStep('select'); setCloseShiftPin(''); }}>ÔåÉ Atr├ís</Button>
                                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" disabled={closeShiftPin.length < 6} onClick={() => verifyClosePin(closeShiftPin)}>
                                             <Lock className="w-4 h-4" /> Verificar PIN
                                         </Button>
@@ -718,7 +718,7 @@ export default function POSPage() {
                                                             <span className="text-muted-foreground ml-2">{TIPOS_NCF.find(t => t.code === tipo)?.name}</span>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="font-mono font-bold text-[11px]">{data.first} → {data.last}</p>
+                                                            <p className="font-mono font-bold text-[11px]">{data.first} ÔåÆ {data.last}</p>
                                                             <p className="text-muted-foreground">{data.count} comprobante{data.count !== 1 ? 's' : ''}</p>
                                                         </div>
                                                     </div>
@@ -761,7 +761,7 @@ export default function POSPage() {
                                                         <div>
                                                             <span className="font-mono font-bold text-xs">{s.id}</span>
                                                             {s.ncf && <span className="font-mono text-[10px] text-primary ml-2 bg-primary/10 px-1.5 py-0.5 rounded">{s.ncf}</span>}
-                                                            <span className="text-muted-foreground ml-2 text-xs">{s.method} · {s.time}</span>
+                                                            <span className="text-muted-foreground ml-2 text-xs">{s.method} ┬À {s.time}</span>
                                                         </div>
                                                         <span className="font-semibold">RD$ {s.total.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
                                                     </div>
@@ -771,7 +771,7 @@ export default function POSPage() {
                                     )}
                                 </div>
                                 <div className="px-6 pb-6 flex gap-3 border-t pt-4">
-                                    <Button variant="outline" className="flex-1" onClick={() => setCloseShiftStep('pin')}>← PIN</Button>
+                                    <Button variant="outline" className="flex-1" onClick={() => setCloseShiftStep('pin')}>ÔåÉ PIN</Button>
                                     <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" onClick={() => { handleCloseShift(); setCloseShiftStep('select'); setCloseShiftPin(''); }}>
                                         <Lock className="w-4 h-4" /> Confirmar Cierre
                                     </Button>
@@ -782,7 +782,7 @@ export default function POSPage() {
                 );
             })()}
 
-            {/* ── Shift Closed — Export Modal ── */}
+            {/* ÔöÇÔöÇ Shift Closed ÔÇö Export Modal ÔöÇÔöÇ */}
             {shiftClosed && closedRecord && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                     <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-md">
@@ -791,7 +791,7 @@ export default function POSPage() {
                                 <CheckCircle2 className="w-9 h-9" />
                             </div>
                             <h2 className="font-bold text-xl">Turno cerrado</h2>
-                            <p className="text-sm text-muted-foreground mt-1">{closedRecord.closeDate} · {closedRecord.openTime} &rarr; {closedRecord.closeTime}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{closedRecord.closeDate} ┬À {closedRecord.openTime} &rarr; {closedRecord.closeTime}</p>
                             <div className="grid grid-cols-3 gap-3 mt-5">
                                 {[{ label: 'Ventas', value: closedRecord.salesCount },
                                 { label: 'Total vendido', value: `RD$ ${closedRecord.totalSales.toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
@@ -826,7 +826,7 @@ export default function POSPage() {
                                 Listo
                             </Button>
                             <Link href="/dashboard/pos/turnos" className="text-center text-xs text-primary hover:underline mt-1">
-                                Ver historial de turnos →
+                                Ver historial de turnos ÔåÆ
                             </Link>
                         </div>
                     </div>
@@ -862,11 +862,11 @@ export default function POSPage() {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="h-10 gap-1.5 text-xs font-bold">
-                                    <Package className="w-4 h-4" /> Módulos
+                                    <Package className="w-4 h-4" /> M├│dulos
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>Módulos POS</DropdownMenuLabel>
+                                <DropdownMenuLabel>M├│dulos POS</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem asChild>
                                     <Link href="/dashboard/pos/turnos" className="gap-2 cursor-pointer flex items-center">
@@ -888,7 +888,7 @@ export default function POSPage() {
                                 {shiftHistory.length > 0 && (
                                     <>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuLabel className="text-[10px]" >Últimas ventas del turno</DropdownMenuLabel>
+                                        <DropdownMenuLabel className="text-[10px]" >├Ültimas ventas del turno</DropdownMenuLabel>
                                         {shiftSales.slice(-3).reverse().map(s => (
                                             <DropdownMenuItem key={s.id} className="text-xs gap-2">
                                                 <span className="font-mono font-bold">{s.id}</span>
@@ -987,7 +987,7 @@ export default function POSPage() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => setIsConfigOpen(true)} className="gap-2 cursor-pointer py-2.5">
                                     <Sliders className="w-4 h-4 text-primary" />
-                                    <span className="font-semibold text-sm">Configuración</span>
+                                    <span className="font-semibold text-sm">Configuraci├│n</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => handlePrint('ticket')} className="gap-2 cursor-pointer py-2.5">
                                     <Printer className="w-4 h-4 text-emerald-600" />
@@ -1018,14 +1018,14 @@ export default function POSPage() {
                                 </Select>
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Numeración</Label>
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Numeraci├│n</Label>
                                 <Select value={ncfType} onValueChange={setNcfType}>
                                     <SelectTrigger className="h-10 bg-white border-border/60 rounded-xl text-xs font-bold">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {(posMode === 'electronico' ? TIPOS_NCF_ELECTRONICO : TIPOS_NCF_TRADICIONAL).map(t => (
-                                            <SelectItem key={t.code} value={t.code}>{t.code} — {t.name}</SelectItem>
+                                            <SelectItem key={t.code} value={t.code}>{t.code} ÔÇö {t.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -1042,7 +1042,7 @@ export default function POSPage() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="electronico">
-                                            <span className="flex items-center gap-2"><Bolt className="w-3.5 h-3.5 text-amber-500" /> e-CF (Electrónico)</span>
+                                            <span className="flex items-center gap-2"><Bolt className="w-3.5 h-3.5 text-amber-500" /> e-CF (Electr├│nico)</span>
                                         </SelectItem>
                                         <SelectItem value="tradicional">
                                             <span className="flex items-center gap-2"><Printer className="w-3.5 h-3.5 text-muted-foreground" /> Tradicional</span>
@@ -1051,14 +1051,14 @@ export default function POSPage() {
                                 </Select>
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Próximo comprobante</Label>
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Pr├│ximo comprobante</Label>
                                 {showSeqEditor ? (
                                     <div className="flex gap-1.5">
                                         <Input
                                             autoFocus
                                             type="number"
                                             min={1}
-                                            placeholder="Número inicio"
+                                            placeholder="N├║mero inicio"
                                             className="h-10 text-xs font-mono font-bold bg-white border-border/60 rounded-xl"
                                             value={seqEditValue}
                                             onChange={e => setSeqEditValue(e.target.value)}
@@ -1158,8 +1158,8 @@ export default function POSPage() {
                                 <div className="w-20 h-20 rounded-3xl bg-muted/30 flex items-center justify-center mb-6">
                                     <ShoppingBag className="w-10 h-10 opacity-30" />
                                 </div>
-                                <h3 className="text-sm font-bold text-muted-foreground/60 mb-2">Carrito vacío</h3>
-                                <p className="text-[11px] font-bold leading-relaxed max-w-[200px] uppercase tracking-tighter">Selecciona productos del catálogo para iniciar una venta.</p>
+                                <h3 className="text-sm font-bold text-muted-foreground/60 mb-2">Carrito vac├¡o</h3>
+                                <p className="text-[11px] font-bold leading-relaxed max-w-[200px] uppercase tracking-tighter">Selecciona productos del cat├ílogo para iniciar una venta.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -1257,17 +1257,17 @@ export default function POSPage() {
                             {shiftOpen ? <ShoppingCart className="w-5 h-5 ml-2" /> : <Lock className="w-5 h-5 ml-2" />}
                         </Button>
                         <div className="flex items-center justify-between text-[11px] px-2 font-bold uppercase tracking-wider text-muted-foreground/60">
-                            <span>{cart.length} Artículos</span>
+                            <span>{cart.length} Art├¡culos</span>
                             <button onClick={() => setCart([])} className="hover:text-destructive transition-colors">Cancelar venta</button>
                         </div>
                     </div>
                 </div>
 
-                {/* ── New Product Modal ────────────────────────────────────────────── */}
+                {/* ÔöÇÔöÇ New Product Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 <Dialog open={showNewProductModal} onOpenChange={setShowNewProductModal}>
                     <DialogContent className="sm:max-w-[450px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
-                            <DialogTitle className="text-xl font-bold text-foreground tracking-tight">Nuevo producto rápido</DialogTitle>
+                            <DialogTitle className="text-xl font-bold text-foreground tracking-tight">Nuevo producto r├ípido</DialogTitle>
                         </div>
                         <div className="p-8 space-y-5">
                             <div className="space-y-2">
@@ -1291,7 +1291,7 @@ export default function POSPage() {
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categoría</Label>
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categor├¡a</Label>
                                     <Select value={newProdCat} onValueChange={setNewProdCat}>
                                         <SelectTrigger className="h-12 bg-white border-border/60 rounded-xl text-sm font-bold">
                                             <SelectValue />
@@ -1312,13 +1312,13 @@ export default function POSPage() {
                                 className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase rounded-xl shadow-brand"
                                 onClick={handleNewProduct}
                             >
-                                Añadir a la venta
+                                A├▒adir a la venta
                             </Button>
                         </div>
                     </DialogContent>
                 </Dialog>
 
-                {/* ── Custom Service Modal (ephemeral: cart only, not catalog) ─────── */}
+                {/* ÔöÇÔöÇ Custom Service Modal (ephemeral: cart only, not catalog) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 <Dialog open={showNewServiceModal} onOpenChange={setShowNewServiceModal}>
                     <DialogContent className="sm:max-w-[420px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center gap-3">
@@ -1379,7 +1379,7 @@ export default function POSPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* ── New Client Modal ────────────────────────────────────────────── */}
+                {/* ÔöÇÔöÇ New Client Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 <Dialog open={showNewClientModal} onOpenChange={setShowNewClientModal}>
                     <DialogContent className="sm:max-w-[450px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/80 border-b border-border/40 flex items-center justify-between">
@@ -1387,7 +1387,7 @@ export default function POSPage() {
                         </div>
                         <div className="p-8 space-y-5">
                             <div className="space-y-2">
-                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nombre / Razón Social</Label>
+                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Nombre / Raz├│n Social</Label>
                                 <Input
                                     placeholder="Ej: Juan Perez"
                                     className="h-12 text-sm font-medium bg-white border-border/60 rounded-xl focus-visible:ring-primary shadow-sm"
@@ -1397,7 +1397,7 @@ export default function POSPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Cédula o RNC</Label>
+                                    <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">C├®dula o RNC</Label>
                                     <Input
                                         placeholder="402XXXXXXX"
                                         className="h-12 font-mono text-sm bg-white border-border/60 rounded-xl focus-visible:ring-primary shadow-sm"
@@ -1429,7 +1429,7 @@ export default function POSPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* ── Payment Modal ────────────────────────────────────────────── */}
+                {/* ÔöÇÔöÇ Payment Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 <Dialog open={showPayModal} onOpenChange={setShowPayModal}>
                     <DialogContent className="sm:max-w-[700px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-3xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
@@ -1449,11 +1449,11 @@ export default function POSPage() {
                                     <div className="grid grid-cols-3 gap-5">
                                         {[
                                             { id: 'efectivo', label: 'Efectivo', icon: DollarSign },
-                                            { id: 'tarjeta-credito', label: 'Tarjeta de crédito', icon: CreditCard },
+                                            { id: 'tarjeta-credito', label: 'Tarjeta de cr├®dito', icon: CreditCard },
                                             { id: 'transferencia', label: 'Transferencia', icon: RefreshCw },
-                                            { id: 'tarjeta-debito', label: 'Tarjeta débito', icon: CreditCard },
+                                            { id: 'tarjeta-debito', label: 'Tarjeta d├®bito', icon: CreditCard },
                                             { id: 'combinado', label: 'Combinado', icon: DollarSign },
-                                            { id: 'otros', label: 'Otros métodos', icon: Settings },
+                                            { id: 'otros', label: 'Otros m├®todos', icon: Settings },
                                         ].map(m => (
                                             <button
                                                 key={m.id}
@@ -1472,7 +1472,7 @@ export default function POSPage() {
                                         ))}
                                     </div>
                                     <div className="pt-4 flex justify-center">
-                                        <button onClick={() => setShowPayModal(false)} className="text-[11px] font-bold uppercase text-muted-foreground/60 hover:text-foreground tracking-wider border-b border-transparent hover:border-foreground transition-all">Cancelar transacción</button>
+                                        <button onClick={() => setShowPayModal(false)} className="text-[11px] font-bold uppercase text-muted-foreground/60 hover:text-foreground tracking-wider border-b border-transparent hover:border-foreground transition-all">Cancelar transacci├│n</button>
                                     </div>
                                 </div>
                             )}
@@ -1485,7 +1485,7 @@ export default function POSPage() {
                                             <h3 className="text-3xl font-bold text-foreground">{formatCurrency(total)}</h3>
                                         </div>
                                         <button onClick={() => setCheckoutStep("methods")} className="text-xs font-bold text-primary flex items-center gap-2 hover:bg-primary/5 px-4 py-2 rounded-xl transition-all border border-primary/20">
-                                            <RefreshCw className="w-4 h-4" /> Cambiar método
+                                            <RefreshCw className="w-4 h-4" /> Cambiar m├®todo
                                         </button>
                                     </div>
 
@@ -1495,7 +1495,7 @@ export default function POSPage() {
                                                 <div className="space-y-4">
                                                     <div className="grid grid-cols-2 gap-4">
                                                         <div className="space-y-2">
-                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Método</Label>
+                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">M├®todo</Label>
                                                             <Select value={splitMethod} onValueChange={setSplitMethod}>
                                                                 <SelectTrigger className="h-12 border-border/60 rounded-xl font-bold bg-white">
                                                                     <SelectValue />
@@ -1566,7 +1566,7 @@ export default function POSPage() {
 
                                                     {paymentMethod === 'efectivo' && (
                                                         <div className="space-y-3">
-                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Acceso rápido</Label>
+                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Acceso r├ípido</Label>
                                                             <div className="flex flex-wrap gap-2">
                                                                 {[Math.ceil(total), 100, 200, 500, 1000, 2000].map(val => (
                                                                     <button
@@ -1599,7 +1599,7 @@ export default function POSPage() {
                                                 </Select>
                                             </div>
                                             <div className="space-y-3">
-                                                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Observación</Label>
+                                                <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Observaci├│n</Label>
                                                 <textarea
                                                     className="w-full h-24 bg-white border border-border/60 rounded-2xl p-4 text-sm font-medium focus:ring-primary outline-none resize-none shadow-sm"
                                                     placeholder="..."
@@ -1640,7 +1640,7 @@ export default function POSPage() {
                                         <Check className="w-14 h-14 relative z-10" />
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-3xl font-bold text-foreground tracking-tight">¡Pago confirmado!</h3>
+                                        <h3 className="text-3xl font-bold text-foreground tracking-tight">┬íPago confirmado!</h3>
                                         <p className="text-muted-foreground text-sm font-bold bg-muted/30 py-1 px-4 rounded-full inline-block">Factura #{invoiceCreated.id}</p>
                                     </div>
                                     <div className="bg-white/80 border border-border/40 rounded-3xl p-8 flex justify-between items-center text-sm font-bold shadow-xl border-l-4 border-l-primary">
@@ -1652,7 +1652,7 @@ export default function POSPage() {
                                             <Printer className="w-5 h-5" /> Ticket 80mm
                                         </Button>
                                         <Button onClick={() => handlePrint('invoice')} variant="outline" className="flex-1 h-14 border-2 font-bold gap-2 hover:bg-white transition-all rounded-2xl shadow-sm text-xs uppercase tracking-wider text-primary border-primary/20">
-                                            <Printer className="w-5 h-5" /> Factura 8.5×11
+                                            <Printer className="w-5 h-5" /> Factura 8.5├ù11
                                         </Button>
                                         <Button
                                             onClick={() => {
@@ -1676,7 +1676,7 @@ export default function POSPage() {
                     <DialogContent className="sm:max-w-[500px] p-0 overflow-hidden border-none rounded-3xl shadow-3xl glass">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
                             <DialogTitle className="text-xl font-bold text-foreground tracking-tight">
-                                Configuración de POS
+                                Configuraci├│n de POS
                             </DialogTitle>
                         </div>
                         <div className="p-8 space-y-8">
@@ -1684,18 +1684,18 @@ export default function POSPage() {
                                 <Zap className="w-6 h-6 text-primary fill-primary mt-1 shrink-0" />
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between mb-2">
-                                        <h4 className="text-sm font-bold text-foreground tracking-tight uppercase tracking-wider">Modo Venta rápida</h4>
+                                        <h4 className="text-sm font-bold text-foreground tracking-tight uppercase tracking-wider">Modo Venta r├ípida</h4>
                                         <input type="checkbox" className="w-8 h-4 rounded-full accent-primary" />
                                     </div>
                                     <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
-                                        Las facturas se cobrarán automáticamente con el método predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
+                                        Las facturas se cobrar├ín autom├íticamente con el m├®todo predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
                                     </p>
                                 </div>
                             </div>
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Método de pago por defecto</Label>
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">M├®todo de pago por defecto</Label>
                                     <Select>
                                         <SelectTrigger className="h-12 bg-white border-border/60 rounded-xl font-bold">
                                             <SelectValue placeholder="Seleccionar..." />
@@ -1720,7 +1720,7 @@ export default function POSPage() {
                 </Dialog>
 
 
-                {/* ── Hidden Print Ticket (Thermal 80mm) ────────────────────────── */}
+                {/* ÔöÇÔöÇ Hidden Print Ticket (Thermal 80mm) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 {printMode === 'ticket' && (
                     <div id="print-ticket" className="hidden print:block bg-white p-6 w-[80mm] mx-auto text-black font-mono text-[12px] leading-tight">
                         <div className="text-center space-y-2 mb-6">
@@ -1766,7 +1766,7 @@ export default function POSPage() {
                         </div>
 
                         <div className="mt-10 text-center space-y-4">
-                            <p className="text-[10px] font-bold">¡GRACIAS POR SU COMPRA!</p>
+                            <p className="text-[10px] font-bold">┬íGRACIAS POR SU COMPRA!</p>
                             <div className="flex justify-center grayscale opacity-10">
                                 <Zap className="w-12 h-12" />
                             </div>
@@ -1775,7 +1775,7 @@ export default function POSPage() {
                     </div>
                 )}
 
-                {/* ── Hidden Print Invoice (Letter 8.5x11) ────────────────────────── */}
+                {/* ÔöÇÔöÇ Hidden Print Invoice (Letter 8.5x11) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
                 {printMode === 'invoice' && invoiceCreated && (() => {
                     const ActiveTemplate = INVOICE_TEMPLATES[globalTemplateId as keyof typeof INVOICE_TEMPLATES] || InvoiceStandard;
                     return (

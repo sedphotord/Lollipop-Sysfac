@@ -124,7 +124,7 @@ export default function SettingsPage() {
                     <TabsTrigger value="roles" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Shield className="w-4 h-4 mr-2" /> Roles</TabsTrigger>
                 </TabsList>
 
-                {/* ═══════════════════════════════════════ EMPRESA TAB ═══════════════════════════════════════ */}
+                {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ EMPRESA TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
                 <TabsContent value="empresa" className="mt-6 space-y-6">
                     {/* Logo Upload */}
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
@@ -223,18 +223,18 @@ export default function SettingsPage() {
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-lg group-hover:text-blue-600 transition-colors">Constructor de Plantillas PDF</h3>
-                                        <p className="text-sm text-muted-foreground mt-0.5">Diseña visualmente tus facturas y ajusta columnas, colores y tipografía.</p>
+                                        <p className="text-sm text-muted-foreground mt-0.5">Dise├▒a visualmente tus facturas y ajusta columnas, colores y tipograf├¡a.</p>
                                     </div>
                                 </div>
                                 <Button variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
-                                    →
+                                    ÔåÆ
                                 </Button>
                             </CardContent>
                         </Link>
                     </Card>
                 </TabsContent>
 
-                {/* ═══════════════════════════════════════ DOCUMENTOS TAB ═══════════════════════════════════════ */}
+                {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ DOCUMENTOS TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
                 <TabsContent value="documentos" className="mt-6 space-y-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
@@ -343,33 +343,33 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* ═══════════════════════════════════════ FACTURACION TAB ═══════════════════════════════════════ */}
+                {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ FACTURACION TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
                 <TabsContent value="facturacion" className="mt-6 space-y-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle>Régimen y Modalidad de Facturación</CardTitle>
-                            <CardDescription>Selecciona si tu empresa opera bajo Facturación Electrónica (e-CF) o si usas NCFs tradicionales.</CardDescription>
+                            <CardTitle>R├®gimen y Modalidad de Facturaci├│n</CardTitle>
+                            <CardDescription>Selecciona si tu empresa opera bajo Facturaci├│n Electr├│nica (e-CF) o si usas NCFs tradicionales.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
-                                <Label>Modalidad de Emisión</Label>
+                                <Label>Modalidad de Emisi├│n</Label>
                                 <Select value={invoiceMode} onValueChange={(v: 'tradicional' | 'electronico') => setInvoiceMode(v)}>
                                     <SelectTrigger className="w-full md:w-1/2">
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="electronico">Facturación Electrónica DGII (e-CF)</SelectItem>
-                                        <SelectItem value="tradicional">Facturación Tradicional (Impresora Fiscal / Pre-impreso B01)</SelectItem>
+                                        <SelectItem value="electronico">Facturaci├│n Electr├│nica DGII (e-CF)</SelectItem>
+                                        <SelectItem value="tradicional">Facturaci├│n Tradicional (Impresora Fiscal / Pre-impreso B01)</SelectItem>
                                     </SelectContent>
                                 </Select>
                                 {invoiceMode === 'tradicional' && (
                                     <p className="text-sm text-muted-foreground mt-2 border-l-2 border-amber-500 pl-3">
-                                        Se generarán comprobantes con la estructura tradicional (ej. B0100000001). Debes reportar tu formato 607 mensualmente.
+                                        Se generar├ín comprobantes con la estructura tradicional (ej. B0100000001). Debes reportar tu formato 607 mensualmente.
                                     </p>
                                 )}
                                 {invoiceMode === 'electronico' && (
                                     <p className="text-sm text-muted-foreground mt-2 border-l-2 border-blue-500 pl-3">
-                                        Se generarán comprobantes electrónicos (ej. E310000000001). Certificación automatizada con conexión DGII.
+                                        Se generar├ín comprobantes electr├│nicos (ej. E310000000001). Certificaci├│n automatizada con conexi├│n DGII.
                                     </p>
                                 )}
                             </div>
@@ -405,7 +405,7 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* ═══════════════════════════════════════ CERTIFICACION TAB ═══════════════════════════════════════ */}
+                {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ CERTIFICACION TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
                 <TabsContent value="certificacion" className="mt-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
@@ -434,7 +434,7 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* ═══════════════════════════════════════ ROLES TAB ═══════════════════════════════════════ */}
+                {/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ ROLES TAB ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */}
                 <TabsContent value="roles" className="mt-6">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Roles Sidebar */}
@@ -464,7 +464,7 @@ export default function SettingsPage() {
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <CardTitle className="text-xl">Permisos: Cajero</CardTitle>
-                                            <CardDescription>Define qué módulos y acciones puede ejecutar este rol.</CardDescription>
+                                            <CardDescription>Define qu├® m├│dulos y acciones puede ejecutar este rol.</CardDescription>
                                         </div>
                                         <Button className="bg-primary hover:bg-primary/90 text-white shadow-md h-9 text-sm">Guardar Permisos</Button>
                                     </div>
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                                         <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Receipt className="w-4 h-4 text-blue-600" />
-                                                <h4 className="font-semibold text-sm">Módulo de Ventas</h4>
+                                                <h4 className="font-semibold text-sm">M├│dulo de Ventas</h4>
                                             </div>
                                             <Switch defaultChecked />
                                         </div>
@@ -492,7 +492,7 @@ export default function SettingsPage() {
                                         <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between opacity-70">
                                             <div className="flex items-center gap-2">
                                                 <Building2 className="w-4 h-4 text-muted-foreground" />
-                                                <h4 className="font-semibold text-sm">Módulo de Compras / Gastos</h4>
+                                                <h4 className="font-semibold text-sm">M├│dulo de Compras / Gastos</h4>
                                             </div>
                                             <Switch checked={false} />
                                         </div>

@@ -18,7 +18,7 @@ const MOCK_INVOICES = [
     { id: "IR-17", proveedor: "OFICINA VIRTUAL DGII", rnc: "401000004", fecha: "2024-09-30", vencimiento: "2024-10-15", total: 9550, pendiente: 9550 },
 ];
 
-const METODOS = ["Transferencia", "Efectivo", "Cheque", "Tarjeta de Crédito", "Nota de Crédito"];
+const METODOS = ["Transferencia", "Efectivo", "Cheque", "Tarjeta de Cr├®dito", "Nota de Cr├®dito"];
 const BANCOS = ["Banco Popular", "Banreservas", "BHD", "Scotiabank", "Caja Chica"];
 
 function EgresoBuilderContent() {
@@ -195,7 +195,7 @@ function EgresoBuilderContent() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium flex items-center gap-1.5"><CreditCard className="w-3.5 h-3.5" /> Método de Pago *</Label>
+                            <Label className="text-sm font-medium flex items-center gap-1.5"><CreditCard className="w-3.5 h-3.5" /> M├®todo de Pago *</Label>
                             <Select value={metodo} onValueChange={setMetodo}>
                                 <SelectTrigger className="h-10"><SelectValue placeholder="Selecciona..." /></SelectTrigger>
                                 <SelectContent>
@@ -248,7 +248,7 @@ function EgresoBuilderContent() {
                                 <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-4">
                                     <Building2 className="w-8 h-8 text-muted-foreground/50" />
                                 </div>
-                                <h4 className="font-semibold text-muted-foreground">Ningún proveedor seleccionado</h4>
+                                <h4 className="font-semibold text-muted-foreground">Ning├║n proveedor seleccionado</h4>
                                 <p className="text-sm text-muted-foreground mt-1 max-w-sm">Selecciona un proveedor en el panel izquierdo para ver sus facturas por pagar (CXP).</p>
                             </div>
                         ) : invoices.length === 0 ? (
@@ -324,7 +324,7 @@ function EgresoBuilderContent() {
                                         {/* ITBIS */}
                                         <div className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <Label className="text-sm font-medium text-emerald-800">% Retención ITBIS</Label>
+                                                <Label className="text-sm font-medium text-emerald-800">% Retenci├│n ITBIS</Label>
                                                 <Select value={retencionItbisPct} onValueChange={setRetencionItbisPct}>
                                                     <SelectTrigger className="w-[120px] h-8 bg-white"><SelectValue placeholder="0%" /></SelectTrigger>
                                                     <SelectContent>
@@ -345,13 +345,13 @@ function EgresoBuilderContent() {
                                                     onChange={e => setRetencionItbisVal(e.target.value)}
                                                 />
                                             </div>
-                                            <p className="text-[10px] text-muted-foreground leading-tight">Valor retenido del ITBIS facturado. Se descontará del total a pagar al proveedor.</p>
+                                            <p className="text-[10px] text-muted-foreground leading-tight">Valor retenido del ITBIS facturado. Se descontar├í del total a pagar al proveedor.</p>
                                         </div>
 
                                         {/* ISR */}
                                         <div className="space-y-4">
                                             <div className="flex items-center justify-between">
-                                                <Label className="text-sm font-medium text-emerald-800">% Retención ISR</Label>
+                                                <Label className="text-sm font-medium text-emerald-800">% Retenci├│n ISR</Label>
                                                 <Select value={retencionIsrPct} onValueChange={setRetencionIsrPct}>
                                                     <SelectTrigger className="w-[120px] h-8 bg-white"><SelectValue placeholder="0%" /></SelectTrigger>
                                                     <SelectContent>

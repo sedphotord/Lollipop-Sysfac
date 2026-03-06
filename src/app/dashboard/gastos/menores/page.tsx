@@ -23,15 +23,15 @@ type GastoMenor = {
     monto: number; pagadoPor: string; reembolsado: boolean;
 };
 
-const CATEGORIAS = ["Alimentación", "Transporte", "Papelería", "Limpieza", "Mensajería", "Emergencias", "Telefonía", "Otro"];
+const CATEGORIAS = ["Alimentaci├│n", "Transporte", "Papeler├¡a", "Limpieza", "Mensajer├¡a", "Emergencias", "Telefon├¡a", "Otro"];
 
 const SAMPLE: GastoMenor[] = [
-    { id: "1", fecha: "2025-03-05", descripcion: "Almuerzo reunión cliente", categoria: "Alimentación", monto: 2500, pagadoPor: "Juan Pérez", reembolsado: true },
-    { id: "2", fecha: "2025-03-06", descripcion: "Taxi aeropuerto", categoria: "Transporte", monto: 1800, pagadoPor: "Ana García", reembolsado: false },
-    { id: "3", fecha: "2025-03-07", descripcion: "Papel carta y tóner", categoria: "Papelería", monto: 3200, pagadoPor: "Roberto Méndez", reembolsado: false },
+    { id: "1", fecha: "2025-03-05", descripcion: "Almuerzo reuni├│n cliente", categoria: "Alimentaci├│n", monto: 2500, pagadoPor: "Juan P├®rez", reembolsado: true },
+    { id: "2", fecha: "2025-03-06", descripcion: "Taxi aeropuerto", categoria: "Transporte", monto: 1800, pagadoPor: "Ana Garc├¡a", reembolsado: false },
+    { id: "3", fecha: "2025-03-07", descripcion: "Papel carta y t├│ner", categoria: "Papeler├¡a", monto: 3200, pagadoPor: "Roberto M├®ndez", reembolsado: false },
 ];
 
-const EMPTY = { fecha: new Date().toISOString().split("T")[0], descripcion: "", categoria: "Alimentación", monto: "", pagadoPor: "" };
+const EMPTY = { fecha: new Date().toISOString().split("T")[0], descripcion: "", categoria: "Alimentaci├│n", monto: "", pagadoPor: "" };
 
 export default function GastosMenoresPage() {
     const [list, setList] = useState<GastoMenor[]>([]);
@@ -103,9 +103,9 @@ export default function GastosMenoresPage() {
                             <Input placeholder="Buscar..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
                         </div>
                         <Select value={filterCat} onValueChange={setFilterCat}>
-                            <SelectTrigger className="w-44"><SelectValue placeholder="Categoría" /></SelectTrigger>
+                            <SelectTrigger className="w-44"><SelectValue placeholder="Categor├¡a" /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="todos">Todas las categorías</SelectItem>
+                                <SelectItem value="todos">Todas las categor├¡as</SelectItem>
                                 {CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                             </SelectContent>
                         </Select>
@@ -115,8 +115,8 @@ export default function GastosMenoresPage() {
                             <TableHeader className="bg-muted/50">
                                 <TableRow>
                                     <TableHead>Fecha</TableHead>
-                                    <TableHead>Descripción</TableHead>
-                                    <TableHead>Categoría</TableHead>
+                                    <TableHead>Descripci├│n</TableHead>
+                                    <TableHead>Categor├¡a</TableHead>
                                     <TableHead>Pagado por</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
                                     <TableHead>Estado</TableHead>
@@ -157,14 +157,14 @@ export default function GastosMenoresPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Fecha</Label><Input type="date" value={form.fecha} onChange={e => set("fecha")(e.target.value)} /></div>
                             <div className="space-y-2">
-                                <Label>Categoría</Label>
+                                <Label>Categor├¡a</Label>
                                 <Select value={form.categoria} onValueChange={set("categoria")}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>{CATEGORIAS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                         </div>
-                        <div className="space-y-2"><Label>Descripción *</Label><Input placeholder="Almuerzo reunión, taxi, etc." value={form.descripcion} onChange={e => set("descripcion")(e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Descripci├│n *</Label><Input placeholder="Almuerzo reuni├│n, taxi, etc." value={form.descripcion} onChange={e => set("descripcion")(e.target.value)} /></div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Monto (RD$) *</Label><Input type="number" placeholder="0.00" value={form.monto} onChange={e => set("monto")(e.target.value)} /></div>
                             <div className="space-y-2"><Label>Pagado por</Label><Input placeholder="Nombre del empleado" value={form.pagadoPor} onChange={e => set("pagadoPor")(e.target.value)} /></div>

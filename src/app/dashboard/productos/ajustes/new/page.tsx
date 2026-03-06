@@ -15,19 +15,19 @@ import { cn } from "@/lib/utils";
 // Mock Products Catalog for selection
 const MOCK_PRODUCTS = [
     { id: "P-001", code: "LT-XPS15", name: "Laptop Dell XPS 15", price: 125000, cost: 95000, stock: 15, unit: "und" },
-    { id: "P-002", code: "KB-LOGI", name: "Teclado Mecánico Logitech", price: 4500, cost: 2800, stock: 42, unit: "und" },
+    { id: "P-002", code: "KB-LOGI", name: "Teclado Mec├ínico Logitech", price: 4500, cost: 2800, stock: 42, unit: "und" },
     { id: "P-003", code: "MO-SM27", name: "Monitor Samsung 27\"", price: 18500, cost: 14000, stock: 8, unit: "und" },
     { id: "P-004", code: "UP-APC", name: "UPS APC 1500VA", price: 9550, cost: 7200, stock: 24, unit: "und" },
     { id: "P-005", code: "MA-APL", name: "Apple Magic Mouse", price: 5500, cost: 4100, stock: 30, unit: "und" },
 ];
 
-const ALMACENES = ["Principal", "Tienda Norte", "Almacén Secundario", "Vehículo Reparto"];
+const ALMACENES = ["Principal", "Tienda Norte", "Almac├®n Secundario", "Veh├¡culo Reparto"];
 const MOTIVOS = [
-    "Conteo Físico (Inventario)",
-    "Mercancía Dañada / Avería",
+    "Conteo F├¡sico (Inventario)",
+    "Mercanc├¡a Da├▒ada / Aver├¡a",
     "Uso Interno de la Empresa",
-    "Mercancía Vencida",
-    "Pérdida / Robo",
+    "Mercanc├¡a Vencida",
+    "P├®rdida / Robo",
     "Ajuste Inicial de Sistema"
 ];
 
@@ -120,7 +120,7 @@ function AjusteBuilderContent() {
                             {tipo === 'incremento' ? <ArrowDown className="w-5 h-5 text-emerald-600" /> : <ArrowUp className="w-5 h-5 text-rose-600" />}
                             Nuevo Ajuste de Inventario
                         </h1>
-                        <p className="text-sm text-muted-foreground">Incrementa o reduce mercancía sin generar factura.</p>
+                        <p className="text-sm text-muted-foreground">Incrementa o reduce mercanc├¡a sin generar factura.</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ function AjusteBuilderContent() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label className="text-sm font-medium flex items-center gap-1.5"><Box className="w-3.5 h-3.5" /> Almacén Afectado *</Label>
+                            <Label className="text-sm font-medium flex items-center gap-1.5"><Box className="w-3.5 h-3.5" /> Almac├®n Afectado *</Label>
                             <Select value={almacen} onValueChange={setAlmacen}>
                                 <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
                                 <SelectContent>
@@ -176,7 +176,7 @@ function AjusteBuilderContent() {
                         <div className="space-y-2">
                             <Label className="text-sm font-medium flex items-center gap-1.5"><FileText className="w-3.5 h-3.5" /> Motivo del Ajuste *</Label>
                             <Select value={motivo} onValueChange={setMotivo}>
-                                <SelectTrigger className="h-10"><SelectValue placeholder="Seleccione la razón" /></SelectTrigger>
+                                <SelectTrigger className="h-10"><SelectValue placeholder="Seleccione la raz├│n" /></SelectTrigger>
                                 <SelectContent>
                                     {MOTIVOS.map(m => (
                                         <SelectItem key={m} value={m}>{m}</SelectItem>
@@ -189,7 +189,7 @@ function AjusteBuilderContent() {
                             <Label className="text-sm font-medium">Notas Adicionales</Label>
                             <textarea
                                 className="w-full text-sm min-h-[100px] resize-none bg-muted/10 border rounded-xl px-3 py-2 outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all"
-                                placeholder="Justificación o detalles..."
+                                placeholder="Justificaci├│n o detalles..."
                                 value={notas}
                                 onChange={e => setNotas(e.target.value)}
                             />
@@ -203,8 +203,8 @@ function AjusteBuilderContent() {
                         </div>
                         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                             {tipo === 'incremento'
-                                ? "Este monto incrementará la valoración total del inventario en contabilidad."
-                                : "Este monto se registrará como gasto/pérdida afectando los estados financieros."}
+                                ? "Este monto incrementar├í la valoraci├│n total del inventario en contabilidad."
+                                : "Este monto se registrar├í como gasto/p├®rdida afectando los estados financieros."}
                         </p>
                     </div>
                 </div>
@@ -221,7 +221,7 @@ function AjusteBuilderContent() {
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Buscar producto a modificar por nombre o código..."
+                                    placeholder="Buscar producto a modificar por nombre o c├│digo..."
                                     value={searchQuery}
                                     onChange={e => { setSearchQuery(e.target.value); setShowProducts(true); }}
                                     onFocus={() => setShowProducts(true)}
@@ -252,7 +252,7 @@ function AjusteBuilderContent() {
                                                         <div className="font-semibold text-sm">{prod.name}</div>
                                                         <div className="text-xs text-muted-foreground flex gap-2">
                                                             <span className="font-mono">{prod.code}</span>
-                                                            <span>•</span>
+                                                            <span>ÔÇó</span>
                                                             <span>Disp: {prod.stock}</span>
                                                         </div>
                                                     </div>
@@ -275,7 +275,7 @@ function AjusteBuilderContent() {
                         {items.length === 0 ? (
                             <div className="border-2 border-dashed rounded-xl py-16 flex flex-col items-center justify-center text-muted-foreground/50 bg-muted/5">
                                 <Box className="w-12 h-12 mb-4" />
-                                <p className="font-medium text-foreground">Aún no hay productos en la lista</p>
+                                <p className="font-medium text-foreground">A├║n no hay productos en la lista</p>
                                 <p className="text-sm mt-1 max-w-sm text-center">Busca y selecciona los productos a los que deseas realizar el ajuste de inventario.</p>
                             </div>
                         ) : (
@@ -347,7 +347,7 @@ function AjusteBuilderContent() {
                             <div className="mt-4 p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3">
                                 <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                                 <div className="text-sm text-amber-900">
-                                    <span className="font-bold">Advertencia:</span> Revisar los costos unitarios es crucial. El costo reflejado es el promedio ponderado actual. Modificarlo cambiará el impacto financiero en el diario contable.
+                                    <span className="font-bold">Advertencia:</span> Revisar los costos unitarios es crucial. El costo reflejado es el promedio ponderado actual. Modificarlo cambiar├í el impacto financiero en el diario contable.
                                 </div>
                             </div>
                         )}

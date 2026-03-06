@@ -74,7 +74,7 @@ export default function VendedoresPOSPage() {
                 {[
                     { l: "Total Vendedores", v: list.length.toString(), c: "text-blue-600 bg-blue-500/10", i: UserGroupIcon },
                     { l: "Ventas del Equipo", v: `RD$ ${totalVentasSum.toLocaleString()}`, c: "text-emerald-600 bg-emerald-500/10", i: BanknotesIcon },
-                    { l: "Top Vendedor", v: topVendedor?.nombre?.split(" ")[0] || "—", c: "text-amber-600 bg-amber-500/10", i: StarIcon },
+                    { l: "Top Vendedor", v: topVendedor?.nombre?.split(" ")[0] || "ÔÇö", c: "text-amber-600 bg-amber-500/10", i: StarIcon },
                 ].map((k, i) => {
                     const Ic = k.i; return (
                         <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
@@ -114,7 +114,7 @@ export default function VendedoresPOSPage() {
                                                 {v.activo ? "Activo" : "Inactivo"}
                                             </Badge>
                                         </div>
-                                        <p className="text-xs text-muted-foreground">{v.email} {v.pin && `· PIN: ${v.pin}`}</p>
+                                        <p className="text-xs text-muted-foreground">{v.email} {v.pin && `┬À PIN: ${v.pin}`}</p>
                                         <div className="mt-2">
                                             <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
                                                 <span>{pct}% de meta</span>
@@ -152,14 +152,14 @@ export default function VendedoresPOSPage() {
                 <DialogContent className="sm:max-w-[440px]">
                     <DialogHeader><DialogTitle>Nuevo Vendedor POS</DialogTitle></DialogHeader>
                     <div className="grid gap-4 py-2">
-                        <div className="space-y-2"><Label>Nombre completo *</Label><Input placeholder="Juan Pérez" value={form.nombre} onChange={e => set("nombre")(e.target.value)} /></div>
+                        <div className="space-y-2"><Label>Nombre completo *</Label><Input placeholder="Juan P├®rez" value={form.nombre} onChange={e => set("nombre")(e.target.value)} /></div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Email</Label><Input type="email" placeholder="juan@empresa.com" value={form.email} onChange={e => set("email")(e.target.value)} /></div>
-                            <div className="space-y-2"><Label>Teléfono</Label><Input placeholder="809-555-0100" value={form.telefono} onChange={e => set("telefono")(e.target.value)} /></div>
+                            <div className="space-y-2"><Label>Tel├®fono</Label><Input placeholder="809-555-0100" value={form.telefono} onChange={e => set("telefono")(e.target.value)} /></div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2"><Label>Meta Mensual (RD$)</Label><Input type="number" placeholder="150000" value={form.meta} onChange={e => set("meta")(e.target.value)} /></div>
-                            <div className="space-y-2"><Label>PIN de Acceso POS</Label><Input placeholder="4 dígitos" maxLength={4} value={form.pin} onChange={e => set("pin")(e.target.value)} /></div>
+                            <div className="space-y-2"><Label>PIN de Acceso POS</Label><Input placeholder="4 d├¡gitos" maxLength={4} value={form.pin} onChange={e => set("pin")(e.target.value)} /></div>
                         </div>
                     </div>
                     <div className="flex justify-end gap-3 pt-2">

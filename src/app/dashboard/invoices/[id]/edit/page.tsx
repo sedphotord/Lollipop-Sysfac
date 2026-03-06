@@ -22,17 +22,17 @@ import { cn } from "@/lib/utils";
 import { generateNextNCF } from "@/lib/ncf";
 import { MOCK_INVOICES } from "@/lib/mock-invoices";
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  MOCK DATA
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const DEFAULT_CLIENTS = [
-    { id: "1", rnc: "101010101", name: "COMPAÑIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo", email: "facturacion@claro.com.do", phone: "809-220-0000", address: "Av. John F. Kennedy 27, Santo Domingo" },
-    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona Física", status: "Activo", email: "jperez@gmail.com", phone: "829-555-1234", address: "C/ Las Mercedes 12, Santiago" },
+    { id: "1", rnc: "101010101", name: "COMPA├æIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo", email: "facturacion@claro.com.do", phone: "809-220-0000", address: "Av. John F. Kennedy 27, Santo Domingo" },
+    { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona F├¡sica", status: "Activo", email: "jperez@gmail.com", phone: "829-555-1234", address: "C/ Las Mercedes 12, Santiago" },
     { id: "3", rnc: "130819985", name: "ALTICE DOMINICANA S.A.", trade: "ALTICE", type: "SRL", status: "Activo", email: "cxp@altice.com.do", phone: "809-200-1111", address: "Av. 27 de Febrero 450, Santo Domingo" },
 ];
 
 const MOCK_PRODUCTS = [
-    { id: "1", code: "SRV-001", name: "Consultoría IT", price: 5000, itbis: 18 },
+    { id: "1", code: "SRV-001", name: "Consultor├¡a IT", price: 5000, itbis: 18 },
     { id: "2", code: "PRD-002", name: "Laptop Dell XPS 15", price: 85000, itbis: 18 },
     { id: "3", code: "SFT-007", name: "Licencia Microsoft Office 365", price: 6500, itbis: 18 },
     { id: "4", code: "PRD-003", name: "Libro de Contabilidad", price: 1500, itbis: 0 },
@@ -40,15 +40,15 @@ const MOCK_PRODUCTS = [
 
 const TIPOS = [
     // Tradicional
-    { code: "B01", name: "Crédito Fiscal" },
+    { code: "B01", name: "Cr├®dito Fiscal" },
     { code: "B02", name: "Consumo" },
     { code: "B14", name: "Gubernamental" },
-    { code: "B15", name: "Exportación" },
-    // Electrónico (e-CF)
-    { code: "E31", name: "Crédito Fiscal (e-CF)" },
+    { code: "B15", name: "Exportaci├│n" },
+    // Electr├│nico (e-CF)
+    { code: "E31", name: "Cr├®dito Fiscal (e-CF)" },
     { code: "E32", name: "Consumidor Final (e-CF)" },
     { code: "E44", name: "Gubernamental (e-CF)" },
-    { code: "E45", name: "Exportación (e-CF)" },
+    { code: "E45", name: "Exportaci├│n (e-CF)" },
 ];
 
 // NCF series starting numbers per type
@@ -63,26 +63,26 @@ const NCF_SERIES: Record<string, string> = {
 const PAYMENT_TERMS = [
     "Vencimiento manual",
     "De contado",
-    "Neto 15 días",
-    "Neto 30 días",
-    "Neto 60 días",
+    "Neto 15 d├¡as",
+    "Neto 30 d├¡as",
+    "Neto 60 d├¡as",
 ];
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  TYPES
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 type Client = typeof DEFAULT_CLIENTS[0];
 type Item = { id: number; name: string; ref: string; qty: number; price: number; disc: number; itbis: number; desc: string };
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  NEW CONTACT DIALOG (inline, not a Dialog component to avoid accessibility warning)
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; onCancel: () => void }) {
     const [tab, setTab] = useState<"cliente" | "proveedor">("cliente");
     const [form, setForm] = useState({ rnc: "", name: "", trade: "", type: "RNC", email: "", phone: "", address: "", municipio: "" });
     const set = (k: keyof typeof form) => (v: string) => setForm(p => ({ ...p, [k]: v }));
 
-    const MUNICIPIOS = ["Santo Domingo", "Santiago", "San Cristóbal", "La Vega", "Puerto Plata", "San Pedro de Macorís", "Higüey", "Barahona", "Moca", "Bonao"];
+    const MUNICIPIOS = ["Santo Domingo", "Santiago", "San Crist├│bal", "La Vega", "Puerto Plata", "San Pedro de Macor├¡s", "Hig├╝ey", "Barahona", "Moca", "Bonao"];
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onCancel}>
@@ -101,22 +101,22 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
                 </div>
                 <div className="px-6 py-4 grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                        <Label className="text-xs">Tipo de identificación</Label>
+                        <Label className="text-xs">Tipo de identificaci├│n</Label>
                         <Select value={form.type} onValueChange={set("type")}>
                             <SelectTrigger className="h-9"><SelectValue placeholder="Seleccionar" /></SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="RNC">RNC</SelectItem>
-                                <SelectItem value="Cedula">Cédula</SelectItem>
+                                <SelectItem value="Cedula">C├®dula</SelectItem>
                                 <SelectItem value="Pasaporte">Pasaporte</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs">Número</Label>
+                        <Label className="text-xs">N├║mero</Label>
                         <Input placeholder="" value={form.rnc} onChange={e => set("rnc")(e.target.value)} className="h-9" />
                     </div>
                     <div className="col-span-2 space-y-1.5">
-                        <Label className="text-xs">Nombre o Razón social *</Label>
+                        <Label className="text-xs">Nombre o Raz├│n social *</Label>
                         <Input placeholder="" value={form.name} onChange={e => set("name")(e.target.value)} className="h-9" />
                     </div>
                     <div className="space-y-1.5">
@@ -129,15 +129,15 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
                         </Select>
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs">Dirección</Label>
+                        <Label className="text-xs">Direcci├│n</Label>
                         <Input placeholder="" value={form.address} onChange={e => set("address")(e.target.value)} className="h-9" />
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs">Correo electrónico</Label>
+                        <Label className="text-xs">Correo electr├│nico</Label>
                         <Input type="email" placeholder="Ejemplo@email.com" value={form.email} onChange={e => set("email")(e.target.value)} className="h-9" />
                     </div>
                     <div className="space-y-1.5">
-                        <Label className="text-xs">Teléfono</Label>
+                        <Label className="text-xs">Tel├®fono</Label>
                         <Input placeholder="___-___-____" value={form.phone} onChange={e => set("phone")(e.target.value)} className="h-9" />
                     </div>
                 </div>
@@ -157,10 +157,10 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
     );
 }
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  HELPERS
-// ─────────────────────────────────────────────
-const CURRENCY_SYMBOLS: Record<string, string> = { DOP: "RD$", USD: "US$", EUR: "€" };
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+const CURRENCY_SYMBOLS: Record<string, string> = { DOP: "RD$", USD: "US$", EUR: "Ôé¼" };
 const DEFAULT_RATES: Record<string, number> = { DOP: 1, USD: 58.5, EUR: 63.5 };
 /** Converts a DOP amount to the display currency and formats it */
 function fmtCurrency(amount: number, moneda: string, rate = 1) {
@@ -169,9 +169,9 @@ function fmtCurrency(amount: number, moneda: string, rate = 1) {
     return `${sym} ${converted.toLocaleString("es-DO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  ITEM ROW
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
     item: Item;
     onUpdate: (field: keyof Item, value: any) => void;
@@ -199,7 +199,7 @@ function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
                     </PopoverTrigger>
                     <PopoverContent className="w-[320px] p-0" align="start" side="bottom">
                         <Command>
-                            <CommandInput placeholder="Buscar en catálogo..." />
+                            <CommandInput placeholder="Buscar en cat├ílogo..." />
                             <CommandList>
                                 <CommandEmpty>No se encontraron productos</CommandEmpty>
                                 <CommandGroup>
@@ -245,7 +245,7 @@ function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
                 </Select>
             </td>
             <td className="py-1.5 px-1.5">
-                <Input value={item.desc} onChange={e => onUpdate("desc", e.target.value)} className="h-8 text-xs min-w-[100px]" placeholder="Descripción adicional" />
+                <Input value={item.desc} onChange={e => onUpdate("desc", e.target.value)} className="h-8 text-xs min-w-[100px]" placeholder="Descripci├│n adicional" />
             </td>
             <td className="py-1.5 px-1.5 w-20">
                 <Input type="number" value={item.qty} onChange={e => onUpdate("qty", Math.max(1, parseFloat(e.target.value) || 1))} className="h-8 text-xs text-right" min={1} />
@@ -262,9 +262,9 @@ function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
     );
 }
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  MAIN COMPONENT (Inner)
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function InvoiceEditorContent({ routeId }: { routeId: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -486,11 +486,11 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
             id: invoiceId,
             ecf: ncf,
             tipo,
-            tipoName: tipo === 'B01' ? 'Crédito Fiscal' : tipo === 'B02' ? 'Consumo' : tipo === 'B14' ? 'Régimen Especial' : tipo === 'B15' ? 'Gubernamental' : tipo,
+            tipoName: tipo === 'B01' ? 'Cr├®dito Fiscal' : tipo === 'B02' ? 'Consumo' : tipo === 'B14' ? 'R├®gimen Especial' : tipo === 'B15' ? 'Gubernamental' : tipo,
             cliente: client?.name || 'Consumidor final',
             rnc: client?.rnc || '',
             date: date || new Date().toLocaleDateString('es-DO'),
-            vencimiento: dueDate || '—',
+            vencimiento: dueDate || 'ÔÇö',
             total: total,
             status: 'pending', // pending DGII acceptance
             paymentStatus: 'pendiente',
@@ -582,13 +582,13 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                 </div>
             )}
 
-            {/* ── Exit Confirmation Modal ── */}
+            {/* ÔöÇÔöÇ Exit Confirmation Modal ÔöÇÔöÇ */}
             {showExitModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowExitModal(false)}>
                     <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
                         <div className="px-6 pt-6 pb-4">
-                            <h2 className="font-bold text-lg text-foreground">¿Salir de la factura?</h2>
-                            <p className="text-sm text-muted-foreground mt-1">Tienes cambios sin guardar. ¿Qué deseas hacer?</p>
+                            <h2 className="font-bold text-lg text-foreground">┬┐Salir de la factura?</h2>
+                            <p className="text-sm text-muted-foreground mt-1">Tienes cambios sin guardar. ┬┐Qu├® deseas hacer?</p>
                         </div>
                         <div className="px-6 pb-6 flex flex-col gap-3">
                             <Button
@@ -624,7 +624,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
             )}
 
             <div className="min-h-screen bg-muted/20">
-                {/* ── Page header ── */}
+                {/* ÔöÇÔöÇ Page header ÔöÇÔöÇ */}
                 <div className="bg-background border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
                     <div className="flex items-center gap-3">
                         <button
@@ -642,11 +642,11 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                     </div>
                 </div>
 
-                {/* ── Top config bar ── */}
+                {/* ÔöÇÔöÇ Top config bar ÔöÇÔöÇ */}
                 <div className="bg-background/80 backdrop-blur-sm border-b px-6 py-2 relative z-30">
                     <div className="max-w-5xl mx-auto flex items-center gap-6">
                         {[
-                            { label: "Almacén", value: almacen, onChange: setAlmacen, options: ["Principal", "Secundario"] },
+                            { label: "Almac├®n", value: almacen, onChange: setAlmacen, options: ["Principal", "Secundario"] },
                         ].map(f => (
                             <div key={f.label} className="flex items-center gap-2">
                                 <Label className="text-xs text-muted-foreground whitespace-nowrap">{f.label}</Label>
@@ -678,7 +678,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                     <SelectValue placeholder="Busca..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {["María López", "Carlos Pérez", "Admin"].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                    {["Mar├¡a L├│pez", "Carlos P├®rez", "Admin"].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
                                 </SelectContent>
                             </Select>
                         </div>
@@ -727,24 +727,24 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="w-56">
-                                    {/* ── Facturas ── */}
-                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📄 Facturas</SelectItem>
-                                    <SelectItem value="InvoiceStandard">Estándar</SelectItem>
+                                    {/* ÔöÇÔöÇ Facturas ÔöÇÔöÇ */}
+                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">­ƒôä Facturas</SelectItem>
+                                    <SelectItem value="InvoiceStandard">Est├índar</SelectItem>
                                     <SelectItem value="InvoiceModern">Moderno</SelectItem>
                                     <SelectItem value="InvoiceCorporate">Corporativo</SelectItem>
                                     <SelectItem value="InvoiceElegant">Elegante</SelectItem>
                                     <SelectItem value="InvoiceMinimal">Minimalista</SelectItem>
-                                    {/* ── Cotizaciones ── */}
-                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📋 Cotizaciones</SelectItem>
-                                    <SelectItem value="QuoteStandard">Cotización Estándar</SelectItem>
-                                    <SelectItem value="QuoteDetailed">Cotización Detallada</SelectItem>
-                                    {/* ── Comprobantes ── */}
-                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">🧾 Comprobantes</SelectItem>
+                                    {/* ÔöÇÔöÇ Cotizaciones ÔöÇÔöÇ */}
+                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">­ƒôï Cotizaciones</SelectItem>
+                                    <SelectItem value="QuoteStandard">Cotizaci├│n Est├índar</SelectItem>
+                                    <SelectItem value="QuoteDetailed">Cotizaci├│n Detallada</SelectItem>
+                                    {/* ÔöÇÔöÇ Comprobantes ÔöÇÔöÇ */}
+                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">­ƒº¥ Comprobantes</SelectItem>
                                     <SelectItem value="PaymentReceipt">Recibo de Pago</SelectItem>
                                     <SelectItem value="TicketPOS">Ticket POS (80mm)</SelectItem>
-                                    {/* ── Documentos ── */}
-                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📦 Documentos</SelectItem>
-                                    <SelectItem value="DeliveryNote">Conduce / Remisión</SelectItem>
+                                    {/* ÔöÇÔöÇ Documentos ÔöÇÔöÇ */}
+                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">­ƒôª Documentos</SelectItem>
+                                    <SelectItem value="DeliveryNote">Conduce / Remisi├│n</SelectItem>
                                     <SelectItem value="AccountStatement">Estado de Cuenta</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -752,10 +752,10 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                     </div>
                 </div>
 
-                {/* ── Main content ── */}
+                {/* ÔöÇÔöÇ Main content ÔöÇÔöÇ */}
                 <div className="max-w-5xl mx-auto px-4 py-6 pb-28 space-y-4">
 
-                    {/* ── Document card ── */}
+                    {/* ÔöÇÔöÇ Document card ÔöÇÔöÇ */}
                     <div className="bg-card border rounded-xl shadow-sm overflow-hidden">
 
                         {/* Header: logo + NCF */}
@@ -774,7 +774,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                     <p className="text-xs text-muted-foreground mt-0.5">RNC: {companyRnc}</p>
                                     {companyAddress && <p className="text-xs text-muted-foreground">{companyAddress}</p>}
                                     {(companyPhone || companyEmail) && (
-                                        <p className="text-xs text-muted-foreground">{[companyPhone, companyEmail].filter(Boolean).join(' · ')}</p>
+                                        <p className="text-xs text-muted-foreground">{[companyPhone, companyEmail].filter(Boolean).join(' ┬À ')}</p>
                                     )}
                                 </div>
                             </div>
@@ -839,7 +839,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                                             onMouseDown={e => { e.preventDefault(); setClient(c); setClientOpen(false); setClientSearch(""); }}
                                                             className="w-full text-left px-4 py-2.5 hover:bg-muted/40 border-b border-border/30 last:border-0 flex flex-col gap-0.5 transition-colors">
                                                             <span className="font-medium text-sm">{c.trade || c.name}</span>
-                                                            <span className="text-xs text-muted-foreground font-mono">{c.name} · RNC {c.rnc}</span>
+                                                            <span className="text-xs text-muted-foreground font-mono">{c.name} ┬À RNC {c.rnc}</span>
                                                         </button>
                                                     ))
                                                 )}
@@ -848,14 +848,14 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                     </div>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground font-medium">RNC o Cédula</Label>
+                                    <Label className="text-xs text-muted-foreground font-medium">RNC o C├®dula</Label>
                                     <div className="relative">
                                         <Input value={client?.rnc || ""} readOnly className="h-8 text-sm bg-muted/20 text-muted-foreground cursor-default" />
                                         <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/40 absolute right-2.5 top-1/2 -translate-y-1/2" />
                                     </div>
                                 </div>
                                 <div className="space-y-1.5">
-                                    <Label className="text-xs text-muted-foreground font-medium">Teléfono</Label>
+                                    <Label className="text-xs text-muted-foreground font-medium">Tel├®fono</Label>
                                     <Input value={client?.phone || ""} readOnly className="h-8 text-sm bg-muted/20 text-muted-foreground cursor-default" />
                                 </div>
                             </div>
@@ -897,7 +897,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                         <th className="py-2.5 px-1.5 text-left">Precio</th>
                                         <th className="py-2.5 px-1.5 text-right w-20">Desc %</th>
                                         <th className="py-2.5 px-1.5 text-left">Impuesto</th>
-                                        <th className="py-2.5 px-1.5 text-left">Descripción</th>
+                                        <th className="py-2.5 px-1.5 text-left">Descripci├│n</th>
                                         <th className="py-2.5 px-1.5 text-right w-20">Cantidad</th>
                                         <th className="py-2.5 px-2 text-right">Total</th>
                                         <th className="w-8" />
@@ -918,7 +918,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                         {/* Add line */}
                         <div className="px-3 py-2 border-b">
                             <button onClick={addItem} className="flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 font-medium transition-colors py-1">
-                                <Plus className="w-4 h-4" /> Agregar línea
+                                <Plus className="w-4 h-4" /> Agregar l├¡nea
                             </button>
                         </div>
 
@@ -934,7 +934,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between mb-2">
                                     <button className="text-primary hover:text-primary/80 flex items-center gap-1 text-xs font-medium">
-                                        <Plus className="w-3.5 h-3.5" /> Agregar Retención
+                                        <Plus className="w-3.5 h-3.5" /> Agregar Retenci├│n
                                     </button>
                                     <button className="text-primary hover:text-primary/80 flex items-center gap-1 text-xs font-medium">
                                         <Plus className="w-3.5 h-3.5" /> Agregar Conduce
@@ -960,10 +960,10 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                         <div className="p-5 grid grid-cols-2 gap-4 border-b">
                             <div className="space-y-1.5">
                                 <Label className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-                                    Términos y condiciones <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/50" />
+                                    T├®rminos y condiciones <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/50" />
                                 </Label>
                                 <textarea value={terms} onChange={e => setTerms(e.target.value)}
-                                    placeholder="Visible en la impresión del documento"
+                                    placeholder="Visible en la impresi├│n del documento"
                                     className="w-full text-sm min-h-[80px] resize-none bg-muted/10 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                             </div>
                             <div className="space-y-1.5">
@@ -977,7 +977,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                         <div className="px-5 py-4 border-b">
                             <Label className="text-xs text-muted-foreground font-medium block mb-1.5">Pie de factura</Label>
                             <textarea value={footer} onChange={e => setFooter(e.target.value)}
-                                placeholder="Visible en la impresión del documento"
+                                placeholder="Visible en la impresi├│n del documento"
                                 className="w-full text-sm min-h-[56px] resize-none bg-muted/10 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary" />
                         </div>
                         <div className="px-5 py-2 text-xs text-muted-foreground/60">
@@ -991,7 +991,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                             <div>
                                 <p className="font-semibold text-sm text-foreground">Pago recibido</p>
                                 <p className="text-xs text-muted-foreground mt-0.5">
-                                    Si te hicieron un pago asociado a esta venta puedes hacer aquí su{" "}
+                                    Si te hicieron un pago asociado a esta venta puedes hacer aqu├¡ su{" "}
                                     <button className="text-primary underline hover:no-underline">registro</button>.
                                 </p>
                             </div>
@@ -1013,7 +1013,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                     </div>
                 </div>
 
-                {/* ── Fixed bottom action bar ── */}
+                {/* ÔöÇÔöÇ Fixed bottom action bar ÔöÇÔöÇ */}
                 <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t shadow-lg px-6 py-3 flex items-center justify-between z-20">
                     <button
                         onClick={() => setShowExitModal(true)}
@@ -1061,7 +1061,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                         <FileText className="w-4 h-4 text-amber-500" />
                                         <div>
                                             <p className="font-semibold text-sm">Guardar borrador</p>
-                                            <p className="text-xs text-muted-foreground">Continuar más tarde</p>
+                                            <p className="text-xs text-muted-foreground">Continuar m├ís tarde</p>
                                         </div>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem className="gap-2.5 cursor-pointer py-2.5" onClick={() => { handleSave(); }}>
@@ -1083,7 +1083,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                         <Mail className="w-4 h-4 text-blue-500" />
                                         <div>
                                             <p className="font-semibold text-sm">Enviar por correo</p>
-                                            <p className="text-xs text-muted-foreground">Próximamente</p>
+                                            <p className="text-xs text-muted-foreground">Pr├│ximamente</p>
                                         </div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
@@ -1093,12 +1093,12 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                 </div>
             </div>
 
-            {/* ── NCF Editar Numeración Modal ── */}
+            {/* ÔöÇÔöÇ NCF Editar Numeraci├│n Modal ÔöÇÔöÇ */}
             {ncfModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setNcfModalOpen(false)}>
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
                         <div className="px-6 pt-5 pb-3 border-b flex items-center justify-between">
-                            <h2 className="font-bold text-base text-slate-800">Editar numeración</h2>
+                            <h2 className="font-bold text-base text-slate-800">Editar numeraci├│n</h2>
                             <button onClick={() => setNcfModalOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X className="w-5 h-5" /></button>
                         </div>
                         <div className="px-6 py-5 space-y-4">
@@ -1107,7 +1107,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                 <span className="font-semibold text-sm">{TIPOS.find(t => t.code === tipo)?.name}</span>
                             </div>
                             <div className="flex justify-between items-center">
-                                <span className="text-sm text-slate-600">Numeración automática:</span>
+                                <span className="text-sm text-slate-600">Numeraci├│n autom├ítica:</span>
                                 <input type="checkbox" checked={ncfForm.autoNum} onChange={e => setNcfForm(p => ({ ...p, autoNum: e.target.checked }))} className="w-4 h-4 accent-primary" />
                             </div>
                             <div className="space-y-1.5">
@@ -1115,7 +1115,7 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
                                 <Input value={ncfForm.tipoNcf} onChange={e => setNcfForm(p => ({ ...p, tipoNcf: e.target.value }))} className="h-10 bg-slate-50" placeholder="PS" />
                             </div>
                             <div className="space-y-1.5">
-                                <Label className="text-xs text-slate-500">Siguiente número: *</Label>
+                                <Label className="text-xs text-slate-500">Siguiente n├║mero: *</Label>
                                 <Input type="number" value={ncfForm.siguienteNum} onChange={e => setNcfForm(p => ({ ...p, siguienteNum: e.target.value }))} className="h-10" min={1} />
                             </div>
                             <div className="space-y-1.5">
@@ -1152,9 +1152,9 @@ function InvoiceEditorContent({ routeId }: { routeId: string }) {
     );
 }
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  PAGE EXPORT (Wrapped in Suspense)
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 export default function InvoiceEditorPage({ params }: { params: Promise<{ id: string }> }) {
     const { id: routeId } = React.use(params);
     return (

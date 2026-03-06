@@ -17,14 +17,14 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 //  MOCK DATA
-// ─────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const INITIAL_DATA = [
     {
-        id: "COT-001", fecha: "18 Oct 2024", cliente: "CLARO", concepto: "Consultoría IT + Equipos", monto: 750000, validez: "02 Nov 2024", status: "enviada",
-        clientData: { name: "COMPAÑIA DOMINICANA DE TELEFONOS S.A.", rnc: "101010101", address: "Av. John F. Kennedy 27, Santo Domingo", phone: "809-220-0000", email: "facturacion@claro.com.do" },
-        items: [{ id: 1, description: "Consultoría IT", qty: 150, price: 5000, discount: 0, tax: 135000, total: 750000 }],
+        id: "COT-001", fecha: "18 Oct 2024", cliente: "CLARO", concepto: "Consultor├¡a IT + Equipos", monto: 750000, validez: "02 Nov 2024", status: "enviada",
+        clientData: { name: "COMPA├æIA DOMINICANA DE TELEFONOS S.A.", rnc: "101010101", address: "Av. John F. Kennedy 27, Santo Domingo", phone: "809-220-0000", email: "facturacion@claro.com.do" },
+        items: [{ id: 1, description: "Consultor├¡a IT", qty: 150, price: 5000, discount: 0, tax: 135000, total: 750000 }],
         totals: { subtotal: 750000, discount: 0, tax: 135000, total: 885000 }
     },
     {
@@ -34,15 +34,15 @@ const INITIAL_DATA = [
         totals: { subtotal: 380000, discount: 0, tax: 68400, total: 448400 }
     },
     {
-        id: "COT-003", fecha: "10 Oct 2024", cliente: "GRUPO RAMOS", concepto: "Implementación ERP", monto: 1200000, validez: "25 Oct 2024", status: "vencida",
+        id: "COT-003", fecha: "10 Oct 2024", cliente: "GRUPO RAMOS", concepto: "Implementaci├│n ERP", monto: 1200000, validez: "25 Oct 2024", status: "vencida",
         clientData: { name: "GRUPO RAMOS", rnc: "130000999", address: "Av. Duarte 100, Santiago", phone: "809-582-0000", email: "" },
-        items: [{ id: 1, description: "Implementación ERP", qty: 1, price: 1200000, discount: 0, tax: 216000, total: 1200000 }],
+        items: [{ id: 1, description: "Implementaci├│n ERP", qty: 1, price: 1200000, discount: 0, tax: 216000, total: 1200000 }],
         totals: { subtotal: 1200000, discount: 0, tax: 216000, total: 1416000 }
     },
     {
-        id: "COT-004", fecha: "22 Oct 2024", cliente: "Pedro Almonte", concepto: "Diseño y Desarrollo Web", monto: 85000, validez: "06 Nov 2024", status: "borrador",
+        id: "COT-004", fecha: "22 Oct 2024", cliente: "Pedro Almonte", concepto: "Dise├▒o y Desarrollo Web", monto: 85000, validez: "06 Nov 2024", status: "borrador",
         clientData: { name: "Pedro Almonte", rnc: "", address: "", phone: "", email: "" },
-        items: [{ id: 1, description: "Diseño Web", qty: 1, price: 85000, discount: 0, tax: 15300, total: 85000 }],
+        items: [{ id: 1, description: "Dise├▒o Web", qty: 1, price: 85000, discount: 0, tax: 15300, total: 85000 }],
         totals: { subtotal: 85000, discount: 0, tax: 15300, total: 100300 }
     },
 ];
@@ -83,9 +83,9 @@ export default function CotizacionesPage() {
                 id: `COT-BORR-${i + 1}`,
                 fecha: new Date().toLocaleDateString('es-DO'),
                 cliente: d.client?.name || 'Sin cliente',
-                concepto: d.items?.[0]?.name || 'Borrador de cotización',
+                concepto: d.items?.[0]?.name || 'Borrador de cotizaci├│n',
                 monto: d.items?.reduce((a: number, it: any) => a + (it.price * it.qty || 0), 0) || 0,
-                validez: '—',
+                validez: 'ÔÇö',
                 status: 'borrador',
                 clientData: d.client || {},
                 items: d.items || [],
@@ -101,8 +101,8 @@ export default function CotizacionesPage() {
         const invoiceFormData = {
             client: quote.clientData,
             items: quote.items,
-            notes: `Convertido desde cotización ${quote.id}`,
-            paymentTerms: "Neto 30 días",
+            notes: `Convertido desde cotizaci├│n ${quote.id}`,
+            paymentTerms: "Neto 30 d├¡as",
             totals: quote.totals,
         };
         sessionStorage.setItem('invoice_from_quote', JSON.stringify(invoiceFormData));
@@ -111,8 +111,8 @@ export default function CotizacionesPage() {
             tipo: "B02", ncf: "PS000000001",
             date: new Date().toISOString().split("T")[0],
             dueDate: `${new Date().getFullYear()}-12-31`,
-            paymentTerms: "Neto 30 días",
-            notes: `Convertido desde cotización ${quote.id}`,
+            paymentTerms: "Neto 30 d├¡as",
+            notes: `Convertido desde cotizaci├│n ${quote.id}`,
             client: quote.clientData,
             items: quote.items,
             totals: quote.totals,
@@ -133,11 +133,11 @@ export default function CotizacionesPage() {
             <div className="flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Cotizaciones</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Crea proformas y conviértelas fácilmente en facturas e-CF.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Crea proformas y convi├®rtelas f├ícilmente en facturas e-CF.</p>
                 </div>
                 <Link href="/dashboard/ingresos/cotizaciones/new">
                     <Button className="bg-gradient-brand border-0 text-white shadow-lg gap-2">
-                        <Plus className="w-4 h-4" /> Nueva Cotización
+                        <Plus className="w-4 h-4" /> Nueva Cotizaci├│n
                     </Button>
                 </Link>
             </div>
@@ -184,7 +184,7 @@ export default function CotizacionesPage() {
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Cliente</TableHead>
                                     <TableHead>Concepto</TableHead>
-                                    <TableHead>Válida hasta</TableHead>
+                                    <TableHead>V├ílida hasta</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
                                     <TableHead>Estado</TableHead>
                                     <TableHead className="w-10" />

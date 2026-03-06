@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Types ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 type ItemType = "producto" | "servicio";
 
 type CatalogItem = {
@@ -35,14 +35,14 @@ type CatalogItem = {
     sla?: string; coverage?: string; deliverable?: string;
 };
 
-// ─── Initial data ─────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Initial data ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const INITIAL_ITEMS: CatalogItem[] = [
     {
-        id: "1", type: "servicio", code: "SRV-001", name: "Consultoría IT",
-        description: "Asesoría técnica especializada en infraestructura y Cloud.",
-        category: "Consultoría", cost: 2500, price: 5000, itbis: 18,
+        id: "1", type: "servicio", code: "SRV-001", name: "Consultor├¡a IT",
+        description: "Asesor├¡a t├®cnica especializada en infraestructura y Cloud.",
+        category: "Consultor├¡a", cost: 2500, price: 5000, itbis: 18,
         status: "active", attributes: [],
-        serviceType: "Técnico", billingMode: "Por hora", duration: "40 horas",
+        serviceType: "T├®cnico", billingMode: "Por hora", duration: "40 horas",
         sla: "24 horas", coverage: "L-V 8am-6pm", deliverable: "Informe ejecutivo"
     },
     {
@@ -55,14 +55,14 @@ const INITIAL_ITEMS: CatalogItem[] = [
     },
     {
         id: "3", type: "producto", code: "PRD-003", name: "Libro de Contabilidad",
-        description: "Manual práctico de contabilidad básica para PYMES.",
-        category: "Papelería", cost: 900, price: 1500, itbis: 0,
+        description: "Manual pr├íctico de contabilidad b├ísica para PYMES.",
+        category: "Papeler├¡a", cost: 900, price: 1500, itbis: 0,
         status: "active", attributes: [],
-        brand: "Editora Nacional", supplier: "Papelería Herrera", warehouse: "Depósito 1",
+        brand: "Editora Nacional", supplier: "Papeler├¡a Herrera", warehouse: "Dep├│sito 1",
         unitType: "Unidad", size: "A4", stock: 24
     },
     {
-        id: "4", type: "servicio", code: "SRV-004", name: "Soporte Técnico Mensual",
+        id: "4", type: "servicio", code: "SRV-004", name: "Soporte T├®cnico Mensual",
         description: "Plan de mantenimiento preventivo y correctivo mensual.",
         category: "Soporte", cost: 6000, price: 12000, itbis: 18,
         status: "active", attributes: [],
@@ -73,37 +73,37 @@ const INITIAL_ITEMS: CatalogItem[] = [
 
 const CATEGORY_COLORS: Record<string, string> = {
     "Servicio": "bg-violet-500/10 text-violet-600 border-violet-500/20",
-    "Consultoría": "bg-violet-500/10 text-violet-600 border-violet-500/20",
+    "Consultor├¡a": "bg-violet-500/10 text-violet-600 border-violet-500/20",
     "Soporte": "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
-    "Diseño": "bg-pink-500/10 text-pink-600 border-pink-500/20",
+    "Dise├▒o": "bg-pink-500/10 text-pink-600 border-pink-500/20",
     "Hardware": "bg-blue-500/10 text-blue-600 border-blue-500/20",
     "Software": "bg-sky-500/10 text-sky-600 border-sky-500/20",
-    "Papelería": "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    "Electrónica": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    "Papeler├¡a": "bg-amber-500/10 text-amber-600 border-amber-500/20",
+    "Electr├│nica": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
 };
 
 type ViewMode = "grid" | "list";
 
-// ─── Empty forms ──────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Empty forms ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const emptyProduct = (): CatalogItem => ({
     id: "", type: "producto", code: "", name: "", description: "",
     category: "Hardware", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
-    brand: "", supplier: "", warehouse: "Almacén Central",
+    brand: "", supplier: "", warehouse: "Almac├®n Central",
     unitType: "Unidad", size: "", stock: 0
 });
 
 const emptyService = (): CatalogItem => ({
     id: "", type: "servicio", code: "", name: "", description: "",
-    category: "Consultoría", cost: 0, price: 0, itbis: 18,
+    category: "Consultor├¡a", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
-    serviceType: "Técnico", billingMode: "Por hora", duration: "",
+    serviceType: "T├®cnico", billingMode: "Por hora", duration: "",
     sla: "", coverage: "L-V 8am-6pm", deliverable: ""
 });
 
 const CATALOG_KEY = "sysfac_catalog";
 
-// ─── Image Upload ─────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Image Upload ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function ImageUpload({ value, onChange }: { value?: string; onChange: (b64: string) => void }) {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -145,7 +145,7 @@ function ImageUpload({ value, onChange }: { value?: string; onChange: (b64: stri
     );
 }
 
-// ─── Field helpers ────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Field helpers ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function FieldLabel({ children }: { children: React.ReactNode }) {
     return <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">{children}</Label>;
 }
@@ -181,7 +181,7 @@ function FieldSelect({ value, onChange, options, className = "" }: {
     );
 }
 
-// ─── Product Form ─────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Product Form ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
     const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
     return (
@@ -194,7 +194,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </div>
                 <div>
                     <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
-                        <Box className="w-3.5 h-3.5" /> Identificación
+                        <Box className="w-3.5 h-3.5" /> Identificaci├│n
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5 col-span-2">
@@ -202,16 +202,16 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                             <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Laptop Dell XPS 15" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Código / SKU</FieldLabel>
+                            <FieldLabel>C├│digo / SKU</FieldLabel>
                             <FieldInput value={form.code} onChange={F("code")} placeholder="PRD-001" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Categoría</FieldLabel>
+                            <FieldLabel>Categor├¡a</FieldLabel>
                             <FieldSelect value={form.category} onChange={F("category")} options={[
                                 { value: "Hardware", label: "Hardware" },
                                 { value: "Software", label: "Software" },
-                                { value: "Papelería", label: "Papelería" },
-                                { value: "Electrónica", label: "Electrónica" },
+                                { value: "Papeler├¡a", label: "Papeler├¡a" },
+                                { value: "Electr├│nica", label: "Electr├│nica" },
                                 { value: "Otro", label: "Otro" },
                             ]} />
                         </div>
@@ -222,15 +222,15 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             {/* Stock & Logistics */}
             <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-xl p-4">
                 <p className="text-xs font-bold text-blue-600 mb-3 flex items-center gap-1.5">
-                    <Package className="w-3.5 h-3.5" /> Logística e Inventario
+                    <Package className="w-3.5 h-3.5" /> Log├¡stica e Inventario
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                     <div className="space-y-1.5">
-                        <FieldLabel>Almacén</FieldLabel>
-                        <FieldSelect value={form.warehouse || "Almacén Central"} onChange={F("warehouse")} options={[
-                            { value: "Almacén Central", label: "Almacén Central" },
+                        <FieldLabel>Almac├®n</FieldLabel>
+                        <FieldSelect value={form.warehouse || "Almac├®n Central"} onChange={F("warehouse")} options={[
+                            { value: "Almac├®n Central", label: "Almac├®n Central" },
                             { value: "Tienda Principal", label: "Tienda Principal" },
-                            { value: "Depósito 1", label: "Depósito 1" },
+                            { value: "Dep├│sito 1", label: "Dep├│sito 1" },
                         ]} />
                     </div>
                     <div className="space-y-1.5">
@@ -256,7 +256,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                         <FieldInput value={form.supplier || ""} onChange={F("supplier")} placeholder="Nombre del suplidor" />
                     </div>
                     <div className="space-y-1.5">
-                        <FieldLabel>Talla / Tamaño</FieldLabel>
+                        <FieldLabel>Talla / Tama├▒o</FieldLabel>
                         <FieldInput value={form.size || ""} onChange={F("size")} placeholder={'15.6", A4, XL...'} />
                     </div>
                 </div>
@@ -286,9 +286,9 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>ITBIS (%)</FieldLabel>
                         <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
-                            { value: "18", label: "18% — ITBIS Estándar" },
-                            { value: "16", label: "16% — ITBIS Reducido" },
-                            { value: "0", label: "0% — Exento" },
+                            { value: "18", label: "18% ÔÇö ITBIS Est├índar" },
+                            { value: "16", label: "16% ÔÇö ITBIS Reducido" },
+                            { value: "0", label: "0% ÔÇö Exento" },
                         ]} />
                     </div>
                 </div>
@@ -300,11 +300,11 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <FieldLabel>Atributos personalizados</FieldLabel>
                     <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
                         onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
-                        <Plus className="w-3 h-3 mr-1" /> Añadir
+                        <Plus className="w-3 h-3 mr-1" /> A├▒adir
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos — Ej. Color, Material, Garantía</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos ÔÇö Ej. Color, Material, Garant├¡a</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
@@ -326,19 +326,19 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
 
             {/* Description */}
             <div className="space-y-1.5">
-                <FieldLabel>Descripción</FieldLabel>
+                <FieldLabel>Descripci├│n</FieldLabel>
                 <textarea
                     className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
                     value={form.description}
                     onChange={e => setForm({ ...form, description: e.target.value })}
-                    placeholder="Descripción detallada del producto..."
+                    placeholder="Descripci├│n detallada del producto..."
                 />
             </div>
         </div>
     );
 }
 
-// ─── Service Form ─────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Service Form ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
     const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
     return (
@@ -351,25 +351,25 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </div>
                 <div>
                     <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
-                        <Sparkles className="w-3.5 h-3.5" /> Identificación del Servicio
+                        <Sparkles className="w-3.5 h-3.5" /> Identificaci├│n del Servicio
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1.5 col-span-2">
                             <FieldLabel>Nombre del Servicio *</FieldLabel>
-                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Soporte Técnico Mensual" />
+                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Soporte T├®cnico Mensual" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Código</FieldLabel>
+                            <FieldLabel>C├│digo</FieldLabel>
                             <FieldInput value={form.code} onChange={F("code")} placeholder="SRV-001" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Categoría de Servicio</FieldLabel>
+                            <FieldLabel>Categor├¡a de Servicio</FieldLabel>
                             <FieldSelect value={form.category} onChange={F("category")} options={[
-                                { value: "Consultoría", label: "Consultoría" },
-                                { value: "Soporte", label: "Soporte Técnico" },
-                                { value: "Diseño", label: "Diseño y Creatividad" },
+                                { value: "Consultor├¡a", label: "Consultor├¡a" },
+                                { value: "Soporte", label: "Soporte T├®cnico" },
+                                { value: "Dise├▒o", label: "Dise├▒o y Creatividad" },
                                 { value: "Desarrollo", label: "Desarrollo de Software" },
-                                { value: "Capacitación", label: "Capacitación y Training" },
+                                { value: "Capacitaci├│n", label: "Capacitaci├│n y Training" },
                                 { value: "Legal", label: "Legal y Compliance" },
                                 { value: "Contabilidad", label: "Contabilidad" },
                                 { value: "Marketing", label: "Marketing" },
@@ -383,23 +383,23 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                     <FieldLabel>Tipo de Servicio</FieldLabel>
-                    <FieldSelect value={form.serviceType || "Técnico"} onChange={F("serviceType")} options={[
-                        { value: "Técnico", label: "🔧 Técnico" },
-                        { value: "Profesional", label: "💼 Profesional" },
-                        { value: "Creativo", label: "🎨 Creativo" },
-                        { value: "Administrativo", label: "📋 Administrativo" },
-                        { value: "Formativo", label: "📚 Formativo" },
+                    <FieldSelect value={form.serviceType || "T├®cnico"} onChange={F("serviceType")} options={[
+                        { value: "T├®cnico", label: "­ƒöº T├®cnico" },
+                        { value: "Profesional", label: "­ƒÆ╝ Profesional" },
+                        { value: "Creativo", label: "­ƒÄ¿ Creativo" },
+                        { value: "Administrativo", label: "­ƒôï Administrativo" },
+                        { value: "Formativo", label: "­ƒôÜ Formativo" },
                     ]} />
                 </div>
                 <div className="space-y-1.5">
                     <FieldLabel>Modalidad de Cobro</FieldLabel>
                     <FieldSelect value={form.billingMode || "Por hora"} onChange={F("billingMode")} options={[
-                        { value: "Por hora", label: "⏱ Por hora" },
-                        { value: "Por proyecto", label: "📁 Por proyecto (fijo)" },
-                        { value: "Mensual", label: "📆 Mensual (recurrente)" },
-                        { value: "Anual", label: "📅 Anual (recurrente)" },
-                        { value: "Por sesión", label: "🎯 Por sesión" },
-                        { value: "Por entregable", label: "📦 Por entregable" },
+                        { value: "Por hora", label: "ÔÅ▒ Por hora" },
+                        { value: "Por proyecto", label: "­ƒôü Por proyecto (fijo)" },
+                        { value: "Mensual", label: "­ƒôå Mensual (recurrente)" },
+                        { value: "Anual", label: "­ƒôà Anual (recurrente)" },
+                        { value: "Por sesi├│n", label: "­ƒÄ» Por sesi├│n" },
+                        { value: "Por entregable", label: "­ƒôª Por entregable" },
                     ]} />
                 </div>
             </div>
@@ -411,7 +411,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                 </p>
                 <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                        <FieldLabel>Duración Estimada</FieldLabel>
+                        <FieldLabel>Duraci├│n Estimada</FieldLabel>
                         <FieldInput value={form.duration || ""} onChange={F("duration")} placeholder="Ej. 40 horas, 1 mes..." />
                     </div>
                     <div className="space-y-1.5">
@@ -428,16 +428,16 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>Horario de Cobertura</FieldLabel>
                         <FieldSelect value={form.coverage || "L-V 8am-6pm"} onChange={F("coverage")} options={[
-                            { value: "L-V 8am-5pm", label: "L-V 8am–5pm" },
-                            { value: "L-V 8am-6pm", label: "L-V 8am–6pm" },
-                            { value: "L-S 8am-6pm", label: "L-S 8am–6pm" },
-                            { value: "7/24", label: "7/24 — Todo el tiempo" },
+                            { value: "L-V 8am-5pm", label: "L-V 8amÔÇô5pm" },
+                            { value: "L-V 8am-6pm", label: "L-V 8amÔÇô6pm" },
+                            { value: "L-S 8am-6pm", label: "L-S 8amÔÇô6pm" },
+                            { value: "7/24", label: "7/24 ÔÇö Todo el tiempo" },
                             { value: "A convenir", label: "A convenir" },
                         ]} />
                     </div>
                     <div className="space-y-1.5">
                         <FieldLabel>Entregable Principal</FieldLabel>
-                        <FieldInput value={form.deliverable || ""} onChange={F("deliverable")} placeholder="Informe, código, diseño..." />
+                        <FieldInput value={form.deliverable || ""} onChange={F("deliverable")} placeholder="Informe, c├│digo, dise├▒o..." />
                     </div>
                 </div>
             </div>
@@ -466,9 +466,9 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>ITBIS (%)</FieldLabel>
                         <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
-                            { value: "18", label: "18% — ITBIS Estándar" },
-                            { value: "16", label: "16% — ITBIS Reducido" },
-                            { value: "0", label: "0% — Exento" },
+                            { value: "18", label: "18% ÔÇö ITBIS Est├índar" },
+                            { value: "16", label: "16% ÔÇö ITBIS Reducido" },
+                            { value: "0", label: "0% ÔÇö Exento" },
                         ]} />
                     </div>
                 </div>
@@ -477,19 +477,19 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
             {/* Attributes */}
             <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                    <FieldLabel>Características adicionales</FieldLabel>
+                    <FieldLabel>Caracter├¡sticas adicionales</FieldLabel>
                     <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
                         onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
-                        <Plus className="w-3 h-3 mr-1" /> Añadir
+                        <Plus className="w-3 h-3 mr-1" /> A├▒adir
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin características — Ej. Número de usuarios, Idioma, Plataforma</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin caracter├¡sticas ÔÇö Ej. N├║mero de usuarios, Idioma, Plataforma</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
                             <div key={idx} className="flex gap-2 items-center">
-                                <Input className="h-8 text-xs" placeholder="Característica" value={attr.key} onChange={e => {
+                                <Input className="h-8 text-xs" placeholder="Caracter├¡stica" value={attr.key} onChange={e => {
                                     const a = [...form.attributes]; a[idx].key = e.target.value; setForm({ ...form, attributes: a });
                                 }} />
                                 <Input className="h-8 text-xs" placeholder="Valor" value={attr.value} onChange={e => {
@@ -506,19 +506,19 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
 
             {/* Description */}
             <div className="space-y-1.5">
-                <FieldLabel>Descripción del Servicio</FieldLabel>
+                <FieldLabel>Descripci├│n del Servicio</FieldLabel>
                 <textarea
                     className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
                     value={form.description}
                     onChange={e => setForm({ ...form, description: e.target.value })}
-                    placeholder="Descripción detallada: alcance, limitaciones, condiciones..."
+                    placeholder="Descripci├│n detallada: alcance, limitaciones, condiciones..."
                 />
             </div>
         </div>
     );
 }
 
-// ─── Catalog Modal ─────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Catalog Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 function CatalogModal({
     open, onOpenChange, itemType, isEditing, form, setForm, onSave, onDelete, onToggleStatus
 }: {
@@ -554,15 +554,15 @@ function CatalogModal({
                                         }
                                     </DialogTitle>
                                     <p className="text-xs text-muted-foreground mt-0.5">
-                                        {isEditing ? form.name : (isProduct ? 'Completa los datos del producto físico' : 'Define las características del servicio')}
+                                        {isEditing ? form.name : (isProduct ? 'Completa los datos del producto f├¡sico' : 'Define las caracter├¡sticas del servicio')}
                                     </p>
-                                    <DialogDescription className="sr-only">Modal de creación/edición</DialogDescription>
+                                    <DialogDescription className="sr-only">Modal de creaci├│n/edici├│n</DialogDescription>
                                 </div>
                             </div>
                             {isEditing && (
                                 <div className="flex items-center gap-2 shrink-0">
                                     <Button onClick={onToggleStatus} variant="outline" size="sm" className="h-8 text-xs">
-                                        {form.status === 'active' ? '⏸ Desactivar' : '▶ Activar'}
+                                        {form.status === 'active' ? 'ÔÅ© Desactivar' : 'ÔûÂ Activar'}
                                     </Button>
                                     <Button onClick={onDelete} variant="ghost" size="sm" className="h-8 text-xs text-red-500 hover:bg-red-50">
                                         Eliminar
@@ -600,7 +600,7 @@ function CatalogModal({
     );
 }
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Main Page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 export default function ProductsPage() {
     const [view, setView] = useState<ViewMode>("grid");
     const [search, setSearch] = useState("");
@@ -661,7 +661,7 @@ export default function ProductsPage() {
     };
 
     const handleDelete = () => {
-        if (confirm("¿Eliminar este elemento del catálogo?")) {
+        if (confirm("┬┐Eliminar este elemento del cat├ílogo?")) {
             persistItems(items.filter(i => i.id !== form.id));
             setIsModalOpen(false);
         }
@@ -692,8 +692,8 @@ export default function ProductsPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Catálogo</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Productos físicos y servicios con ITBIS configurado.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Cat├ílogo</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Productos f├¡sicos y servicios con ITBIS configurado.</p>
                 </div>
                 <div className="flex gap-2">
                     <Button onClick={() => openCreate("producto")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20">
@@ -708,7 +708,7 @@ export default function ProductsPage() {
             {/* KPI Strip */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Total Catálogo", value: totalItems, icon: Package, color: "text-blue-600 bg-blue-500/10" },
+                    { label: "Total Cat├ílogo", value: totalItems, icon: Package, color: "text-blue-600 bg-blue-500/10" },
                     { label: "Productos", value: products.length, icon: Box, color: "text-blue-600 bg-blue-500/10" },
                     { label: "Servicios", value: services.length, icon: Briefcase, color: "text-violet-600 bg-violet-500/10" },
                     { label: "Stock Bajo", value: lowStock, icon: AlertTriangle, color: lowStock > 0 ? "text-amber-600 bg-amber-500/10" : "text-muted-foreground bg-muted" },
@@ -733,7 +733,7 @@ export default function ProductsPage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input placeholder="Buscar por nombre o código..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-background" />
+                            <Input placeholder="Buscar por nombre o c├│digo..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-background" />
                         </div>
                         {/* Type filter tabs */}
                         <div className="flex gap-1 border rounded-lg p-1 bg-background h-10 shrink-0">
@@ -749,7 +749,7 @@ export default function ProductsPage() {
                         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                             <SelectTrigger className="w-full sm:w-[160px] bg-background">
                                 <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
-                                <SelectValue placeholder="Categoría" />
+                                <SelectValue placeholder="Categor├¡a" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas</SelectItem>
@@ -792,12 +792,12 @@ export default function ProductsPage() {
                                             {item.category}
                                         </Badge>
                                         <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 h-4 font-bold uppercase", item.type === 'producto' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-violet-50 text-violet-600 border-violet-200")}>
-                                            {item.type === 'producto' ? '📦 Producto' : '⚡ Servicio'}
+                                            {item.type === 'producto' ? '­ƒôª Producto' : 'ÔÜí Servicio'}
                                         </Badge>
                                     </div>
                                 </div>
 
-                                <p className="font-mono text-[10px] text-muted-foreground mb-1">{item.code}{item.brand ? ` • ${item.brand}` : ''}</p>
+                                <p className="font-mono text-[10px] text-muted-foreground mb-1">{item.code}{item.brand ? ` ÔÇó ${item.brand}` : ''}</p>
                                 <h3 className="font-bold text-sm leading-snug mb-0.5 group-hover:text-primary transition-colors">{item.name}</h3>
                                 <p className="text-[10px] text-muted-foreground line-clamp-2 h-7 mb-3">{item.description}</p>
 
@@ -805,14 +805,14 @@ export default function ProductsPage() {
                                     <div className="flex items-center gap-1 mb-3">
                                         <Clock className="w-3 h-3 text-muted-foreground" />
                                         <span className="text-[10px] text-muted-foreground">{item.billingMode}</span>
-                                        {item.sla && <><span className="text-muted-foreground/40 mx-1">•</span><span className="text-[10px] text-muted-foreground">SLA {item.sla}</span></>}
+                                        {item.sla && <><span className="text-muted-foreground/40 mx-1">ÔÇó</span><span className="text-[10px] text-muted-foreground">SLA {item.sla}</span></>}
                                     </div>
                                 )}
                                 {item.type === 'producto' && item.stock !== undefined && item.stock !== null && (
                                     <div className="flex items-center gap-1 mb-3">
                                         <Package className="w-3 h-3 text-muted-foreground" />
                                         <span className={cn("text-[10px] font-bold", (item.stock ?? 0) <= 3 ? "text-amber-600" : "text-foreground")}>{item.stock} en stock</span>
-                                        {item.unitType && <><span className="text-muted-foreground/40 mx-1">•</span><span className="text-[10px] text-muted-foreground">{item.unitType}</span></>}
+                                        {item.unitType && <><span className="text-muted-foreground/40 mx-1">ÔÇó</span><span className="text-[10px] text-muted-foreground">{item.unitType}</span></>}
                                     </div>
                                 )}
 
@@ -846,7 +846,7 @@ export default function ProductsPage() {
                                 <TableRow>
                                     <TableHead>Nombre</TableHead>
                                     <TableHead>Tipo</TableHead>
-                                    <TableHead>Categoría</TableHead>
+                                    <TableHead>Categor├¡a</TableHead>
                                     <TableHead className="text-right">Costo</TableHead>
                                     <TableHead className="text-right">Precio</TableHead>
                                     <TableHead>Margen</TableHead>

@@ -17,18 +17,18 @@ import {
     Building2, AlertTriangle, X, Eye
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Types ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 type Reporte = { id: string; nombre: string; desc: string; icon: any; dgiiCode?: string };
 
 const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[] }> = {
     ventas: {
         color: "text-blue-600 bg-blue-500/10 border-blue-500/20", icon: TrendingUp,
         reportes: [
-            { id: "V1", nombre: "Ventas por Cliente", desc: "Distribución de ventas por cliente en el período.", icon: FileText },
-            { id: "V2", nombre: "Ventas por Producto", desc: "Análisis de productos más vendidos.", icon: ShoppingCart },
-            { id: "V3", nombre: "Ventas por Período", desc: "Comparativa mensual/trimestral de ingresos.", icon: Calendar },
+            { id: "V1", nombre: "Ventas por Cliente", desc: "Distribuci├│n de ventas por cliente en el per├¡odo.", icon: FileText },
+            { id: "V2", nombre: "Ventas por Producto", desc: "An├ílisis de productos m├ís vendidos.", icon: ShoppingCart },
+            { id: "V3", nombre: "Ventas por Per├¡odo", desc: "Comparativa mensual/trimestral de ingresos.", icon: Calendar },
             { id: "V4", nombre: "Facturas Pendientes de Cobro", desc: "CxC vencidas y por vencer.", icon: FileBarChart2 },
-            { id: "V5", nombre: "Cotizaciones Emitidas", desc: "Tasa de conversión de cotizaciones.", icon: FileText },
+            { id: "V5", nombre: "Cotizaciones Emitidas", desc: "Tasa de conversi├│n de cotizaciones.", icon: FileText },
             { id: "V6", nombre: "Ventas por Vendedor", desc: "Rendimiento y comisiones por vendedor.", icon: FileText },
             { id: "V7", nombre: "Ventas POS por Turno", desc: "Resumen de ventas generadas en cada turno del POS.", icon: ShoppingCart },
         ],
@@ -36,43 +36,43 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
     administrativos: {
         color: "text-violet-600 bg-violet-500/10 border-violet-500/20", icon: BookMarked,
         reportes: [
-            { id: "A1", nombre: "Balance de Comprobación", desc: "Estado de cuentas contables del período.", icon: FileBarChart2 },
+            { id: "A1", nombre: "Balance de Comprobaci├│n", desc: "Estado de cuentas contables del per├¡odo.", icon: FileBarChart2 },
             { id: "A2", nombre: "Cuentas por Cobrar", desc: "Detalle de saldos pendientes por cliente.", icon: FileText },
             { id: "A3", nombre: "Cuentas por Pagar", desc: "Detalle de obligaciones con proveedores.", icon: FileText },
-            { id: "A4", nombre: "Antigüedad de Saldos", desc: "Análisis de vencimiento de CxC/CxP.", icon: Calendar },
-            { id: "A5", nombre: "Gastos por Categoría", desc: "Clasificación de egresos por tipo.", icon: BarChart3 },
-            { id: "A6", nombre: "Conciliación Bancaria", desc: "Diferencias entre banco y libros.", icon: FileText },
+            { id: "A4", nombre: "Antig├╝edad de Saldos", desc: "An├ílisis de vencimiento de CxC/CxP.", icon: Calendar },
+            { id: "A5", nombre: "Gastos por Categor├¡a", desc: "Clasificaci├│n de egresos por tipo.", icon: BarChart3 },
+            { id: "A6", nombre: "Conciliaci├│n Bancaria", desc: "Diferencias entre banco y libros.", icon: FileText },
         ],
     },
     contables: {
         color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20", icon: BookMarked,
         reportes: [
-            { id: "C1", nombre: "Estado de Resultados", desc: "Ingresos, costos y utilidades del período.", icon: FileBarChart2 },
+            { id: "C1", nombre: "Estado de Resultados", desc: "Ingresos, costos y utilidades del per├¡odo.", icon: FileBarChart2 },
             { id: "C2", nombre: "Balance General", desc: "Activos, pasivos y patrimonio.", icon: FileText },
-            { id: "C3", nombre: "Libro Diario", desc: "Todos los asientos contables del período.", icon: BookMarked },
+            { id: "C3", nombre: "Libro Diario", desc: "Todos los asientos contables del per├¡odo.", icon: BookMarked },
             { id: "C4", nombre: "Libro Mayor", desc: "Movimientos por cuenta contable.", icon: FileText },
-            { id: "C5", nombre: "Activos Fijos y Depreciación", desc: "Bienes del activo y su depreciación.", icon: FileText },
-            { id: "C6", nombre: "Flujo de Efectivo", desc: "Entradas y salidas de caja del período.", icon: FileBarChart2 },
+            { id: "C5", nombre: "Activos Fijos y Depreciaci├│n", desc: "Bienes del activo y su depreciaci├│n.", icon: FileText },
+            { id: "C6", nombre: "Flujo de Efectivo", desc: "Entradas y salidas de caja del per├¡odo.", icon: FileBarChart2 },
         ],
     },
     fiscales: {
         color: "text-rose-600 bg-rose-500/10 border-rose-500/20", icon: FileBarChart2,
         reportes: [
-            { id: "T1", nombre: "Formato 606 — Compras", desc: "Declaración mensual de compras y servicios recibidos.", icon: FileText, dgiiCode: "606" },
-            { id: "T2", nombre: "Formato 607 — Ventas", desc: "Declaración mensual de ventas de bienes y servicios.", icon: FileText, dgiiCode: "607" },
-            { id: "T3", nombre: "Formato 608 — Anulados", desc: "NCF anulados del período.", icon: FileText, dgiiCode: "608" },
-            { id: "T4", nombre: "Formato 609 — Exterior", desc: "Pagos a proveedores del exterior.", icon: Globe, dgiiCode: "609" },
-            { id: "T5", nombre: "IT-1 — ITBIS Mensual", desc: "Declaración mensual de ITBIS (Formulario IT-1).", icon: FileBarChart2 },
-            { id: "T6", nombre: "IR-2 — ISR Empresas", desc: "Declaración anual de renta corporativa.", icon: FileBarChart2 },
-            { id: "T7", nombre: "TSS — Nómina Mensual", desc: "Reporte de seguridad social mensual.", icon: FileText },
+            { id: "T1", nombre: "Formato 606 ÔÇö Compras", desc: "Declaraci├│n mensual de compras y servicios recibidos.", icon: FileText, dgiiCode: "606" },
+            { id: "T2", nombre: "Formato 607 ÔÇö Ventas", desc: "Declaraci├│n mensual de ventas de bienes y servicios.", icon: FileText, dgiiCode: "607" },
+            { id: "T3", nombre: "Formato 608 ÔÇö Anulados", desc: "NCF anulados del per├¡odo.", icon: FileText, dgiiCode: "608" },
+            { id: "T4", nombre: "Formato 609 ÔÇö Exterior", desc: "Pagos a proveedores del exterior.", icon: Globe, dgiiCode: "609" },
+            { id: "T5", nombre: "IT-1 ÔÇö ITBIS Mensual", desc: "Declaraci├│n mensual de ITBIS (Formulario IT-1).", icon: FileBarChart2 },
+            { id: "T6", nombre: "IR-2 ÔÇö ISR Empresas", desc: "Declaraci├│n anual de renta corporativa.", icon: FileBarChart2 },
+            { id: "T7", nombre: "TSS ÔÇö N├│mina Mensual", desc: "Reporte de seguridad social mensual.", icon: FileText },
         ],
     },
     exportar: {
         color: "text-amber-600 bg-amber-500/10 border-amber-500/20", icon: Download,
         reportes: [
-            { id: "P1", nombre: "Exportar Facturas (Excel)", desc: "Todas las facturas del período en Excel.", icon: Download },
+            { id: "P1", nombre: "Exportar Facturas (Excel)", desc: "Todas las facturas del per├¡odo en Excel.", icon: Download },
             { id: "P2", nombre: "Exportar Clientes (CSV)", desc: "Base de datos de clientes exportable.", icon: Download },
-            { id: "P3", nombre: "Exportar Gastos (Excel)", desc: "Todos los gastos del período en Excel.", icon: Download },
+            { id: "P3", nombre: "Exportar Gastos (Excel)", desc: "Todos los gastos del per├¡odo en Excel.", icon: Download },
             { id: "P4", nombre: "Exportar Facturas POS (CSV)", desc: "Ventas del terminal POS en formato CSV.", icon: Download },
         ],
     },
@@ -84,7 +84,7 @@ const TAB_LABELS: Record<string, string> = {
 };
 const TAB_KEYS = Object.keys(CATEGORIAS);
 
-// ─── DGII Generator ───────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ DGII Generator ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 type DGIIRow = Record<string, string | number>;
 
 function generate606(expenses: any[], mes: number, anio: number): DGIIRow[] {
@@ -108,8 +108,8 @@ function generate606(expenses: any[], mes: number, anio: number): DGIIRow[] {
             "ITBIS Sujeto Proporcionalidad": "0.00",
             "ITBIS Llevado al Costo": "0.00",
             "ITBIS por Adelantar": ((g.total ?? g.amount ?? 0) * 0.18).toFixed(2),
-            "Tipo de Retención en ISR": "0",
-            "Monto Retención en ISR": "0.00",
+            "Tipo de Retenci├│n en ISR": "0",
+            "Monto Retenci├│n en ISR": "0.00",
         }));
 }
 
@@ -124,7 +124,7 @@ function generate607(invoices: any[], mes: number, anio: number): DGIIRow[] {
             const base = inv.total / 1.18;
             const itbis = inv.total - base;
             return {
-                "RNC/Cédula": inv.rnc ?? "000-0000000-0",
+                "RNC/C├®dula": inv.rnc ?? "000-0000000-0",
                 "Tipo ID": "1",
                 "NCF": inv.ecf ?? inv.id,
                 "NCF Modificado": "",
@@ -136,15 +136,15 @@ function generate607(invoices: any[], mes: number, anio: number): DGIIRow[] {
                 "ITBIS Cobrado por Adelantado": "0.00",
                 "ITBIS Retenido por Terceros": "0.00",
                 "ITBIS Percibido": "0.00",
-                "Tipo de Retención en ISR": "0",
-                "Retención en ISR Cobrado por Adelantado": "0.00",
+                "Tipo de Retenci├│n en ISR": "0",
+                "Retenci├│n en ISR Cobrado por Adelantado": "0.00",
                 "ISR Percibido": "0.00",
                 "Otras Tasas Facturadas": "0.00",
                 "Monto Propinas Legales": "0.00",
                 "Efectivo Generado": inv.paymentMethod === "cash" ? inv.total?.toFixed(2) : "0.00",
-                "Cheque/Transferencia/Depósito": inv.paymentMethod === "transfer" ? inv.total?.toFixed(2) : "0.00",
-                "Tarjeta de Crédito/Débito": inv.paymentMethod === "card" ? inv.total?.toFixed(2) : "0.00",
-                "Venta a Crédito": inv.paymentStatus !== "pagada" ? inv.total?.toFixed(2) : "0.00",
+                "Cheque/Transferencia/Dep├│sito": inv.paymentMethod === "transfer" ? inv.total?.toFixed(2) : "0.00",
+                "Tarjeta de Cr├®dito/D├®bito": inv.paymentMethod === "card" ? inv.total?.toFixed(2) : "0.00",
+                "Venta a Cr├®dito": inv.paymentStatus !== "pagada" ? inv.total?.toFixed(2) : "0.00",
                 "Bonos o Certificados de Regalo": "0.00",
                 "Permuta": "0.00",
                 "Otras Formas de Venta": "0.00",
@@ -162,7 +162,7 @@ function generate608(invoices: any[], mes: number, anio: number): DGIIRow[] {
         .map(inv => ({
             "NCF": inv.ecf ?? inv.id,
             "Fecha": inv.date ?? "",
-            "Tipo de Anulación": "1",
+            "Tipo de Anulaci├│n": "1",
         }));
 }
 
@@ -186,7 +186,7 @@ function downloadFile(content: string, filename: string, mime: string) {
     URL.revokeObjectURL(url);
 }
 
-// ─── Component ───────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Component ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 export default function ReportesPage() {
     const [search, setSearch] = useState("");
     const [favs, setFavs] = useState<string[]>([]);
@@ -216,17 +216,17 @@ export default function ReportesPage() {
 
         if (selectedReport.id === "T1") {
             rows = generate606(expenses, mes, anio);
-            headers = ["RNC Proveedor", "Tipo ID", "Tipo Bienes/SS", "NCF", "Fecha Comprobante", "Fecha Pago", "Monto Servicios", "Monto Bienes", "Total Monto Facturado", "ITBIS Facturado", "ITBIS Retenido", "ITBIS Sujeto Proporcionalidad", "ITBIS Llevado al Costo", "ITBIS por Adelantar", "Tipo de Retención en ISR", "Monto Retención en ISR"];
+            headers = ["RNC Proveedor", "Tipo ID", "Tipo Bienes/SS", "NCF", "Fecha Comprobante", "Fecha Pago", "Monto Servicios", "Monto Bienes", "Total Monto Facturado", "ITBIS Facturado", "ITBIS Retenido", "ITBIS Sujeto Proporcionalidad", "ITBIS Llevado al Costo", "ITBIS por Adelantar", "Tipo de Retenci├│n en ISR", "Monto Retenci├│n en ISR"];
         } else if (selectedReport.id === "T2") {
             rows = generate607(invoices, mes, anio);
-            headers = ["RNC/Cédula", "Tipo ID", "NCF", "NCF Modificado", "Tipo de Ingreso", "Fecha Comprobante", "Fecha de Vencimiento", "Monto Facturado", "ITBIS Facturado", "ITBIS Cobrado por Adelantado", "ITBIS Retenido por Terceros", "ITBIS Percibido", "Tipo de Retención en ISR", "Retención en ISR Cobrado por Adelantado", "ISR Percibido", "Otras Tasas Facturadas", "Monto Propinas Legales", "Efectivo Generado", "Cheque/Transferencia/Depósito", "Tarjeta de Crédito/Débito", "Venta a Crédito", "Bonos o Certificados de Regalo", "Permuta", "Otras Formas de Venta"];
+            headers = ["RNC/C├®dula", "Tipo ID", "NCF", "NCF Modificado", "Tipo de Ingreso", "Fecha Comprobante", "Fecha de Vencimiento", "Monto Facturado", "ITBIS Facturado", "ITBIS Cobrado por Adelantado", "ITBIS Retenido por Terceros", "ITBIS Percibido", "Tipo de Retenci├│n en ISR", "Retenci├│n en ISR Cobrado por Adelantado", "ISR Percibido", "Otras Tasas Facturadas", "Monto Propinas Legales", "Efectivo Generado", "Cheque/Transferencia/Dep├│sito", "Tarjeta de Cr├®dito/D├®bito", "Venta a Cr├®dito", "Bonos o Certificados de Regalo", "Permuta", "Otras Formas de Venta"];
         } else if (selectedReport.id === "T3") {
             rows = generate608(invoices, mes, anio);
-            headers = ["NCF", "Fecha", "Tipo de Anulación"];
+            headers = ["NCF", "Fecha", "Tipo de Anulaci├│n"];
         } else {
             // Generic export for other reports
-            rows = [{ "Período": `${mesStr}/${anio}`, "Tipo": selectedReport.nombre, "Estado": "No hay datos reales — integra tu contabilidad" }];
-            headers = ["Período", "Tipo", "Estado"];
+            rows = [{ "Per├¡odo": `${mesStr}/${anio}`, "Tipo": selectedReport.nombre, "Estado": "No hay datos reales ÔÇö integra tu contabilidad" }];
+            headers = ["Per├¡odo", "Tipo", "Estado"];
         }
 
         if (format === "PREVIEW") {
@@ -234,7 +234,7 @@ export default function ReportesPage() {
         }
 
         if (rows.length === 0) {
-            toast.warning(`Sin datos para ${mesStr}/${anio}`, { description: "No hay registros en ese período." }); return;
+            toast.warning(`Sin datos para ${mesStr}/${anio}`, { description: "No hay registros en ese per├¡odo." }); return;
         }
 
         const filename = `${selectedReport.dgiiCode ?? selectedReport.id}_${anio}${mesStr}`;
@@ -291,9 +291,9 @@ export default function ReportesPage() {
                     </div>
                     <div className="flex-1">
                         <p className="font-bold text-sm text-rose-700">Formatos DGII disponibles</p>
-                        <p className="text-xs text-muted-foreground">Genera los archivos TXT oficiales 606, 607, 608 y 609 desde la pestaña <strong>Fiscales DGII</strong> con tus datos reales.</p>
+                        <p className="text-xs text-muted-foreground">Genera los archivos TXT oficiales 606, 607, 608 y 609 desde la pesta├▒a <strong>Fiscales DGII</strong> con tus datos reales.</p>
                     </div>
-                    <Badge className="bg-rose-500 text-white shrink-0 hidden sm:flex">IT-1 · IR-2 · TSS</Badge>
+                    <Badge className="bg-rose-500 text-white shrink-0 hidden sm:flex">IT-1 ┬À IR-2 ┬À TSS</Badge>
                 </CardContent>
             </Card>
 
@@ -350,7 +350,7 @@ export default function ReportesPage() {
                 ))}
             </Tabs>
 
-            {/* ─── Reporte Dialog ─────────────────────────────── */}
+            {/* ÔöÇÔöÇÔöÇ Reporte Dialog ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
             <Dialog open={!!selectedReport && !showPreview} onOpenChange={open => !open && setSelectedReport(null)}>
                 <DialogContent className="sm:max-w-[480px]">
                     <DialogHeader>
@@ -378,7 +378,7 @@ export default function ReportesPage() {
                                 </Select>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold uppercase text-muted-foreground">Año</label>
+                                <label className="text-xs font-semibold uppercase text-muted-foreground">A├▒o</label>
                                 <Select value={reportAnio} onValueChange={setReportAnio}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
@@ -392,7 +392,7 @@ export default function ReportesPage() {
                             <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
                                 <p className="text-xs text-primary font-medium flex gap-2">
                                     <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-                                    <span>El archivo se genera en <strong>UTF-8</strong> con el formato oficial DGII. Para el 606/607 se leen tus gastos y facturas reales del período seleccionado.</span>
+                                    <span>El archivo se genera en <strong>UTF-8</strong> con el formato oficial DGII. Para el 606/607 se leen tus gastos y facturas reales del per├¡odo seleccionado.</span>
                                 </p>
                             </div>
                         )}
@@ -412,12 +412,12 @@ export default function ReportesPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* ─── Preview Dialog ─────────────────────────────── */}
+            {/* ÔöÇÔöÇÔöÇ Preview Dialog ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
             <Dialog open={showPreview} onOpenChange={open => !open && setShowPreview(false)}>
                 <DialogContent className="max-w-5xl max-h-[80vh] flex flex-col">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <Eye className="w-5 h-5" /> Previsualización — {selectedReport?.nombre}
+                            <Eye className="w-5 h-5" /> Previsualizaci├│n ÔÇö {selectedReport?.nombre}
                             <Badge variant="secondary">{previewRows.length} registros</Badge>
                         </DialogTitle>
                     </DialogHeader>
@@ -425,7 +425,7 @@ export default function ReportesPage() {
                         {previewRows.length === 0 ? (
                             <div className="p-8 text-center text-muted-foreground">
                                 <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-amber-500" />
-                                <p className="font-semibold">Sin datos para este período</p>
+                                <p className="font-semibold">Sin datos para este per├¡odo</p>
                                 <p className="text-xs mt-1">No hay registros en {["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"][parseInt(reportMes)]} {reportAnio}.</p>
                             </div>
                         ) : (
