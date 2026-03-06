@@ -29,13 +29,10 @@ export default function PagosProvedoresPage() {
     const [editForm, setEditForm] = useState<any>({});
 
     useEffect(() => {
-        // Load saved payments for suppliers
         try {
-            const savedPagos = JSON.parse(companyStorage.get('pagos_proveedores') || '[]');
-            if (savedPagos.length > 0) {
-                setPagos([...savedPagos, ...INITIAL_DATA]);
-            }
-        } catch { }
+            const saved = JSON.parse(companyStorage.get('pagos_proveedores') || '[]');
+            setPagos(saved.length > 0 ? saved : INITIAL_DATA);
+        } catch { setPagos(INITIAL_DATA); }
     }, []);
 
     const handleUpdatePayment = () => {
@@ -151,8 +148,8 @@ export default function PagosProvedoresPage() {
                                 <Button variant="outline" size="icon" onClick={handlePrint} className="w-8 h-8">
                                     <Printer className="w-4 h-4 text-muted-foreground" />
                                 </Button>
-                                <Button variant="ghost" size="icon" onClick={() => setSelectedPayment(null)} className="w-8 h-8 hover:bg-muted text-muted-foreground text-xl leading-none">
-                                    ├ù
+                                <Button variant="ghost" size="icon" onClick={() => setSelectedPayment(null)} className="w-8 h-8 hover:bg-muted text-muted-foreground">
+                                    <X className="w-4 h-4" />
                                 </Button>
                             </div>
                         </div>

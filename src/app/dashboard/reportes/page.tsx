@@ -39,7 +39,7 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
             { id: "A1", nombre: "Balance de Comprobación", desc: "Estado de cuentas contables del período.", icon: FileBarChart2 },
             { id: "A2", nombre: "Cuentas por Cobrar", desc: "Detalle de saldos pendientes por cliente.", icon: FileText },
             { id: "A3", nombre: "Cuentas por Pagar", desc: "Detalle de obligaciones con proveedores.", icon: FileText },
-            { id: "A4", nombre: "Antig├╝edad de Saldos", desc: "Análisis de vencimiento de CxC/CxP.", icon: Calendar },
+            { id: "A4", nombre: "Antigüedad de Saldos", desc: "Análisis de vencimiento de CxC/CxP.", icon: Calendar },
             { id: "A5", nombre: "Gastos por Categoría", desc: "Clasificación de egresos por tipo.", icon: BarChart3 },
             { id: "A6", nombre: "Conciliación Bancaria", desc: "Diferencias entre banco y libros.", icon: FileText },
         ],
