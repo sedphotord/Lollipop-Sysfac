@@ -17,9 +17,9 @@ import {
     DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  MOCK DATA
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 const INITIAL_DATA = [
     {
         id: "COT-001", fecha: "18 Oct 2024", cliente: "CLARO", concepto: "Consultoría IT + Equipos", monto: 750000, validez: "02 Nov 2024", status: "enviada",
@@ -85,7 +85,7 @@ export default function CotizacionesPage() {
                 cliente: d.client?.name || 'Sin cliente',
                 concepto: d.items?.[0]?.name || 'Borrador de cotización',
                 monto: d.items?.reduce((a: number, it: any) => a + (it.price * it.qty || 0), 0) || 0,
-                validez: 'ÔÇö',
+                validez: '—',
                 status: 'borrador',
                 clientData: d.client || {},
                 items: d.items || [],
@@ -133,7 +133,7 @@ export default function CotizacionesPage() {
             <div className="flex items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Cotizaciones</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Crea proformas y conviértelas f├ícilmente en facturas e-CF.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Crea proformas y conviértelas fácilmente en facturas e-CF.</p>
                 </div>
                 <Link href="/dashboard/ingresos/cotizaciones/new">
                     <Button className="bg-gradient-brand border-0 text-white shadow-lg gap-2">
@@ -184,7 +184,7 @@ export default function CotizacionesPage() {
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Cliente</TableHead>
                                     <TableHead>Concepto</TableHead>
-                                    <TableHead>V├ílida hasta</TableHead>
+                                    <TableHead>Válida hasta</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
                                     <TableHead>Estado</TableHead>
                                     <TableHead className="w-10" />

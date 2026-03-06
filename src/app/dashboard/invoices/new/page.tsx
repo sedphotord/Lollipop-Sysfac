@@ -21,9 +21,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { generateNextNCF } from "@/lib/ncf";
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  MOCK DATA
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 const DEFAULT_CLIENTS = [
     { id: "1", rnc: "101010101", name: "COMPA├æIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo", email: "facturacion@claro.com.do", phone: "809-220-0000", address: "Av. John F. Kennedy 27, Santo Domingo" },
     { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona Física", status: "Activo", email: "jperez@gmail.com", phone: "829-555-1234", address: "C/ Las Mercedes 12, Santiago" },
@@ -61,15 +61,15 @@ const PAYMENT_TERMS = [
     "Neto 60 días",
 ];
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  TYPES
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 type Client = typeof DEFAULT_CLIENTS[0];
 type Item = { id: number; name: string; ref: string; qty: number; price: number; disc: number; itbis: number; desc: string };
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  NEW CONTACT DIALOG (inline, not a Dialog component to avoid accessibility warning)
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; onCancel: () => void }) {
     const [tab, setTab] = useState<"cliente" | "proveedor">("cliente");
     const [form, setForm] = useState({ rnc: "", name: "", trade: "", type: "RNC", email: "", phone: "", address: "", municipio: "" });
@@ -150,9 +150,9 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
     );
 }
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  HELPERS
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 const CURRENCY_SYMBOLS: Record<string, string> = { DOP: "RD$", USD: "US$", EUR: "Ôé¼" };
 const DEFAULT_RATES: Record<string, number> = { DOP: 1, USD: 58.5, EUR: 63.5 };
 /** Converts a DOP amount to the display currency and formats it */
@@ -162,9 +162,9 @@ function fmtCurrency(amount: number, moneda: string, rate = 1) {
     return `${sym} ${converted.toLocaleString("es-DO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  ITEM ROW
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
     item: Item;
     onUpdate: (field: keyof Item, value: any) => void;
@@ -192,7 +192,7 @@ function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
                     </PopoverTrigger>
                     <PopoverContent className="w-[320px] p-0" align="start" side="bottom">
                         <Command>
-                            <CommandInput placeholder="Buscar en cat├ílogo..." />
+                            <CommandInput placeholder="Buscar en catálogo..." />
                             <CommandList>
                                 <CommandEmpty>No se encontraron productos</CommandEmpty>
                                 <CommandGroup>
@@ -255,9 +255,9 @@ function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
     );
 }
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  MAIN COMPONENT (Inner)
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 function InvoiceBuilderContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -502,7 +502,7 @@ function InvoiceBuilderContent() {
                 </div>
             )}
 
-            {/* ÔöÇÔöÇ Exit Confirmation Modal ÔöÇÔöÇ */}
+            {/* ── Exit Confirmation Modal ── */}
             {showExitModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowExitModal(false)}>
                     <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden" onClick={e => e.stopPropagation()}>
@@ -544,7 +544,7 @@ function InvoiceBuilderContent() {
             )}
 
             <div className="min-h-screen bg-muted/20">
-                {/* ÔöÇÔöÇ Page header ÔöÇÔöÇ */}
+                {/* ── Page header ── */}
                 <div className="bg-background border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
                     <div className="flex items-center gap-3">
                         <button
@@ -562,7 +562,7 @@ function InvoiceBuilderContent() {
                     </div>
                 </div>
 
-                {/* ÔöÇÔöÇ Top config bar ÔöÇÔöÇ */}
+                {/* ── Top config bar ── */}
                 <div className="bg-background/80 backdrop-blur-sm border-b px-6 py-2">
                     <div className="max-w-5xl mx-auto flex items-center gap-6">
                         {[
@@ -659,10 +659,10 @@ function InvoiceBuilderContent() {
                     </div>
                 </div>
 
-                {/* ÔöÇÔöÇ Main content ÔöÇÔöÇ */}
+                {/* ── Main content ── */}
                 <div className="max-w-5xl mx-auto px-4 py-6 pb-28 space-y-4">
 
-                    {/* ÔöÇÔöÇ Document card ÔöÇÔöÇ */}
+                    {/* ── Document card ── */}
                     <div className="bg-card border rounded-xl shadow-sm overflow-hidden">
 
                         {/* Header: logo + NCF */}
@@ -920,7 +920,7 @@ function InvoiceBuilderContent() {
                     </div>
                 </div>
 
-                {/* ÔöÇÔöÇ Fixed bottom action bar ÔöÇÔöÇ */}
+                {/* ── Fixed bottom action bar ── */}
                 <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t shadow-lg px-6 py-3 flex items-center justify-between z-20">
                     <button
                         onClick={() => setShowExitModal(true)}
@@ -999,7 +999,7 @@ function InvoiceBuilderContent() {
                 </div>
             </div>
 
-            {/* ÔöÇÔöÇ NCF Editar Numeración Modal ÔöÇÔöÇ */}
+            {/* ── NCF Editar Numeración Modal ── */}
             {ncfModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setNcfModalOpen(false)}>
                     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden" onClick={e => e.stopPropagation()}>
@@ -1058,9 +1058,9 @@ function InvoiceBuilderContent() {
     );
 }
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  PAGE EXPORT (Wrapped in Suspense)
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 export default function NewInvoicePage() {
     return (
         <Suspense fallback={<div className="p-8 text-center text-muted-foreground flex items-center justify-center min-h-[50vh]"><div className="animate-spin mr-2 h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />Cargando constructor...</div>}>

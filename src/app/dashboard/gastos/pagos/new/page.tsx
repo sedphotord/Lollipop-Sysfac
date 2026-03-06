@@ -345,7 +345,7 @@ function EgresoBuilderContent() {
                                                     onChange={e => setRetencionItbisVal(e.target.value)}
                                                 />
                                             </div>
-                                            <p className="text-[10px] text-muted-foreground leading-tight">Valor retenido del ITBIS facturado. Se descontar├í del total a pagar al proveedor.</p>
+                                            <p className="text-[10px] text-muted-foreground leading-tight">Valor retenido del ITBIS facturado. Se descontará del total a pagar al proveedor.</p>
                                         </div>
 
                                         {/* ISR */}

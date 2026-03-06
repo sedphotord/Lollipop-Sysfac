@@ -94,7 +94,7 @@ export default function PagosRecibidosPage() {
                 {[
                     { l: "Total Cobrado", v: `RD$ ${totalMes.toLocaleString("es-DO", { minimumFractionDigits: 2 })}`, c: "text-emerald-600 bg-emerald-500/10", i: BanknotesIcon },
                     { l: "Pagos Registrados", v: list.length.toString(), c: "text-blue-600 bg-blue-500/10", i: CheckCircleIcon },
-                    { l: "Promedio por Pago", v: list.length ? `RD$ ${(totalMes / list.length).toLocaleString("es-DO", { maximumFractionDigits: 0 })}` : "ÔÇö", c: "text-violet-600 bg-violet-500/10", i: CreditCardIcon },
+                    { l: "Promedio por Pago", v: list.length ? `RD$ ${(totalMes / list.length).toLocaleString("es-DO", { maximumFractionDigits: 0 })}` : "—", c: "text-violet-600 bg-violet-500/10", i: CreditCardIcon },
                 ].map((k, i) => {
                     const Ic = k.i;
                     return (
@@ -136,7 +136,7 @@ export default function PagosRecibidosPage() {
                                         <TableRow key={p.id} className="hover:bg-muted/20 group">
                                             <TableCell className="text-sm text-muted-foreground">{p.fecha}</TableCell>
                                             <TableCell className="font-semibold">{p.cliente}</TableCell>
-                                            <TableCell className="font-mono text-xs text-primary">{p.facturaRef || "ÔÇö"}</TableCell>
+                                            <TableCell className="font-mono text-xs text-primary">{p.facturaRef || "—"}</TableCell>
                                             <TableCell>
                                                 <Badge variant="outline" className={cn("text-xs gap-1", metodoColors[p.metodo] || "bg-muted")}>
                                                     <Ic className="w-3 h-3" /> {p.metodo}
@@ -145,7 +145,7 @@ export default function PagosRecibidosPage() {
                                             <TableCell className="text-right tabular-nums font-bold text-emerald-600">
                                                 {p.moneda === "USD" ? "US$" : "RD$"} {p.monto.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
                                             </TableCell>
-                                            <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">{p.notas || "ÔÇö"}</TableCell>
+                                            <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">{p.notas || "—"}</TableCell>
                                             <TableCell>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
@@ -181,7 +181,7 @@ export default function PagosRecibidosPage() {
                                 <Label>Moneda</Label>
                                 <Select value={form.moneda} onValueChange={set("moneda")}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent><SelectItem value="DOP">DOP ÔÇô Peso</SelectItem><SelectItem value="USD">USD ÔÇô Dólar</SelectItem><SelectItem value="EUR">EUR ÔÇô Euro</SelectItem></SelectContent>
+                                    <SelectContent><SelectItem value="DOP">DOP – Peso</SelectItem><SelectItem value="USD">USD – Dólar</SelectItem><SelectItem value="EUR">EUR – Euro</SelectItem></SelectContent>
                                 </Select>
                             </div>
                         </div>
@@ -191,7 +191,7 @@ export default function PagosRecibidosPage() {
                             {invoices.length > 0 ? (
                                 <Select value={form.facturaRef} onValueChange={v => { set("facturaRef")(v); const inv = invoices.find((i: any) => i.ncf === v); if (inv) set("cliente")(inv.clientName || inv.client?.name || form.cliente); }}>
                                     <SelectTrigger><SelectValue placeholder="Seleccionar factura pendiente" /></SelectTrigger>
-                                    <SelectContent>{invoices.map((i: any) => <SelectItem key={i.id} value={i.ncf}>{i.ncf} ÔÇö {i.clientName || i.client?.name}</SelectItem>)}</SelectContent>
+                                    <SelectContent>{invoices.map((i: any) => <SelectItem key={i.id} value={i.ncf}>{i.ncf} — {i.clientName || i.client?.name}</SelectItem>)}</SelectContent>
                                 </Select>
                             ) : (
                                 <Input placeholder="NCF de la factura" className="font-mono" value={form.facturaRef} onChange={e => set("facturaRef")(e.target.value)} />

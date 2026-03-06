@@ -17,7 +17,7 @@ import {
     Building2, AlertTriangle, X, Eye
 } from "lucide-react";
 
-// ÔöÇÔöÇÔöÇ Types ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Types ────────────────────────────────────────────────────────────────
 type Reporte = { id: string; nombre: string; desc: string; icon: any; dgiiCode?: string };
 
 const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[] }> = {
@@ -25,7 +25,7 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
         color: "text-blue-600 bg-blue-500/10 border-blue-500/20", icon: TrendingUp,
         reportes: [
             { id: "V1", nombre: "Ventas por Cliente", desc: "Distribución de ventas por cliente en el período.", icon: FileText },
-            { id: "V2", nombre: "Ventas por Producto", desc: "An├ílisis de productos m├ís vendidos.", icon: ShoppingCart },
+            { id: "V2", nombre: "Ventas por Producto", desc: "Análisis de productos más vendidos.", icon: ShoppingCart },
             { id: "V3", nombre: "Ventas por Período", desc: "Comparativa mensual/trimestral de ingresos.", icon: Calendar },
             { id: "V4", nombre: "Facturas Pendientes de Cobro", desc: "CxC vencidas y por vencer.", icon: FileBarChart2 },
             { id: "V5", nombre: "Cotizaciones Emitidas", desc: "Tasa de conversión de cotizaciones.", icon: FileText },
@@ -39,7 +39,7 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
             { id: "A1", nombre: "Balance de Comprobación", desc: "Estado de cuentas contables del período.", icon: FileBarChart2 },
             { id: "A2", nombre: "Cuentas por Cobrar", desc: "Detalle de saldos pendientes por cliente.", icon: FileText },
             { id: "A3", nombre: "Cuentas por Pagar", desc: "Detalle de obligaciones con proveedores.", icon: FileText },
-            { id: "A4", nombre: "Antig├╝edad de Saldos", desc: "An├ílisis de vencimiento de CxC/CxP.", icon: Calendar },
+            { id: "A4", nombre: "Antig├╝edad de Saldos", desc: "Análisis de vencimiento de CxC/CxP.", icon: Calendar },
             { id: "A5", nombre: "Gastos por Categoría", desc: "Clasificación de egresos por tipo.", icon: BarChart3 },
             { id: "A6", nombre: "Conciliación Bancaria", desc: "Diferencias entre banco y libros.", icon: FileText },
         ],
@@ -58,13 +58,13 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
     fiscales: {
         color: "text-rose-600 bg-rose-500/10 border-rose-500/20", icon: FileBarChart2,
         reportes: [
-            { id: "T1", nombre: "Formato 606 ÔÇö Compras", desc: "Declaración mensual de compras y servicios recibidos.", icon: FileText, dgiiCode: "606" },
-            { id: "T2", nombre: "Formato 607 ÔÇö Ventas", desc: "Declaración mensual de ventas de bienes y servicios.", icon: FileText, dgiiCode: "607" },
-            { id: "T3", nombre: "Formato 608 ÔÇö Anulados", desc: "NCF anulados del período.", icon: FileText, dgiiCode: "608" },
-            { id: "T4", nombre: "Formato 609 ÔÇö Exterior", desc: "Pagos a proveedores del exterior.", icon: Globe, dgiiCode: "609" },
-            { id: "T5", nombre: "IT-1 ÔÇö ITBIS Mensual", desc: "Declaración mensual de ITBIS (Formulario IT-1).", icon: FileBarChart2 },
-            { id: "T6", nombre: "IR-2 ÔÇö ISR Empresas", desc: "Declaración anual de renta corporativa.", icon: FileBarChart2 },
-            { id: "T7", nombre: "TSS ÔÇö Nómina Mensual", desc: "Reporte de seguridad social mensual.", icon: FileText },
+            { id: "T1", nombre: "Formato 606 — Compras", desc: "Declaración mensual de compras y servicios recibidos.", icon: FileText, dgiiCode: "606" },
+            { id: "T2", nombre: "Formato 607 — Ventas", desc: "Declaración mensual de ventas de bienes y servicios.", icon: FileText, dgiiCode: "607" },
+            { id: "T3", nombre: "Formato 608 — Anulados", desc: "NCF anulados del período.", icon: FileText, dgiiCode: "608" },
+            { id: "T4", nombre: "Formato 609 — Exterior", desc: "Pagos a proveedores del exterior.", icon: Globe, dgiiCode: "609" },
+            { id: "T5", nombre: "IT-1 — ITBIS Mensual", desc: "Declaración mensual de ITBIS (Formulario IT-1).", icon: FileBarChart2 },
+            { id: "T6", nombre: "IR-2 — ISR Empresas", desc: "Declaración anual de renta corporativa.", icon: FileBarChart2 },
+            { id: "T7", nombre: "TSS — Nómina Mensual", desc: "Reporte de seguridad social mensual.", icon: FileText },
         ],
     },
     exportar: {
@@ -84,7 +84,7 @@ const TAB_LABELS: Record<string, string> = {
 };
 const TAB_KEYS = Object.keys(CATEGORIAS);
 
-// ÔöÇÔöÇÔöÇ DGII Generator ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── DGII Generator ───────────────────────────────────────────────────────
 type DGIIRow = Record<string, string | number>;
 
 function generate606(expenses: any[], mes: number, anio: number): DGIIRow[] {
@@ -186,7 +186,7 @@ function downloadFile(content: string, filename: string, mime: string) {
     URL.revokeObjectURL(url);
 }
 
-// ÔöÇÔöÇÔöÇ Component ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Component ───────────────────────────────────────────────────────────
 export default function ReportesPage() {
     const [search, setSearch] = useState("");
     const [favs, setFavs] = useState<string[]>([]);
@@ -225,7 +225,7 @@ export default function ReportesPage() {
             headers = ["NCF", "Fecha", "Tipo de Anulación"];
         } else {
             // Generic export for other reports
-            rows = [{ "Período": `${mesStr}/${anio}`, "Tipo": selectedReport.nombre, "Estado": "No hay datos reales ÔÇö integra tu contabilidad" }];
+            rows = [{ "Período": `${mesStr}/${anio}`, "Tipo": selectedReport.nombre, "Estado": "No hay datos reales — integra tu contabilidad" }];
             headers = ["Período", "Tipo", "Estado"];
         }
 
@@ -293,7 +293,7 @@ export default function ReportesPage() {
                         <p className="font-bold text-sm text-rose-700">Formatos DGII disponibles</p>
                         <p className="text-xs text-muted-foreground">Genera los archivos TXT oficiales 606, 607, 608 y 609 desde la pestaña <strong>Fiscales DGII</strong> con tus datos reales.</p>
                     </div>
-                    <Badge className="bg-rose-500 text-white shrink-0 hidden sm:flex">IT-1 ┬À IR-2 ┬À TSS</Badge>
+                    <Badge className="bg-rose-500 text-white shrink-0 hidden sm:flex">IT-1 · IR-2 · TSS</Badge>
                 </CardContent>
             </Card>
 
@@ -350,7 +350,7 @@ export default function ReportesPage() {
                 ))}
             </Tabs>
 
-            {/* ÔöÇÔöÇÔöÇ Reporte Dialog ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+            {/* ─── Reporte Dialog ─────────────────────────────── */}
             <Dialog open={!!selectedReport && !showPreview} onOpenChange={open => !open && setSelectedReport(null)}>
                 <DialogContent className="sm:max-w-[480px]">
                     <DialogHeader>
@@ -412,12 +412,12 @@ export default function ReportesPage() {
                 </DialogContent>
             </Dialog>
 
-            {/* ÔöÇÔöÇÔöÇ Preview Dialog ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+            {/* ─── Preview Dialog ─────────────────────────────── */}
             <Dialog open={showPreview} onOpenChange={open => !open && setShowPreview(false)}>
                 <DialogContent className="max-w-5xl max-h-[80vh] flex flex-col">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
-                            <Eye className="w-5 h-5" /> Previsualización ÔÇö {selectedReport?.nombre}
+                            <Eye className="w-5 h-5" /> Previsualización — {selectedReport?.nombre}
                             <Badge variant="secondary">{previewRows.length} registros</Badge>
                         </DialogTitle>
                     </DialogHeader>

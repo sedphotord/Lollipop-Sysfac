@@ -68,7 +68,7 @@ export default function TurnosPage() {
         (r.closeVendedor || "").toLowerCase().includes(search.toLowerCase())
     );
 
-    // ÔöÇÔöÇ Computed report metrics ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // ── Computed report metrics ────────────────────────────────────────────────
     const allSales = useMemo(() => history.flatMap(r => r.sales.map(s => ({ ...s, shiftId: r.id, shiftDate: r.closeDate }))), [history]);
 
     const byMethod = useMemo(() => {
@@ -107,12 +107,12 @@ export default function TurnosPage() {
     const avgSales = totalShifts ? totalAllTime / totalShifts : 0;
     const totalTransactions = history.reduce((a, r) => a + r.salesCount, 0);
 
-    // ÔöÇÔöÇ Exports ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // ── Exports ───────────────────────────────────────────────────────────────
     const exportCSV = (rec: ShiftRecord) => {
         const rows = [
             ["Cierre de Turno"], ["ID", rec.id], ["Fecha", rec.closeDate],
             ["Apertura", rec.openTime], ["Cierre", rec.closeTime],
-            ["Vendedor apertura", rec.openVendedor || "ÔÇö"], ["Vendedor cierre", rec.closeVendedor || "ÔÇö"],
+            ["Vendedor apertura", rec.openVendedor || "—"], ["Vendedor cierre", rec.closeVendedor || "—"],
             ["Monto apertura", rec.openingFloat], ["Total vendido", rec.totalSales],
             ["Efectivo contado", rec.cashCountTotal], ["Num ventas", rec.salesCount],
             [], ["ID Venta", "Método", "Hora", "Total"],
@@ -126,7 +126,7 @@ export default function TurnosPage() {
         const XLSX = await import("xlsx");
         const wb = XLSX.utils.book_new();
         const summary = [["ID", rec.id], ["Fecha", rec.closeDate], ["Apertura", rec.openTime], ["Cierre", rec.closeTime],
-        ["Vendedor apertura", rec.openVendedor || "ÔÇö"], ["Vendedor cierre", rec.closeVendedor || "ÔÇö"],
+        ["Vendedor apertura", rec.openVendedor || "—"], ["Vendedor cierre", rec.closeVendedor || "—"],
         ["Monto apertura", rec.openingFloat], ["Total vendido", rec.totalSales], ["Efectivo contado", rec.cashCountTotal]];
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(summary), "Resumen");
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([["ID", "Método", "Hora", "Total"], ...rec.sales.map(s => [s.id, s.method, s.time, s.total])]), "Ventas");
@@ -138,9 +138,9 @@ export default function TurnosPage() {
         w.document.write(`<html><head><title>Cierre ${rec.id}</title>
         <style>body{font-family:Arial,sans-serif;padding:24px;font-size:13px}h1{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ddd;padding:6px 10px}th{background:#f5f5f5}tfoot td{font-weight:bold}</style>
         </head><body>
-        <h1>Cierre de Turno ÔÇö ${rec.id}</h1>
+        <h1>Cierre de Turno — ${rec.id}</h1>
         <p>Fecha: ${rec.closeDate} | Apertura: ${rec.openTime} | Cierre: ${rec.closeTime}</p>
-        <p>Vendedor apertura: <b>${rec.openVendedor || "ÔÇö"}</b> | Cierre: <b>${rec.closeVendedor || "ÔÇö"}</b></p>
+        <p>Vendedor apertura: <b>${rec.openVendedor || "—"}</b> | Cierre: <b>${rec.closeVendedor || "—"}</b></p>
         <table><tr><th>Concepto</th><th>Valor</th></tr>
         <tr><td>Monto apertura</td><td>${fmt(rec.openingFloat)}</td></tr>
         <tr><td>Total vendido</td><td>${fmt(rec.totalSales)}</td></tr>
@@ -156,7 +156,7 @@ export default function TurnosPage() {
 
     const exportAllCSV = () => {
         const rows = [["ID", "Fecha", "Apertura", "Cierre", "V. Apertura", "V. Cierre", "Float", "Vendido", "Contado", "Ventas"],
-        ...history.map(r => [r.id, r.closeDate, r.openTime, r.closeTime, r.openVendedor || "ÔÇö", r.closeVendedor || "ÔÇö", r.openingFloat, r.totalSales, r.cashCountTotal, r.salesCount])];
+        ...history.map(r => [r.id, r.closeDate, r.openTime, r.closeTime, r.openVendedor || "—", r.closeVendedor || "—", r.openingFloat, r.totalSales, r.cashCountTotal, r.salesCount])];
         const blob = new Blob([rows.map(r => r.join(",")).join("\n")], { type: "text/csv;charset=utf-8;" });
         const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "historial-turnos.csv"; a.click();
     };
@@ -166,7 +166,7 @@ export default function TurnosPage() {
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([
             ["ID", "Fecha", "Apertura", "Cierre", "V. Apertura", "V. Cierre", "Float", "Vendido", "Contado", "Ventas"],
-            ...history.map(r => [r.id, r.closeDate, r.openTime, r.closeTime, r.openVendedor || "ÔÇö", r.closeVendedor || "ÔÇö", r.openingFloat, r.totalSales, r.cashCountTotal, r.salesCount])
+            ...history.map(r => [r.id, r.closeDate, r.openTime, r.closeTime, r.openVendedor || "—", r.closeVendedor || "—", r.openingFloat, r.totalSales, r.cashCountTotal, r.salesCount])
         ]), "Turnos");
         const allSalesRows: any[][] = [["Turno", "Fecha", "ID Venta", "Método", "Hora", "Total"]];
         history.forEach(r => r.sales.forEach(s => allSalesRows.push([r.id, r.closeDate, s.id, s.method, s.time, s.total])));
@@ -216,7 +216,7 @@ export default function TurnosPage() {
                     <TabsTrigger value="reportes">Reportes</TabsTrigger>
                 </TabsList>
 
-                {/* ÔöÇÔöÇ TAB 1: Historial de turnos ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── TAB 1: Historial de turnos ─────────────────────────────────── */}
                 <TabsContent value="historial" className="space-y-4 mt-4">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -273,7 +273,7 @@ export default function TurnosPage() {
                     </Card>
                 </TabsContent>
 
-                {/* ÔöÇÔöÇ TAB 2: Ventas por turno ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── TAB 2: Ventas por turno ────────────────────────────────────── */}
                 <TabsContent value="ventas" className="space-y-4 mt-4">
                     {history.length === 0 ? (
                         <Card className="p-12 text-center text-muted-foreground bg-card/50 border-border/60">No hay turnos aún.</Card>
@@ -282,7 +282,7 @@ export default function TurnosPage() {
                             <div className="px-5 py-4 bg-muted/30 border-b flex items-center justify-between gap-4 flex-wrap">
                                 <div className="flex items-center gap-3">
                                     <span className="font-mono font-bold text-primary text-sm">{rec.id}</span>
-                                    <span className="text-xs text-muted-foreground">{rec.closeDate} ┬À {rec.openTime}ÔåÆ{rec.closeTime}</span>
+                                    <span className="text-xs text-muted-foreground">{rec.closeDate} · {rec.openTime}→{rec.closeTime}</span>
                                     {rec.openVendedor && <Badge variant="outline" className="text-xs gap-1"><User className="w-3 h-3" />{rec.openVendedor}</Badge>}
                                 </div>
                                 <div className="flex items-center gap-4 text-sm">
@@ -328,7 +328,7 @@ export default function TurnosPage() {
                     ))}
                 </TabsContent>
 
-                {/* ÔöÇÔöÇ TAB 3: Reportes ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── TAB 3: Reportes ───────────────────────────────────────────── */}
                 <TabsContent value="reportes" className="space-y-6 mt-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -434,14 +434,14 @@ export default function TurnosPage() {
                 </TabsContent>
             </Tabs>
 
-            {/* ÔöÇÔöÇ Detail slide panel ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+            {/* ── Detail slide panel ─────────────────────────────────────────── */}
             {selected && (
                 <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm" onClick={() => setSelected(null)}>
                     <div className="bg-background border-l border-border w-full sm:w-[500px] h-full overflow-auto p-6 space-y-5" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <div>
                                 <h3 className="font-bold text-lg">{selected.id}</h3>
-                                <p className="text-sm text-muted-foreground">{selected.closeDate} ┬À {selected.openTime} ÔåÆ {selected.closeTime}</p>
+                                <p className="text-sm text-muted-foreground">{selected.closeDate} · {selected.openTime} → {selected.closeTime}</p>
                                 {(selected.openVendedor || selected.closeVendedor) && (
                                     <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
                                         {selected.openVendedor && <span className="flex items-center gap-1"><User className="w-3 h-3 text-emerald-600" /> Abre: <b>{selected.openVendedor}</b></span>}

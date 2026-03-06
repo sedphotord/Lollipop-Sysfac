@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 // Mock Products Catalog for selection
 const MOCK_PRODUCTS = [
     { id: "P-001", code: "LT-XPS15", name: "Laptop Dell XPS 15", price: 125000, cost: 95000, stock: 15, unit: "und" },
-    { id: "P-002", code: "KB-LOGI", name: "Teclado Mec├ínico Logitech", price: 4500, cost: 2800, stock: 42, unit: "und" },
+    { id: "P-002", code: "KB-LOGI", name: "Teclado Mecánico Logitech", price: 4500, cost: 2800, stock: 42, unit: "und" },
     { id: "P-003", code: "MO-SM27", name: "Monitor Samsung 27\"", price: 18500, cost: 14000, stock: 8, unit: "und" },
     { id: "P-004", code: "UP-APC", name: "UPS APC 1500VA", price: 9550, cost: 7200, stock: 24, unit: "und" },
     { id: "P-005", code: "MA-APL", name: "Apple Magic Mouse", price: 5500, cost: 4100, stock: 30, unit: "und" },
@@ -203,8 +203,8 @@ function AjusteBuilderContent() {
                         </div>
                         <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
                             {tipo === 'incremento'
-                                ? "Este monto incrementar├í la valoración total del inventario en contabilidad."
-                                : "Este monto se registrar├í como gasto/pérdida afectando los estados financieros."}
+                                ? "Este monto incrementará la valoración total del inventario en contabilidad."
+                                : "Este monto se registrará como gasto/pérdida afectando los estados financieros."}
                         </p>
                     </div>
                 </div>
@@ -347,7 +347,7 @@ function AjusteBuilderContent() {
                             <div className="mt-4 p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3">
                                 <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                                 <div className="text-sm text-amber-900">
-                                    <span className="font-bold">Advertencia:</span> Revisar los costos unitarios es crucial. El costo reflejado es el promedio ponderado actual. Modificarlo cambiar├í el impacto financiero en el diario contable.
+                                    <span className="font-bold">Advertencia:</span> Revisar los costos unitarios es crucial. El costo reflejado es el promedio ponderado actual. Modificarlo cambiará el impacto financiero en el diario contable.
                                 </div>
                             </div>
                         )}

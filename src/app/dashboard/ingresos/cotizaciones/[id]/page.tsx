@@ -81,7 +81,7 @@ export default function CotizacionEditPage() {
                         <h2 className="text-2xl font-bold">{cot.id}</h2>
                         <Badge variant="outline" className={cn("text-xs capitalize", STATUS_STYLES[cot.status] || "bg-muted")}>{cot.status}</Badge>
                     </div>
-                    <p className="text-muted-foreground text-sm">Editar cotización ┬À {cot.fecha}</p>
+                    <p className="text-muted-foreground text-sm">Editar cotización · {cot.fecha}</p>
                 </div>
                 <Button onClick={handleSave} className="bg-gradient-brand border-0 text-white gap-2">
                     {saved ? <><CheckCircleIcon className="w-4 h-4" />Guardado!</> : <>Guardar Cambios</>}
@@ -138,7 +138,7 @@ export default function CotizacionEditPage() {
                             <Input value={cot.fecha || ""} onChange={setField("fecha")} />
                         </div>
                         <div className="space-y-2">
-                            <Label>V├ílida hasta</Label>
+                            <Label>Válida hasta</Label>
                             <Input value={cot.validez || ""} onChange={setField("validez")} />
                         </div>
                         <div className="col-span-2 space-y-2">

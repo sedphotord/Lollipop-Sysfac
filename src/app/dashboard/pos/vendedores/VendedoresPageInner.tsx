@@ -74,7 +74,7 @@ export default function VendedoresPOSPage() {
                 {[
                     { l: "Total Vendedores", v: list.length.toString(), c: "text-blue-600 bg-blue-500/10", i: UserGroupIcon },
                     { l: "Ventas del Equipo", v: `RD$ ${totalVentasSum.toLocaleString()}`, c: "text-emerald-600 bg-emerald-500/10", i: BanknotesIcon },
-                    { l: "Top Vendedor", v: topVendedor?.nombre?.split(" ")[0] || "ÔÇö", c: "text-amber-600 bg-amber-500/10", i: StarIcon },
+                    { l: "Top Vendedor", v: topVendedor?.nombre?.split(" ")[0] || "—", c: "text-amber-600 bg-amber-500/10", i: StarIcon },
                 ].map((k, i) => {
                     const Ic = k.i; return (
                         <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
@@ -114,7 +114,7 @@ export default function VendedoresPOSPage() {
                                                 {v.activo ? "Activo" : "Inactivo"}
                                             </Badge>
                                         </div>
-                                        <p className="text-xs text-muted-foreground">{v.email} {v.pin && `┬À PIN: ${v.pin}`}</p>
+                                        <p className="text-xs text-muted-foreground">{v.email} {v.pin && `· PIN: ${v.pin}`}</p>
                                         <div className="mt-2">
                                             <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
                                                 <span>{pct}% de meta</span>

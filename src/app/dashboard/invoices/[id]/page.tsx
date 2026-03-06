@@ -48,12 +48,12 @@ const TEMPLATES: Record<string, React.ComponentType<{ data: any }>> = {
 };
 
 const TEMPLATE_LABELS: Record<string, string> = {
-    'InvoiceStandard': 'Factura Est├índar',
+    'InvoiceStandard': 'Factura Estándar',
     'InvoiceCorporate': 'Factura Corporativa',
     'InvoiceMinimal': 'Factura Minimalista',
     'InvoiceModern': 'Factura Moderna',
     'InvoiceElegant': 'Factura Elegante',
-    'QuoteStandard': 'Cotización Est├índar',
+    'QuoteStandard': 'Cotización Estándar',
     'QuoteDetailed': 'Cotización Detallada',
     'PaymentReceipt': 'Recibo de Pago',
     'TicketPOS': 'Ticket POS',
@@ -152,7 +152,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
             phone: company.phone,
         },
         client: {
-            name: previewData.cliente || previewData.client?.name || "ÔÇö",
+            name: previewData.cliente || previewData.client?.name || "—",
             rnc: previewData.rnc || previewData.client?.rnc || "",
             address: previewData.client?.address || "",
             phone: previewData.client?.phone || "",
@@ -165,13 +165,13 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
             dueDate: previewData.vencimiento || previewData.dueDate || "",
             ncf: previewData.ecf || previewData.ncf || "",
             terms: previewData.paymentTerms || "Vencimiento manual",
-            seller: previewData.vendedor || "ÔÇö",
+            seller: previewData.vendedor || "—",
             notes: previewData.notes || "",
             footer: previewData.footer || "",
         },
         items: previewData.items?.map((i: any) => ({
             id: i.id,
-            description: i.name || i.description || "ÔÇö",
+            description: i.name || i.description || "—",
             qty: i.qty || 1,
             price: i.price || 0,
             discount: i.price * i.qty * ((i.disc || 0) / 100),
@@ -224,7 +224,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="outline" className="gap-2 shadow-sm font-medium bg-white ml-auto">
-                                    M├ís acciones <ChevronDown className="w-4 h-4" />
+                                    Más acciones <ChevronDown className="w-4 h-4" />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="w-56 text-sm font-medium text-slate-700">
@@ -354,7 +354,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                     )}
                                 </TabsContent>
                                 <TabsContent value="contabilidad" className="p-8 m-0 text-center text-muted-foreground text-sm">
-                                    Aquí podr├ís ver el asiento contable asociado a esta venta.
+                                    Aquí podrás ver el asiento contable asociado a esta venta.
                                 </TabsContent>
                             </Tabs>
                         </div>
@@ -374,7 +374,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-slate-500">Vendedor</span>
-                                        <span className="font-medium text-slate-700">{previewData?.vendedor || 'ÔÇö'}</span>
+                                        <span className="font-medium text-slate-700">{previewData?.vendedor || '—'}</span>
                                     </div>
                                 </div>
                             </div>
@@ -382,7 +382,7 @@ function InvoiceViewContent({ routeId }: { routeId: string }) {
                                 <Paperclip className="w-8 h-8 text-slate-300 group-hover:text-slate-400 transition-colors" />
                                 <div>
                                     <p className="font-medium text-sm text-slate-600">Adjuntar archivos</p>
-                                    <p className="text-xs text-slate-400">Tamaño m├íximo 10MB</p>
+                                    <p className="text-xs text-slate-400">Tamaño máximo 10MB</p>
                                 </div>
                             </div>
                         </div>

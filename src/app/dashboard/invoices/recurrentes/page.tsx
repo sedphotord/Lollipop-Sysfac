@@ -117,7 +117,7 @@ export default function FacturasRecurrentesPage() {
                                         <Badge variant="outline" className={cn("text-[10px]", FREQ_COLOR[r.frecuencia])}>{r.frecuencia}</Badge>
                                         {!r.activa && <Badge variant="outline" className="text-[10px] text-muted-foreground">Pausada</Badge>}
                                     </div>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{r.cliente} ┬À {r.creadas} facturas generadas</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{r.cliente} · {r.creadas} facturas generadas</p>
                                 </div>
                                 <div className="text-center hidden sm:block">
                                     <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Próxima</p>

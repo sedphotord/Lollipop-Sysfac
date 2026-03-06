@@ -78,13 +78,13 @@ function InvoicesPageInner() {
 
         const draftRows = draftsList.map((d: any, i: number) => ({
             id: d.id || `DRAFT-${i + 1}`,
-            ecf: d.ecf || d.ncf || 'ÔÇö',
-            tipo: d.tipo || 'ÔÇö',
-            tipoName: d.tipo === 'B01' ? 'Crédito Fiscal' : d.tipo === 'B02' ? 'Consumo' : d.tipo || 'ÔÇö',
+            ecf: d.ecf || d.ncf || '—',
+            tipo: d.tipo || '—',
+            tipoName: d.tipo === 'B01' ? 'Crédito Fiscal' : d.tipo === 'B02' ? 'Consumo' : d.tipo || '—',
             cliente: d.cliente || d.client?.name || 'Sin cliente',
             rnc: d.rnc || d.client?.rnc || '',
             date: d.date || new Date().toLocaleDateString('es-DO'),
-            vencimiento: d.vencimiento || 'ÔÇö',
+            vencimiento: d.vencimiento || '—',
             total: d.total || d.items?.reduce((a: number, it: any) => a + (it.price * it.qty || 0), 0) || 0,
             status: 'draft',
             isDraft: true,
@@ -266,7 +266,7 @@ function InvoicesPageInner() {
                                         <TableCell>
                                             {(inv as any).isDraft ? (
                                                 <Link href={`/dashboard/invoices/${inv.id}/edit`} className="font-mono font-bold text-amber-600 hover:underline text-sm">
-                                                    {inv.ecf !== 'ÔÇö' ? inv.ecf : 'Sin NCF'}
+                                                    {inv.ecf !== '—' ? inv.ecf : 'Sin NCF'}
                                                 </Link>
                                             ) : (
                                                 <Link href={`/dashboard/invoices/${inv.id}`} className="font-mono font-bold text-primary hover:underline text-sm">
@@ -274,7 +274,7 @@ function InvoicesPageInner() {
                                                 </Link>
                                             )}
                                             {(inv as any).isDraft ? (
-                                                <p className="text-[10px] text-muted-foreground">Borrador ÔÇö clic para continuar</p>
+                                                <p className="text-[10px] text-muted-foreground">Borrador — clic para continuar</p>
                                             ) : (
                                                 <p className="text-[10px] text-muted-foreground">
                                                     {(!String(inv.id).startsWith('INV-') && !String(inv.id).startsWith('POS-') && inv.source !== 'pos') ? inv.id : ''}
@@ -311,7 +311,7 @@ function InvoicesPageInner() {
                                                     <span className="text-xs font-medium truncate max-w-[90px]">{inv.vendedor}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-xs text-muted-foreground">ÔÇö</span>
+                                                <span className="text-xs text-muted-foreground">—</span>
                                             )}
                                         </TableCell>
                                         <TableCell>
@@ -323,7 +323,7 @@ function InvoicesPageInner() {
                                         </TableCell>
                                         <TableCell>
                                             {(inv as any).isDraft ? (
-                                                <span className="text-muted-foreground text-xs">ÔÇö</span>
+                                                <span className="text-muted-foreground text-xs">—</span>
                                             ) : (inv as any).paymentStatus === 'pagada' ? (
                                                 <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200">Pagada</Badge>
                                             ) : (inv as any).paymentStatus === 'parcial' ? (
@@ -382,7 +382,7 @@ function InvoicesPageInner() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>┬┐Eliminar factura?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            Esta acción eliminar├í la factura <strong>{invoiceToDelete?.ecf !== 'ÔÇö' ? invoiceToDelete?.ecf : invoiceToDelete?.id}</strong> de <strong>{invoiceToDelete?.cliente}</strong> de forma permanente del sistema local.
+                            Esta acción eliminará la factura <strong>{invoiceToDelete?.ecf !== '—' ? invoiceToDelete?.ecf : invoiceToDelete?.id}</strong> de <strong>{invoiceToDelete?.cliente}</strong> de forma permanente del sistema local.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

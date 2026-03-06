@@ -81,7 +81,7 @@ function InvoicePreviewContent() {
             type: TIPO_NAMES[data.tipo] || data.tipo || "Consumo",
             number: data.ncf || "",
             date: data.date || new Date().toLocaleDateString("es-DO"),
-            dueDate: data.dueDate || "ÔÇö",
+            dueDate: data.dueDate || "—",
             terms: data.paymentTerms || "",
             seller: data.vendedor || "",
             notes: data.notes || "",
@@ -96,7 +96,7 @@ function InvoicePreviewContent() {
 
     return (
         <div className="min-h-screen bg-muted/30">
-            {/* ÔöÇÔöÇ Top Toolbar ÔöÇÔöÇ */}
+            {/* ── Top Toolbar ── */}
             <div className="bg-background border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm print:hidden">
                 <div className="flex items-center gap-3">
                     <button
@@ -107,7 +107,7 @@ function InvoicePreviewContent() {
                     </button>
                     <div>
                         <h1 className="text-base font-bold text-foreground">Vista previa</h1>
-                        <p className="text-xs text-muted-foreground">{templateId} ┬À {data.ncf || "Sin NCF"}</p>
+                        <p className="text-xs text-muted-foreground">{templateId} · {data.ncf || "Sin NCF"}</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -120,7 +120,7 @@ function InvoicePreviewContent() {
                 </div>
             </div>
 
-            {/* ÔöÇÔöÇ Invoice Preview Area ÔöÇÔöÇ */}
+            {/* ── Invoice Preview Area ── */}
             <div className="max-w-5xl mx-auto py-8 px-4">
                 <div
                     id="invoice-print-area"

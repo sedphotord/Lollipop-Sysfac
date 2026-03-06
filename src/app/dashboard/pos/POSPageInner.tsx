@@ -29,7 +29,7 @@ import { OpenShiftModal } from "@/components/pos/OpenShiftModal";
 import { useBarcodeScanner } from "@/hooks/useBarcodeScanner";
 
 
-// Lazy-load invoice templates ÔÇö only needed when printing, not on initial page load
+// Lazy-load invoice templates — only needed when printing, not on initial page load
 const InvoiceStandard = dynamic(() => import("@/components/templates/InvoiceStandard").then(m => m.InvoiceStandard), { ssr: false });
 const InvoiceCorporate = dynamic(() => import("@/components/templates/InvoiceCorporate").then(m => m.InvoiceCorporate), { ssr: false });
 const InvoiceMinimal = dynamic(() => import("@/components/templates/InvoiceMinimal").then(m => m.InvoiceMinimal), { ssr: false });
@@ -44,9 +44,9 @@ const INVOICE_TEMPLATES = {
     'inv-elegant': InvoiceElegant,
 };
 
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 //  MOCK DATA (Shared with Invoice System)
-// ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─────────────────────────────────────────────
 const CONSUMIDOR_FINAL = { id: "CF", rnc: "00000000000", name: "Consumidor Final", trade: "", type: "Consumidor Final", status: "Activo" };
 
 const DEFAULT_CLIENTS = [
@@ -58,8 +58,8 @@ const DEFAULT_CLIENTS = [
 
 const INITIAL_PRODUCTS = [
     { id: "1", code: "PRD-001", name: "Laptop Dell XPS 15", description: "Potente laptop con pantalla InfinityEdge de 15 pulgadas y procesador de última generación.", price: 85000, itbis: 18, category: "Hardware", image: "/laptop_product_photo_1772472640429.png" },
-    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resolución QHD y tasa de refresco de 144Hz para m├íxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
-    { id: "3", code: "PRD-003", name: "Teclado Mec├ínico", description: "Teclado RGB con switches t├íctiles, ideal para productividad y gaming intensivo.", price: 8500, itbis: 18, category: "Hardware", image: "/keyboard_product_photo_1772472671935.png" },
+    { id: "2", code: "PRD-002", name: "Monitor Samsung 27\"", description: "Monitor curvo con resolución QHD y tasa de refresco de 144Hz para máxima fluidez.", price: 32000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
+    { id: "3", code: "PRD-003", name: "Teclado Mecánico", description: "Teclado RGB con switches táctiles, ideal para productividad y gaming intensivo.", price: 8500, itbis: 18, category: "Hardware", image: "/keyboard_product_photo_1772472671935.png" },
     { id: "4", code: "SRV-001", name: "Consultoría IT (hora)", description: "Asesoría especializada en infraestructura, seguridad y optimización de sistemas.", price: 5000, itbis: 18, category: "Servicio", image: "/laptop_product_photo_1772472640429.png" },
     { id: "5", code: "PRD-005", name: "UPS APC 1500VA", description: "Respaldo de energía confiable con regulación de voltaje para equipos críticos.", price: 18000, itbis: 18, category: "Hardware", image: "/monitor_product_photo_1772472659191.png" },
     { id: "6", code: "SFT-001", name: "MS Office 365 (año)", description: "Suscripción anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
@@ -117,7 +117,7 @@ export default function POSPage() {
     const [newProdPrice, setNewProdPrice] = useState("");
     const [newProdCat, setNewProdCat] = useState("Hardware");
 
-    // Form states for Custom Service (ephemeral ÔÇö not added to catalog)
+    // Form states for Custom Service (ephemeral — not added to catalog)
     const [showNewServiceModal, setShowNewServiceModal] = useState(false);
     const [newSvcName, setNewSvcName] = useState("");
     const [newSvcPrice, setNewSvcPrice] = useState("");
@@ -301,7 +301,7 @@ export default function POSPage() {
             id: Math.random().toString(),
             code: "TMP-" + Math.floor(Math.random() * 1000),
             name: newProdName,
-            description: "Producto de venta r├ípida",
+            description: "Producto de venta rápida",
             price: parseFloat(newProdPrice),
             itbis: 18,
             category: newProdCat,
@@ -447,7 +447,7 @@ export default function POSPage() {
             <html><head><title>Cierre ${rec.id}</title>
             <style>body{font-family:Arial,sans-serif;padding:24px;font-size:13px}h1{font-size:18px}table{width:100%;border-collapse:collapse;margin-top:12px}th,td{border:1px solid #ddd;padding:6px 10px;text-align:left}th{background:#f5f5f5}tfoot td{font-weight:bold}</style>
             </head><body>
-            <h1>Cierre de Turno ÔÇö ${rec.id}</h1>
+            <h1>Cierre de Turno — ${rec.id}</h1>
             <p>Fecha: ${rec.closeDate} | Apertura: ${rec.openTime} | Cierre: ${rec.closeTime}</p>
             <table><tr><th>Concepto</th><th>Valor</th></tr>
             <tr><td>Monto apertura</td><td>RD$ ${rec.openingFloat.toFixed(2)}</td></tr>
@@ -599,7 +599,7 @@ export default function POSPage() {
                 />
             )}
 
-            {/* ÔöÇÔöÇ Close Shift / Cuadre de Caja Modal ÔöÇÔöÇ */}
+            {/* ── Close Shift / Cuadre de Caja Modal ── */}
             {showCloseShiftModal && (() => {
                 // NCF numerations grouped by tipo
                 const ncfByTipo: Record<string, { first: string; last: string; count: number }> = {};
@@ -641,7 +641,7 @@ export default function POSPage() {
                                         <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center"><Lock className="w-5 h-5" /></div>
                                         <div>
                                             <h2 className="font-bold text-lg">Cierre de Turno</h2>
-                                            <p className="text-xs text-muted-foreground">Abierto a las {shiftOpenTime} ┬À {shiftSales.length} venta{shiftSales.length !== 1 ? 's' : ''}</p>
+                                            <p className="text-xs text-muted-foreground">Abierto a las {shiftOpenTime} · {shiftSales.length} venta{shiftSales.length !== 1 ? 's' : ''}</p>
                                         </div>
                                     </div>
                                     <button onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); setCloseShiftPin(''); }} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
@@ -672,7 +672,7 @@ export default function POSPage() {
                                         <Button variant="outline" className="flex-1" onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); }}>Cancelar</Button>
                                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" disabled={!shiftCloseVendedor}
                                             onClick={() => { setCloseShiftPin(''); setCloseShiftPinError(false); setCloseShiftStep('pin'); }}>
-                                            Continuar ÔåÆ
+                                            Continuar →
                                         </Button>
                                     </div>
                                 </div>
@@ -698,7 +698,7 @@ export default function POSPage() {
                                             )}>{i < closeShiftPin.length ? 'ÔÇó' : ''}</div>
                                         ))}
                                     </div>
-                                    {closeShiftPinError && <p className="text-center text-xs text-red-500 font-semibold">ÔØî PIN incorrecto ÔÇö intenta de nuevo</p>}
+                                    {closeShiftPinError && <p className="text-center text-xs text-red-500 font-semibold">⚠️ PIN incorrecto — intenta de nuevo</p>}
                                     <div className="grid grid-cols-3 gap-2">
                                         {PAD_CLOSE.map((k, i) => k === '' ? <div key={i} /> :
                                             k === 'Ôî½' ? (
@@ -718,7 +718,7 @@ export default function POSPage() {
                                         )}
                                     </div>
                                     <div className="flex gap-3">
-                                        <Button variant="outline" className="flex-1" onClick={() => { setCloseShiftStep('select'); setCloseShiftPin(''); }}>ÔåÉ Atr├ís</Button>
+                                        <Button variant="outline" className="flex-1" onClick={() => { setCloseShiftStep('select'); setCloseShiftPin(''); }}>ÔåÉ Atrás</Button>
                                         <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" disabled={closeShiftPin.length < 6} onClick={() => verifyClosePin(closeShiftPin)}>
                                             <Lock className="w-4 h-4" /> Verificar PIN
                                         </Button>
@@ -757,7 +757,7 @@ export default function POSPage() {
                                                             <span className="text-muted-foreground ml-2">{TIPOS_NCF.find(t => t.code === tipo)?.name}</span>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="font-mono font-bold text-[11px]">{data.first} ÔåÆ {data.last}</p>
+                                                            <p className="font-mono font-bold text-[11px]">{data.first} → {data.last}</p>
                                                             <p className="text-muted-foreground">{data.count} comprobante{data.count !== 1 ? 's' : ''}</p>
                                                         </div>
                                                     </div>
@@ -800,7 +800,7 @@ export default function POSPage() {
                                                         <div>
                                                             <span className="font-mono font-bold text-xs">{s.id}</span>
                                                             {s.ncf && <span className="font-mono text-[10px] text-primary ml-2 bg-primary/10 px-1.5 py-0.5 rounded">{s.ncf}</span>}
-                                                            <span className="text-muted-foreground ml-2 text-xs">{s.method} ┬À {s.time}</span>
+                                                            <span className="text-muted-foreground ml-2 text-xs">{s.method} · {s.time}</span>
                                                         </div>
                                                         <span className="font-semibold">RD$ {s.total.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
                                                     </div>
@@ -821,7 +821,7 @@ export default function POSPage() {
                 );
             })()}
 
-            {/* ÔöÇÔöÇ Shift Closed ÔÇö Export Modal ÔöÇÔöÇ */}
+            {/* ── Shift Closed — Export Modal ── */}
             {shiftClosed && closedRecord && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
                     <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-md">
@@ -830,7 +830,7 @@ export default function POSPage() {
                                 <CheckCircle2 className="w-9 h-9" />
                             </div>
                             <h2 className="font-bold text-xl">Turno cerrado</h2>
-                            <p className="text-sm text-muted-foreground mt-1">{closedRecord.closeDate} ┬À {closedRecord.openTime} &rarr; {closedRecord.closeTime}</p>
+                            <p className="text-sm text-muted-foreground mt-1">{closedRecord.closeDate} · {closedRecord.openTime} &rarr; {closedRecord.closeTime}</p>
                             <div className="grid grid-cols-3 gap-3 mt-5">
                                 {[{ label: 'Ventas', value: closedRecord.salesCount },
                                 { label: 'Total vendido', value: `RD$ ${closedRecord.totalSales.toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
@@ -865,7 +865,7 @@ export default function POSPage() {
                                 Listo
                             </Button>
                             <Link href="/dashboard/pos/turnos" className="text-center text-xs text-primary hover:underline mt-1">
-                                Ver historial de turnos ÔåÆ
+                                Ver historial de turnos →
                             </Link>
                         </div>
                     </div>
@@ -1065,7 +1065,7 @@ export default function POSPage() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {(posMode === 'electronico' ? TIPOS_NCF_ELECTRONICO : TIPOS_NCF_TRADICIONAL).map(t => (
-                                            <SelectItem key={t.code} value={t.code}>{t.code} ÔÇö {t.name}</SelectItem>
+                                            <SelectItem key={t.code} value={t.code}>{t.code} — {t.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
@@ -1199,7 +1199,7 @@ export default function POSPage() {
                                     <ShoppingBag className="w-10 h-10 opacity-30" />
                                 </div>
                                 <h3 className="text-sm font-bold text-muted-foreground/60 mb-2">Carrito vacío</h3>
-                                <p className="text-[11px] font-bold leading-relaxed max-w-[200px] uppercase tracking-tighter">Selecciona productos del cat├ílogo para iniciar una venta.</p>
+                                <p className="text-[11px] font-bold leading-relaxed max-w-[200px] uppercase tracking-tighter">Selecciona productos del catálogo para iniciar una venta.</p>
                             </div>
                         ) : (
                             <div className="space-y-4">
@@ -1303,11 +1303,11 @@ export default function POSPage() {
                     </div>
                 </div>
 
-                {/* ÔöÇÔöÇ New Product Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── New Product Modal ────────────────────────────────────────────── */}
                 <Dialog open={showNewProductModal} onOpenChange={setShowNewProductModal}>
                     <DialogContent className="sm:max-w-[450px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
-                            <DialogTitle className="text-xl font-bold text-foreground tracking-tight">Nuevo producto r├ípido</DialogTitle>
+                            <DialogTitle className="text-xl font-bold text-foreground tracking-tight">Nuevo producto rápido</DialogTitle>
                         </div>
                         <div className="p-8 space-y-5">
                             <div className="space-y-2">
@@ -1358,7 +1358,7 @@ export default function POSPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* ÔöÇÔöÇ Custom Service Modal (ephemeral: cart only, not catalog) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── Custom Service Modal (ephemeral: cart only, not catalog) ─────── */}
                 <Dialog open={showNewServiceModal} onOpenChange={setShowNewServiceModal}>
                     <DialogContent className="sm:max-w-[420px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center gap-3">
@@ -1419,7 +1419,7 @@ export default function POSPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* ÔöÇÔöÇ New Client Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── New Client Modal ────────────────────────────────────────────── */}
                 <Dialog open={showNewClientModal} onOpenChange={setShowNewClientModal}>
                     <DialogContent className="sm:max-w-[450px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
                         <div className="p-6 bg-white/80 border-b border-border/40 flex items-center justify-between">
@@ -1469,7 +1469,7 @@ export default function POSPage() {
                     </DialogContent>
                 </Dialog>
 
-                {/* ÔöÇÔöÇ Payment Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── Payment Modal ────────────────────────────────────────────── */}
                 <Dialog open={showPayModal} onOpenChange={setShowPayModal}>
                     <DialogContent className="sm:max-w-[700px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-3xl">
                         <div className="p-6 bg-white/60 border-b border-border/40 flex items-center justify-between">
@@ -1606,7 +1606,7 @@ export default function POSPage() {
 
                                                     {paymentMethod === 'efectivo' && (
                                                         <div className="space-y-3">
-                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Acceso r├ípido</Label>
+                                                            <Label className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider opacity-60">Acceso rápido</Label>
                                                             <div className="flex flex-wrap gap-2">
                                                                 {[Math.ceil(total), 100, 200, 500, 1000, 2000].map(val => (
                                                                     <button
@@ -1724,11 +1724,11 @@ export default function POSPage() {
                                 <Zap className="w-6 h-6 text-primary fill-primary mt-1 shrink-0" />
                                 <div className="flex-1">
                                     <div className="flex items-center justify-between mb-2">
-                                        <h4 className="text-sm font-bold text-foreground tracking-tight uppercase tracking-wider">Modo Venta r├ípida</h4>
+                                        <h4 className="text-sm font-bold text-foreground tracking-tight uppercase tracking-wider">Modo Venta rápida</h4>
                                         <input type="checkbox" className="w-8 h-4 rounded-full accent-primary" />
                                     </div>
                                     <p className="text-[11px] text-muted-foreground font-medium leading-relaxed">
-                                        Las facturas se cobrar├ín autom├íticamente con el método predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
+                                        Las facturas se cobrarán automáticamente con el método predefinido al ser creadas. <span className="text-primary font-bold hover:underline cursor-pointer">Detalles</span>
                                     </p>
                                 </div>
                             </div>
@@ -1760,7 +1760,7 @@ export default function POSPage() {
                 </Dialog>
 
 
-                {/* ÔöÇÔöÇ Hidden Print Ticket (Thermal 80mm) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── Hidden Print Ticket (Thermal 80mm) ────────────────────────── */}
                 {printMode === 'ticket' && (
                     <div id="print-ticket" className="hidden print:block bg-white p-6 w-[80mm] mx-auto text-black font-mono text-[12px] leading-tight">
                         <div className="text-center space-y-2 mb-6">
@@ -1815,7 +1815,7 @@ export default function POSPage() {
                     </div>
                 )}
 
-                {/* ÔöÇÔöÇ Hidden Print Invoice (Letter 8.5x11) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ */}
+                {/* ── Hidden Print Invoice (Letter 8.5x11) ────────────────────────── */}
                 {printMode === 'invoice' && invoiceCreated && (() => {
                     const ActiveTemplate = INVOICE_TEMPLATES[globalTemplateId as keyof typeof INVOICE_TEMPLATES] || InvoiceStandard;
                     return (

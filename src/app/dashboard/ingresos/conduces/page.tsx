@@ -138,8 +138,8 @@ export default function ConducesPage() {
                                         <TableCell className="font-mono text-xs font-semibold text-primary">{c.numero}</TableCell>
                                         <TableCell className="text-sm text-muted-foreground">{c.fecha}</TableCell>
                                         <TableCell className="font-semibold">{c.cliente}</TableCell>
-                                        <TableCell className="text-sm text-muted-foreground max-w-[140px] truncate">{c.direccion || "ÔÇö"}</TableCell>
-                                        <TableCell className="font-mono text-xs text-primary">{c.facturaRef || "ÔÇö"}</TableCell>
+                                        <TableCell className="text-sm text-muted-foreground max-w-[140px] truncate">{c.direccion || "—"}</TableCell>
+                                        <TableCell className="font-mono text-xs text-primary">{c.facturaRef || "—"}</TableCell>
                                         <TableCell>
                                             <Badge variant="outline" className={cn("text-xs capitalize", STATUS_STYLES[c.estado])}>{c.estado}</Badge>
                                         </TableCell>

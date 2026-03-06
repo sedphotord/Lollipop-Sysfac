@@ -250,7 +250,7 @@ export default function SettingsPage() {
                                     </div>
                                 </div>
                                 <Button variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
-                                    ÔåÆ
+                                    →
                                 </Button>
                             </CardContent>
                         </Link>
@@ -387,12 +387,12 @@ export default function SettingsPage() {
                                 </Select>
                                 {invoiceMode === 'tradicional' && (
                                     <p className="text-sm text-muted-foreground mt-2 border-l-2 border-amber-500 pl-3">
-                                        Se generar├ín comprobantes con la estructura tradicional (ej. B0100000001). Debes reportar tu formato 607 mensualmente.
+                                        Se generarán comprobantes con la estructura tradicional (ej. B0100000001). Debes reportar tu formato 607 mensualmente.
                                     </p>
                                 )}
                                 {invoiceMode === 'electronico' && (
                                     <p className="text-sm text-muted-foreground mt-2 border-l-2 border-blue-500 pl-3">
-                                        Se generar├ín comprobantes electrónicos (ej. E310000000001). Certificación automatizada con conexión DGII.
+                                        Se generarán comprobantes electrónicos (ej. E310000000001). Certificación automatizada con conexión DGII.
                                     </p>
                                 )}
                             </div>

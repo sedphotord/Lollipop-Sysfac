@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-// ÔöÇÔöÇÔöÇ Types ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Types ────────────────────────────────────────────────────────────────────
 type ItemType = "producto" | "servicio";
 
 type CatalogItem = {
@@ -35,7 +35,7 @@ type CatalogItem = {
     sla?: string; coverage?: string; deliverable?: string;
 };
 
-// ÔöÇÔöÇÔöÇ Initial data ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Initial data ─────────────────────────────────────────────────────────────
 const INITIAL_ITEMS: CatalogItem[] = [
     {
         id: "1", type: "servicio", code: "SRV-001", name: "Consultoría IT",
@@ -84,7 +84,7 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 type ViewMode = "grid" | "list";
 
-// ÔöÇÔöÇÔöÇ Empty forms ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Empty forms ──────────────────────────────────────────────────────────────
 const emptyProduct = (): CatalogItem => ({
     id: "", type: "producto", code: "", referencia: "", name: "", description: "",
     category: "Hardware", cost: 0, price: 0, itbis: 18,
@@ -103,7 +103,7 @@ const emptyService = (): CatalogItem => ({
 
 const CATALOG_KEY = "sysfac_catalog";
 
-// ÔöÇÔöÇÔöÇ Image Upload ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Image Upload ─────────────────────────────────────────────────────────────
 function ImageUpload({ value, onChange }: { value?: string; onChange: (b64: string) => void }) {
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -145,7 +145,7 @@ function ImageUpload({ value, onChange }: { value?: string; onChange: (b64: stri
     );
 }
 
-// ÔöÇÔöÇÔöÇ Field helpers ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Field helpers ────────────────────────────────────────────────────────────
 function FieldLabel({ children }: { children: React.ReactNode }) {
     return <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">{children}</Label>;
 }
@@ -181,7 +181,7 @@ function FieldSelect({ value, onChange, options, className = "" }: {
     );
 }
 
-// ÔöÇÔöÇÔöÇ Product Form ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Product Form ─────────────────────────────────────────────────────────────
 function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
     const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
     return (
@@ -308,7 +308,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos ÔÇö Ej. Color, Material, Garantía</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos — Ej. Color, Material, Garantía</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
@@ -342,7 +342,7 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
     );
 }
 
-// ÔöÇÔöÇÔöÇ Service Form ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Service Form ─────────────────────────────────────────────────────────────
 function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
     const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
     return (
@@ -488,7 +488,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     </Button>
                 </div>
                 {form.attributes.length === 0 ? (
-                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin características ÔÇö Ej. Número de usuarios, Idioma, Plataforma</p>
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin características — Ej. Número de usuarios, Idioma, Plataforma</p>
                 ) : (
                     <div className="space-y-2">
                         {form.attributes.map((attr, idx) => (
@@ -522,7 +522,7 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
     );
 }
 
-// ÔöÇÔöÇÔöÇ Catalog Modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Catalog Modal ─────────────────────────────────────────────────────────────
 function CatalogModal({
     open, onOpenChange, itemType, isEditing, form, setForm, onSave, onDelete, onToggleStatus
 }: {
@@ -604,7 +604,7 @@ function CatalogModal({
     );
 }
 
-// ÔöÇÔöÇÔöÇ Main Page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ProductsPage() {
     const [view, setView] = useState<ViewMode>("grid");
     const [search, setSearch] = useState("");

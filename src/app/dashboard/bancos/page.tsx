@@ -15,11 +15,11 @@ import { cn } from "@/lib/utils";
 
 const LS_BANCOS = "lollipop_bancos";
 
-// ÔöÇÔöÇ Chart (simple SVG sparkline) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ── Chart (simple SVG sparkline) ──────────────────────────────────
 function IncomesChart({ period }: { period: "6M" | "3M" | "7D" }) {
     const months6 = ["Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo"];
     const months3 = ["Enero", "Febrero", "Marzo"];
-    const days7 = ["Lun", "Mar", "Mié", "Jue", "Vie", "S├íb", "Dom"];
+    const days7 = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
     const labels = period === "6M" ? months6 : period === "3M" ? months3 : days7;
     const points = period === "6M"
         ? [0, 0, 0, 0, 0, 0]
@@ -69,7 +69,7 @@ function IncomesChart({ period }: { period: "6M" | "3M" | "7D" }) {
     );
 }
 
-// ÔöÇÔöÇ Mock data ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ── Mock data ────────────────────────────────────────────────────
 type Cuenta = {
     id: string; name: string; tipo: string; numero: string;
     saldo: number; currency: string; connected: boolean;
@@ -87,7 +87,7 @@ const TIPO_OPTS = [
     { value: "Efectivo", label: "Efectivo", sub: "Caja general o caja menor" },
 ];
 
-// ÔöÇÔöÇ 3-dot menu component ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ── 3-dot menu component ─────────────────────────────────────────
 function RowMenu({ onEdit, onDeactivate, onReconcile, onDelete }: {
     onEdit: () => void; onDeactivate: () => void; onReconcile: () => void; onDelete: () => void;
 }) {
@@ -131,7 +131,7 @@ function RowMenu({ onEdit, onDeactivate, onReconcile, onDelete }: {
     );
 }
 
-// ÔöÇÔöÇ Agregar banco modal ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ── Agregar banco modal ──────────────────────────────────────────
 type BancoForm = { name: string; tipo: string; numero: string; saldo: string; currency: string; fechaSaldo: string; descripcion: string };
 const EMPTY_FORM: BancoForm = {
     name: "", tipo: "Banco", numero: "", saldo: "", currency: "DOP",
@@ -263,7 +263,7 @@ function AgregarBancoModal({ onClose, onSave }: { onClose: () => void; onSave: (
     );
 }
 
-// ÔöÇÔöÇ Main Page ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ── Main Page ────────────────────────────────────────────────────
 export default function BancosPage() {
     const [cuentas, setCuentas] = useState<Cuenta[]>(INIT_CUENTAS);
     const [search, setSearch] = useState("");
@@ -398,7 +398,7 @@ export default function BancosPage() {
                             <tr key={c.id} className="border-b border-border/40 last:border-0 hover:bg-muted/20 transition-colors group">
                                 <td className="px-4 py-3 font-medium text-primary hover:underline cursor-pointer">{c.name}</td>
                                 <td className="px-4 py-3 text-foreground">{c.tipo}</td>
-                                <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{c.numero || "ÔÇö"}</td>
+                                <td className="px-4 py-3 text-muted-foreground font-mono text-xs">{c.numero || "—"}</td>
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
                                         <Link2Off className="w-3.5 h-3.5" />

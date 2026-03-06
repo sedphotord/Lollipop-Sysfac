@@ -23,14 +23,14 @@ type Almacen = {
     ubicacion: string;
     responsable: string;
     descripcion: string;
-    capacidadMax: number;   // unidades m├íximas
+    capacidadMax: number;   // unidades máximas
     productos: number;       // productos registrados
     status: "activo" | "inactivo";
     creadoEn: string;
 };
 
 const SEED: Almacen[] = [
-    { id: "ALM-001", nombre: "Almacén Principal", ubicacion: "Av. 27 de Febrero #251, Santo Domingo", responsable: "Luis Fern├índez", descripcion: "Almacén central de operaciones.", capacidadMax: 1000, productos: 124, status: "activo", creadoEn: "2024-01-10" },
+    { id: "ALM-001", nombre: "Almacén Principal", ubicacion: "Av. 27 de Febrero #251, Santo Domingo", responsable: "Luis Fernández", descripcion: "Almacén central de operaciones.", capacidadMax: 1000, productos: 124, status: "activo", creadoEn: "2024-01-10" },
     { id: "ALM-002", nombre: "Sucursal Santiago", ubicacion: "Calle del Sol #80, Santiago", responsable: "Pedro Torres", descripcion: "Bodega de la sucursal norte.", capacidadMax: 500, productos: 68, status: "activo", creadoEn: "2024-03-15" },
     { id: "ALM-003", nombre: "Depósito La Romana", ubicacion: "Parque Industrial, La Romana", responsable: "María Santos", descripcion: "Almacén secundario de la región este.", capacidadMax: 300, productos: 31, status: "inactivo", creadoEn: "2023-11-01" },
 ];
@@ -225,7 +225,7 @@ export default function AlmacenesPage() {
                                         <h3 className="font-bold text-base leading-tight">{alm.nombre}</h3>
                                         {alm.descripcion && <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{alm.descripcion}</p>}
                                         <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1.5">
-                                            <MapPinIcon className="w-3.5 h-3.5 shrink-0" />{alm.ubicacion || "ÔÇö"}
+                                            <MapPinIcon className="w-3.5 h-3.5 shrink-0" />{alm.ubicacion || "—"}
                                         </p>
                                     </div>
 
@@ -277,7 +277,7 @@ export default function AlmacenesPage() {
                                 <Input placeholder="Juan Pérez" value={form.responsable} onChange={f("responsable")} />
                             </div>
                             <div className="space-y-1.5">
-                                <Label>Capacidad m├íxima (unidades)</Label>
+                                <Label>Capacidad máxima (unidades)</Label>
                                 <Input type="number" min="0" placeholder="500" value={form.capacidadMax} onChange={f("capacidadMax")} />
                             </div>
                         </div>

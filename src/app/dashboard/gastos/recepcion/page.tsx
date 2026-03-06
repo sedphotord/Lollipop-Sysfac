@@ -168,7 +168,7 @@ export default function RecepcionComprobantesPage() {
                                     <TableRow key={c.id} className="hover:bg-muted/20 group">
                                         <TableCell className="font-mono text-xs font-semibold text-primary">{c.ncf}</TableCell>
                                         <TableCell className="font-semibold">{c.proveedor}</TableCell>
-                                        <TableCell className="font-mono text-xs text-muted-foreground">{c.rnc || "ÔÇö"}</TableCell>
+                                        <TableCell className="font-mono text-xs text-muted-foreground">{c.rnc || "—"}</TableCell>
                                         <TableCell className="text-xs text-muted-foreground">{c.tipo} - {TIPOS_606[c.tipo]?.substring(0, 18)}...</TableCell>
                                         <TableCell className="text-sm text-muted-foreground">{c.fecha}</TableCell>
                                         <TableCell className="text-right tabular-nums font-medium">RD$ {c.montoSinItbis.toLocaleString()}</TableCell>
@@ -221,7 +221,7 @@ export default function RecepcionComprobantesPage() {
                                 <Label>Tipo de Gasto (606)</Label>
                                 <Select value={form.tipo} onValueChange={set("tipo")}>
                                     <SelectTrigger><SelectValue /></SelectTrigger>
-                                    <SelectContent>{Object.entries(TIPOS_606).map(([k, v]) => <SelectItem key={k} value={k}>{k} ÔÇö {v.substring(0, 28)}</SelectItem>)}</SelectContent>
+                                    <SelectContent>{Object.entries(TIPOS_606).map(([k, v]) => <SelectItem key={k} value={k}>{k} — {v.substring(0, 28)}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-2"><Label>Fecha</Label><Input type="date" value={form.fecha} onChange={e => set("fecha")(e.target.value)} /></div>
