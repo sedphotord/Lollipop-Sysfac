@@ -10,7 +10,7 @@ import { FAQ } from "@/components/landing/FAQ";
 import { Footer } from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-  title: "Lollipop — Facturación Electrónica DGII para República Dominicana",
+  title: "Lollipop — Sistema de Facturación Electrónica DGII RD",
   description:
     "Factura electrónicamente con e-CF y NCF, gestiona tu POS, inventario y más. La solución más completa para empresas dominicanas.",
   openGraph: {

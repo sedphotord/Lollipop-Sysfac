@@ -12,7 +12,7 @@ const APP_URL = "https://lollipop-sysfac.vercel.app";
 
 export const metadata: Metadata = {
   title: {
-    default: "Lollipop — Facturación Electrónica DGII",
+    default: "Lollipop — Sistema de Facturación Electrónica DGII RD",
     template: "%s · Lollipop",
   },
   description:
@@ -39,15 +39,15 @@ export const metadata: Metadata = {
     locale: "es_DO",
     url: APP_URL,
     siteName: "Lollipop",
-    title: "Lollipop — Facturación Electrónica DGII",
+    title: "Lollipop — Sistema de Facturación Electrónica DGII RD",
     description:
-      "Factura, vende en el punto de venta, controla inventario y genera reportes. Todo en un solo lugar. Compatible con la DGII de República Dominicana.",
+      "Factura electrónicamente, gestiona tu POS e inventario. Compatible con e-CF y NCF de la DGII. Prueba gratis hoy.",
     images: [
       {
-        url: "/og-image.png",
+        url: `${APP_URL}/og-image.png`,
         width: 1200,
         height: 630,
-        alt: "Lollipop — Sistema de Facturación Electrónica para RD",
+        alt: "Lollipop — Sistema de Facturación Electrónica para República Dominicana",
         type: "image/png",
       },
     ],
@@ -56,10 +56,10 @@ export const metadata: Metadata = {
   // ── Twitter / X Card ──
   twitter: {
     card: "summary_large_image",
-    title: "Lollipop — Facturación Electrónica DGII",
+    title: "Lollipop — Sistema de Facturación Electrónica DGII RD",
     description:
-      "Facturación electrónica, POS e inventario para República Dominicana. Compatible con e-CF y NCF.",
-    images: ["/og-image.png"],
+      "Factura electrónicamente, gestiona tu POS e inventario. Compatible con e-CF y NCF de la DGII. Prueba gratis hoy.",
+    images: [`${APP_URL}/og-image.png`],
     creator: "@lollipopapp",
   },
 

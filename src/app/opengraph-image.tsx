@@ -127,12 +127,13 @@ export default async function OgImage() {
                         e-CF · NCF · POS · Inventario · Cotizaciones
                     </div>
 
-                    {/* Badge */}
+                    {/* Badges */}
                     <div
                         style={{
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
+                            marginBottom: "28px",
                         }}
                     >
                         <div
@@ -160,6 +161,29 @@ export default async function OgImage() {
                             }}
                         >
                             DGII Oficial
+                        </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <div
+                            style={{
+                                padding: "14px 32px",
+                                borderRadius: "12px",
+                                background: "linear-gradient(135deg, #16a34a, #15803d)",
+                                color: "#ffffff",
+                                fontSize: "18px",
+                                fontWeight: "800",
+                                letterSpacing: "-0.3px",
+                                boxShadow: "0 8px 24px rgba(22,163,74,0.35), 0 0 0 1px rgba(22,163,74,0.2)",
+                            }}
+                        >
+                            Prueba gratis →
                         </div>
                     </div>
                 </div>
