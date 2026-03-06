@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export function InvoiceCorporate({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div className="bg-white text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
             {/* Left sidebar accent + header */}
@@ -23,7 +24,7 @@ export function InvoiceCorporate({ data }: any) {
                         </div>
                         <div className="text-right">
                             <p className="text-4xl font-black tracking-tighter mb-1" style={{ color: color.primary }}>FACTURA</p>
-                            <p className="text-gray-400 text-xs uppercase tracking-widest font-bold">NCF: {document.number}</p>
+                            <p className="text-gray-400 text-xs uppercase tracking-widest font-bold">{ncfLabel}: {document.number}</p>
                             <div className="mt-3 space-y-0.5">
                                 <p className="text-xs text-gray-500">Emisión: <span className="font-bold text-gray-700">{document.date}</span></p>
                                 {document.dueDate && <p className="text-xs text-gray-500">Vence: <span className="font-bold text-gray-700">{document.dueDate}</span></p>}

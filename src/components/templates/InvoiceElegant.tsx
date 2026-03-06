@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export function InvoiceElegant({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div className="bg-gray-50 text-sm" style={{ fontFamily: 'Inter, sans-serif', minHeight: '100vh' }}>
             {/* Subtle pattern header */}
@@ -17,7 +18,7 @@ export function InvoiceElegant({ data }: any) {
                         <div className="text-right">
                             <div className="inline-flex items-center gap-3 border rounded-xl px-5 py-3" style={{ borderColor: color.primary }}>
                                 <div>
-                                    <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">NCF</p>
+                                    <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400">{ncfLabel}</p>
                                     <p className="text-base font-black text-gray-900 font-mono">{document.number}</p>
                                 </div>
                             </div>

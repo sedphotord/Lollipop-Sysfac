@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export function InvoiceMinimal({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div className="bg-white text-gray-800 p-12 max-w-3xl mx-auto" style={{ fontFamily: '"Georgia", serif', minHeight: '100vh' }}>
             {/* Ultra-clean header */}
@@ -33,7 +34,7 @@ export function InvoiceMinimal({ data }: any) {
                     <p className="font-semibold">{document.dueDate}</p>
                 </div>}
                 {document.ncf && <div>
-                    <p className="uppercase tracking-widest text-gray-400 text-[10px] mb-1">NCF</p>
+                    <p className="uppercase tracking-widest text-gray-400 text-[10px] mb-1">{ncfLabel}</p>
                     <p className="font-semibold font-mono">{document.ncf}</p>
                 </div>}
             </div>

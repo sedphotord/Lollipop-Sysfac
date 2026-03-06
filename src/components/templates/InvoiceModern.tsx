@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 
 export function InvoiceModern({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div className="bg-white text-sm" style={{ fontFamily: 'Inter, sans-serif', minHeight: '100vh' }}>
             {/* Full-width dark hero header */}
@@ -18,7 +19,7 @@ export function InvoiceModern({ data }: any) {
                     </div>
                     <div className="text-right">
                         <div className="inline-block bg-white/10 backdrop-blur px-6 py-4 rounded-2xl">
-                            <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mb-1">NCF</p>
+                            <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mb-1">{ncfLabel}</p>
                             <p className="text-white text-xl font-black font-mono">{document.number}</p>
                             <p className="text-white/60 text-xs mt-2">{document.date}</p>
                         </div>
@@ -37,7 +38,7 @@ export function InvoiceModern({ data }: any) {
                     </div>
                     <div className="bg-gray-50 rounded-2xl p-6 min-w-[200px]">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Detalles</p>
-                        {document.ncf && <p className="flex justify-between text-xs mb-1"><span className="text-gray-400">NCF</span><span className="font-mono font-bold">{document.ncf}</span></p>}
+                        {document.ncf && <p className="flex justify-between text-xs mb-1"><span className="text-gray-400">{ncfLabel}</span><span className="font-mono font-bold">{document.ncf}</span></p>}
                         <p className="flex justify-between text-xs mb-1"><span className="text-gray-400">Emisión</span><span className="font-bold">{document.date}</span></p>
                         {document.dueDate && <p className="flex justify-between text-xs"><span className="text-gray-400">Vence</span><span className="font-bold">{document.dueDate}</span></p>}
                         {document.seller && <p className="flex justify-between text-xs mt-1"><span className="text-gray-400">Vendedor</span><span className="font-bold">{document.seller}</span></p>}

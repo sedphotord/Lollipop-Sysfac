@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 // Note: recreated basic TicketPOS
 export function TicketPOS({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div id="print-ticket" className="bg-white p-4 max-w-[80mm] mx-auto text-[11px] leading-tight" style={{ fontFamily: 'monospace' }}>
             <div className="text-center mb-4">
@@ -16,9 +17,9 @@ export function TicketPOS({ data }: any) {
                 <p>{company.phone}</p>
             </div>
             <div className="border-b border-t border-black py-2 mb-2 border-dashed">
-                <p className="flex justify-between"><span>NCF:</span> <span className="font-bold">{document.number}</span></p>
+                <p className="flex justify-between"><span>{ncfLabel}:</span> <span className="font-bold">{document.number}</span></p>
                 <p className="flex justify-between"><span>FECHA:</span> <span>{document.date}</span></p>
-                {document.ncf && <p className="flex justify-between"><span>NCF:</span> <span>{document.ncf}</span></p>}
+                {document.ncf && <p className="flex justify-between"><span>{ncfLabel}:</span> <span>{document.ncf}</span></p>}
                 <p className="flex justify-between"><span>CLIENTE:</span> <span>{client.name}</span></p>
                 <p className="flex justify-between"><span>RNC/CED:</span> <span>{client.rnc}</span></p>
                 {document.seller && <p className="flex justify-between"><span>CAJERO:</span> <span>{document.seller.substring(0, 15)}</span></p>}

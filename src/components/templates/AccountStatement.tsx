@@ -3,6 +3,7 @@ import { formatCurrency } from '@/lib/utils';
 // Note: recovered basic template
 export function AccountStatement({ data }: any) {
     const { company, client, document, items, totals, color } = data;
+    const ncfLabel = document.number?.startsWith('E') ? 'e-CF' : 'NCF';
     return (
         <div className="bg-white p-8 max-w-4xl mx-auto rounded-xl shadow-sm text-sm" style={{ fontFamily: 'Inter, sans-serif' }}>
             <div className="flex justify-between items-start mb-8 border-b pb-6" style={{ borderColor: color.primary }}>
@@ -19,9 +20,9 @@ export function AccountStatement({ data }: any) {
                 <div className="text-right">
                     <h2 className="text-2xl font-black uppercase tracking-widest text-gray-800 mb-2">ESTADO DE CUENTA</h2>
                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                        <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">NCF:</span> <span className="font-mono font-bold">{document.number}</span></p>
+                        <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">{ncfLabel}:</span> <span className="font-mono font-bold">{document.number}</span></p>
                         <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">Fecha:</span> <span className="font-bold">{document.date}</span></p>
-                        {document.ncf && <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">NCF:</span> <span className="font-bold text-xs">{document.ncf}</span></p>}
+                        {document.ncf && <p className="flex justify-between gap-8 mb-1"><span className="text-gray-500">{ncfLabel}:</span> <span className="font-bold text-xs">{document.ncf}</span></p>}
                         {document.dueDate && <p className="flex justify-between gap-8"><span className="text-gray-500">Vence:</span> <span className="font-bold text-xs">{document.dueDate}</span></p>}
                     </div>
                 </div>
