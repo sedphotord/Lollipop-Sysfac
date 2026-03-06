@@ -70,7 +70,7 @@ function ItemRow({ item, onUpdate, onRemove }: { item: Item; onUpdate: (field: k
                     </PopoverContent>
                 </Popover>
             </td>
-            <td className="py-2 px-1.5"><Input value={item.ref} onChange={e => onUpdate("ref", e.target.value)} className="h-9 min-w-[80px]" placeholder="SKU" /></td>
+            <td className="py-2 px-1.5"><Input value={item.ref} onChange={e => onUpdate("ref", e.target.value)} className="h-9 min-w-[80px]" placeholder="Código" /></td>
             <td className="py-2 px-1.5"><Input value={item.desc} onChange={e => onUpdate("desc", e.target.value)} className="h-9 min-w-[150px]" placeholder="Detalles de empaque..." /></td>
             <td className="py-2 px-1.5"><Input value={item.weight} onChange={e => onUpdate("weight", e.target.value)} className="h-9 min-w-[80px]" placeholder="Ej. 5 kg" /></td>
             <td className="py-2 px-1.5 w-24">

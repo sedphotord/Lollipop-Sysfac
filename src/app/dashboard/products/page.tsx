@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 type ItemType = "producto" | "servicio";
 
 type CatalogItem = {
-    id: string; type: ItemType; code: string; name: string; description: string;
+    id: string; type: ItemType; code: string; referencia?: string; name: string; description: string;
     category: string; cost: number; price: number; itbis: number;
     status: "active" | "inactive"; attributes: { key: string; value: string }[];
     image?: string; // base64 data URL or URL path
@@ -55,7 +55,7 @@ const INITIAL_ITEMS: CatalogItem[] = [
     },
     {
         id: "3", type: "producto", code: "PRD-003", name: "Libro de Contabilidad",
-        description: "Manual pr├íctico de contabilidad b├ísica para PYMES.",
+        description: "Manual práctico de contabilidad básica para PYMES.",
         category: "Papelería", cost: 900, price: 1500, itbis: 0,
         status: "active", attributes: [],
         brand: "Editora Nacional", supplier: "Papelería Herrera", warehouse: "Depósito 1",
@@ -86,7 +86,7 @@ type ViewMode = "grid" | "list";
 
 // ÔöÇÔöÇÔöÇ Empty forms ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 const emptyProduct = (): CatalogItem => ({
-    id: "", type: "producto", code: "", name: "", description: "",
+    id: "", type: "producto", code: "", referencia: "", name: "", description: "",
     category: "Hardware", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
     brand: "", supplier: "", warehouse: "Almacén Central",
@@ -94,7 +94,7 @@ const emptyProduct = (): CatalogItem => ({
 });
 
 const emptyService = (): CatalogItem => ({
-    id: "", type: "servicio", code: "", name: "", description: "",
+    id: "", type: "servicio", code: "", referencia: "", name: "", description: "",
     category: "Consultoría", cost: 0, price: 0, itbis: 18,
     status: "active", attributes: [],
     serviceType: "Técnico", billingMode: "Por hora", duration: "",
@@ -202,10 +202,14 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                             <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Laptop Dell XPS 15" />
                         </div>
                         <div className="space-y-1.5">
-                            <FieldLabel>Código / SKU</FieldLabel>
+                            <FieldLabel>Código</FieldLabel>
                             <FieldInput value={form.code} onChange={F("code")} placeholder="PRD-001" />
                         </div>
                         <div className="space-y-1.5">
+                            <FieldLabel>Referencia</FieldLabel>
+                            <FieldInput value={form.referencia || ""} onChange={F("referencia")} placeholder="REF-001, Cod. proveedor..." />
+                        </div>
+                        <div className="space-y-1.5 col-span-2">
                             <FieldLabel>Categoría</FieldLabel>
                             <FieldSelect value={form.category} onChange={F("category")} options={[
                                 { value: "Hardware", label: "Hardware" },
@@ -286,9 +290,9 @@ function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>ITBIS (%)</FieldLabel>
                         <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
-                            { value: "18", label: "18% ÔÇö ITBIS Est├índar" },
-                            { value: "16", label: "16% ÔÇö ITBIS Reducido" },
-                            { value: "0", label: "0% ÔÇö Exento" },
+                            { value: "18", label: "18% — ITBIS Estándar" },
+                            { value: "16", label: "16% — ITBIS Reducido" },
+                            { value: "0", label: "0% — Exento" },
                         ]} />
                     </div>
                 </div>
@@ -428,10 +432,10 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>Horario de Cobertura</FieldLabel>
                         <FieldSelect value={form.coverage || "L-V 8am-6pm"} onChange={F("coverage")} options={[
-                            { value: "L-V 8am-5pm", label: "L-V 8amÔÇô5pm" },
-                            { value: "L-V 8am-6pm", label: "L-V 8amÔÇô6pm" },
-                            { value: "L-S 8am-6pm", label: "L-S 8amÔÇô6pm" },
-                            { value: "7/24", label: "7/24 ÔÇö Todo el tiempo" },
+                            { value: "L-V 8am-5pm", label: "L-V 8am–5pm" },
+                            { value: "L-V 8am-6pm", label: "L-V 8am–6pm" },
+                            { value: "L-S 8am-6pm", label: "L-S 8am–6pm" },
+                            { value: "7/24", label: "7/24 — Todo el tiempo" },
                             { value: "A convenir", label: "A convenir" },
                         ]} />
                     </div>
@@ -466,9 +470,9 @@ function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: Catalo
                     <div className="space-y-1.5">
                         <FieldLabel>ITBIS (%)</FieldLabel>
                         <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
-                            { value: "18", label: "18% ÔÇö ITBIS Est├índar" },
-                            { value: "16", label: "16% ÔÇö ITBIS Reducido" },
-                            { value: "0", label: "0% ÔÇö Exento" },
+                            { value: "18", label: "18% — ITBIS Estándar" },
+                            { value: "16", label: "16% — ITBIS Reducido" },
+                            { value: "0", label: "0% — Exento" },
                         ]} />
                     </div>
                 </div>
@@ -661,7 +665,7 @@ export default function ProductsPage() {
     };
 
     const handleDelete = () => {
-        if (confirm("┬┐Eliminar este elemento del cat├ílogo?")) {
+        if (confirm("¿Eliminar este elemento del catálogo?")) {
             persistItems(items.filter(i => i.id !== form.id));
             setIsModalOpen(false);
         }
@@ -692,7 +696,7 @@ export default function ProductsPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Cat├ílogo</h2>
+                    <h2 className="text-3xl font-bold tracking-tight">Catálogo</h2>
                     <p className="text-muted-foreground mt-1 text-sm">Productos físicos y servicios con ITBIS configurado.</p>
                 </div>
                 <div className="flex gap-2">
@@ -708,7 +712,7 @@ export default function ProductsPage() {
             {/* KPI Strip */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Total Cat├ílogo", value: totalItems, icon: Package, color: "text-blue-600 bg-blue-500/10" },
+                    { label: "Total Catálogo", value: totalItems, icon: Package, color: "text-blue-600 bg-blue-500/10" },
                     { label: "Productos", value: products.length, icon: Box, color: "text-blue-600 bg-blue-500/10" },
                     { label: "Servicios", value: services.length, icon: Briefcase, color: "text-violet-600 bg-violet-500/10" },
                     { label: "Stock Bajo", value: lowStock, icon: AlertTriangle, color: lowStock > 0 ? "text-amber-600 bg-amber-500/10" : "text-muted-foreground bg-muted" },

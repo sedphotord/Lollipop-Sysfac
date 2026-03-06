@@ -71,7 +71,7 @@ function ItemRow({ item, onUpdate, onRemove }: { item: Item; onUpdate: (field: k
                     </PopoverContent>
                 </Popover>
             </td>
-            <td className="py-2 px-1.5"><Input value={item.ref} onChange={e => onUpdate("ref", e.target.value)} className="h-9 min-w-[80px]" placeholder="SKU" /></td>
+            <td className="py-2 px-1.5"><Input value={item.ref} onChange={e => onUpdate("ref", e.target.value)} className="h-9 min-w-[80px]" placeholder="Código" /></td>
             <td className="py-2 px-1.5"><Input type="number" value={item.cost || ""} onChange={e => onUpdate("cost", parseFloat(e.target.value) || 0)} className="h-9 text-right min-w-[90px]" placeholder="0.00" /></td>
             <td className="py-2 px-1.5 w-20">
                 <div className="relative">

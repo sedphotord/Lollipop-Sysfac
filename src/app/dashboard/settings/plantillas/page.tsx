@@ -169,12 +169,12 @@ Atendido por: {{vendedor}}
 ];
 
 export default function PlantillasPage() {
-    const [template, setTemplate] = useState<"classic" | "modern" | "minimal">("modern");
+    const [template, setTemplate] = useState<"classic" | "modern" | "minimal" | "factura" | "proforma">("modern");
     const [primaryColor, setPrimaryColor] = useState(THEME_COLORS[0].value);
     const [showLogo, setShowLogo] = useState(true);
     const [showDiscount, setShowDiscount] = useState(true);
     const [showTaxCode, setShowTaxCode] = useState(false);
-    const [showSKU, setShowSKU] = useState(false);
+    const [showCodigo, setShowCodigo] = useState(false);
     const [showWatermark, setShowWatermark] = useState(false);
 
     const [emailTemplates, setEmailTemplates] = useState(DEFAULT_TEMPLATES);
@@ -252,16 +252,24 @@ export default function PlantillasPage() {
                             <div className="space-y-3">
                                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">1. Disposición</p>
                                 <div className="grid grid-cols-3 gap-2">
-                                    {(["classic", "modern", "minimal"] as const).map(t => (
-                                        <button key={t} onClick={() => setTemplate(t)}
-                                            className={cn("border-2 rounded-xl p-2.5 cursor-pointer transition-all text-center", template === t ? "border-blue-600 bg-blue-50/50" : "border-border/50 hover:border-border")}
+                                    {([
+                                        { key: "modern", label: "Moderno" },
+                                        { key: "classic", label: "Clásico" },
+                                        { key: "minimal", label: "Minimal" },
+                                        { key: "factura", label: "Factura" },
+                                        { key: "proforma", label: "Proforma" },
+                                    ] as const).map(({ key, label }) => (
+                                        <button key={key} onClick={() => setTemplate(key)}
+                                            className={cn("border-2 rounded-xl p-2.5 cursor-pointer transition-all text-center", template === key ? "border-blue-600 bg-blue-50/50" : "border-border/50 hover:border-border")}
                                         >
                                             <div className="w-full h-10 bg-white rounded border border-border/40 mb-2 relative overflow-hidden">
-                                                {t === "modern" && <div className="absolute top-0 left-0 right-0 h-2.5 bg-blue-600" />}
-                                                {t === "classic" && <div className="absolute bottom-0 left-0 right-0 h-2.5 bg-slate-100 border-t border-slate-200" />}
-                                                {t === "minimal" && <div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-0.5 bg-slate-300" /></div>}
+                                                {key === "modern" && <div className="absolute top-0 left-0 right-0 h-2.5 bg-blue-600" />}
+                                                {key === "classic" && <div className="absolute bottom-0 left-0 right-0 h-2.5 bg-slate-100 border-t border-slate-200" />}
+                                                {key === "minimal" && <div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-0.5 bg-slate-300" /></div>}
+                                                {key === "factura" && <><div className="absolute top-0 left-0 right-0 h-2 bg-emerald-600" /><div className="absolute bottom-0 left-0 right-0 h-1 bg-emerald-600/30" /></>}
+                                                {key === "proforma" && <div className="absolute inset-2 border border-dashed border-slate-300 rounded" />}
                                             </div>
-                                            <span className={cn("text-[11px] font-semibold capitalize", template === t ? "text-blue-700" : "text-muted-foreground")}>{t === "classic" ? "Clásico" : t === "modern" ? "Moderno" : "Minimal"}</span>
+                                            <span className={cn("text-[11px] font-semibold capitalize", template === key ? "text-blue-700" : "text-muted-foreground")}>{label}</span>
                                         </button>
                                     ))}
                                 </div>
@@ -308,7 +316,7 @@ export default function PlantillasPage() {
                             <div className="space-y-3">
                                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">4. Columnas de la Tabla</p>
                                 {[
-                                    { id: "sku", label: "Mostrar SKU", val: showSKU, set: setShowSKU },
+                                    { id: "codigo", label: "Mostrar Código", val: showCodigo, set: setShowCodigo },
                                     { id: "desc", label: "Columna Descuento", val: showDiscount, set: setShowDiscount },
                                     { id: "tax", label: "% ITBIS por línea", val: showTaxCode, set: setShowTaxCode },
                                 ].map(({ id, label, val, set }) => (
@@ -327,7 +335,11 @@ export default function PlantillasPage() {
                             template === "modern" && "border-t-[12px]", template === "classic" && "border-2 border-slate-200")}
                             style={{ borderTopColor: template === "modern" ? primaryColor : undefined }}>
                             <div className="p-10">
-                                <div className={cn("flex justify-between items-start mb-10", template === "minimal" && "flex-col gap-4 items-center text-center", template === "classic" && "border-b-2 pb-5 border-slate-200")}>
+                                <div className={cn("flex justify-between items-start mb-10",
+                                    template === "minimal" && "flex-col gap-4 items-center text-center",
+                                    template === "classic" && "border-b-2 pb-5 border-slate-200",
+                                    template === "proforma" && "border-b border-dashed pb-5 border-slate-300"
+                                )}>
                                     <div>
                                         {showLogo ? <div className="w-32 h-12 bg-slate-100 rounded flex items-center justify-center text-slate-400 border border-slate-200 mb-3"><ImageIcon className="w-4 h-4 mr-1" />Logo</div>
                                             : <h2 className="text-xl font-black mb-3" style={{ color: primaryColor }}>MI EMPRESA SRL</h2>}
@@ -351,8 +363,8 @@ export default function PlantillasPage() {
                                 <table className="w-full text-xs mb-6">
                                     <thead>
                                         <tr className={cn("text-left", template === "modern" ? "text-white" : "border-b-2 border-slate-300 text-slate-600")}
-                                            style={{ backgroundColor: template === "modern" ? primaryColor : "transparent" }}>
-                                            {showSKU && <th className="p-2">SKU</th>}
+                                            style={{ backgroundColor: template === "modern" || template === "factura" || template === "proforma" ? (template === "factura" ? "#059669" : primaryColor) : "transparent" }}>
+                                            {showCodigo && <th className="p-2">Código</th>}
                                             <th className="p-2 w-1/2">Descripción</th>
                                             <th className="p-2 text-center">Cant</th>
                                             <th className="p-2 text-right">Precio</th>
@@ -364,7 +376,7 @@ export default function PlantillasPage() {
                                     <tbody className="divide-y divide-slate-100">
                                         {MOCK_INVOICE.items.map((item, i) => (
                                             <tr key={i} className={cn("text-slate-700", template === "modern" && i % 2 === 0 ? "bg-slate-50/50" : "")}>
-                                                {showSKU && <td className="p-2 text-slate-400 font-mono">SRV-{100 + i}</td>}
+                                                {showCodigo && <td className="p-2 text-slate-400 font-mono">SRV-{100 + i}</td>}
                                                 <td className="p-2 font-medium">{item.desc}</td>
                                                 <td className="p-2 text-center">{item.cant}</td>
                                                 <td className="p-2 text-right">{fmt(item.precio)}</td>
