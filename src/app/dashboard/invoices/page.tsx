@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,7 +42,7 @@ const STATUS_MAP: Record<string, { label: string; cls: string; icon: any }> = {
     draft: { label: "Borrador", cls: "text-muted-foreground bg-muted", icon: FileText },
 };
 
-export default function InvoicesPage() {
+function InvoicesPageInner() {
     const searchParams = useSearchParams();
     const [search, setSearch] = useState(searchParams?.get("search") ?? "");
     const [statusFilter, setStatusFilter] = useState("all");
@@ -393,5 +393,13 @@ export default function InvoicesPage() {
                 </AlertDialogContent>
             </AlertDialog>
         </div>
+    );
+}
+
+export default function InvoicesPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground">Cargando facturas...</div>}>
+            <InvoicesPageInner />
+        </Suspense>
     );
 }
