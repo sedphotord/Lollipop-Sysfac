@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Edit, Plus, Search, Trash2, Upload } from "lucide-react";
+import { Download, Edit, Plus, Search, Trash2, Upload, MoreVertical, History } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -68,7 +70,22 @@ export default function GestionProductosPage() {
                                         <TableCell><Badge variant="outline" className={cn("text-xs", p.itbis === 0 ? 'text-emerald-600 border-emerald-500/30' : 'text-muted-foreground')}>{p.itbis === 0 ? 'Exento' : `${p.itbis}%`}</Badge></TableCell>
                                         <TableCell className={cn("text-right tabular-nums font-medium", p.stock === 0 ? 'text-red-500' : p.stock !== null && p.stock <= 3 ? 'text-amber-500' : '')}>{p.stock === null ? 'N/A' : p.stock === 0 ? '⚠ 0' : p.stock}</TableCell>
                                         <TableCell><Badge variant="outline" className={cn("text-xs", p.status === 'activo' ? 'text-emerald-600 border-emerald-500/30 bg-emerald-500/10' : 'text-muted-foreground bg-muted')}>{p.status}</Badge></TableCell>
-                                        <TableCell><Button variant="ghost" size="icon" className="h-8 w-8"><Edit className="w-3.5 h-3.5" /></Button></TableCell>
+                                        <TableCell>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8"><MoreVertical className="w-4 h-4 text-muted-foreground" /></Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-40">
+                                                    <DropdownMenuItem><Edit className="w-4 h-4 mr-2 text-muted-foreground" /> Editar</DropdownMenuItem>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem asChild>
+                                                        <Link href={`/dashboard/productos/kardex`}>
+                                                            <History className="w-4 h-4 mr-2 text-blue-500" /> Ver Kardex
+                                                        </Link>
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>

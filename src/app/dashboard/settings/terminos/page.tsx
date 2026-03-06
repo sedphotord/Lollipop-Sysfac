@@ -45,8 +45,8 @@ export default function TerminosPagoPage() {
             </div>
             <div className="grid gap-3">{list.map(t => (
                 <Card key={t.id} className={cn("bg-card/50 backdrop-blur-xl border-border/60 shadow-sm transition-all", !t.activo && "opacity-50")}><CardContent className="p-4"><div className="flex items-center gap-4">
-                    <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm tabular-nums", t.predeterminado ? "bg-gradient-to-br from-purple-600 to-cyan-500 text-white" : "bg-muted text-foreground")}>{t.dias === 0 ? "HOY" : t.dias + "d"}</div>
-                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold">{t.nombre}</p>{t.predeterminado && <Badge className="text-[10px] bg-gradient-to-r from-purple-600 to-cyan-500 text-white border-0">Default</Badge>}</div><p className="text-xs text-muted-foreground mt-0.5">{t.desc}</p></div>
+                    <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm tabular-nums", t.predeterminado ? "bg-gradient-to-br from-blue-600 to-sky-500 text-white" : "bg-muted text-foreground")}>{t.dias === 0 ? "HOY" : t.dias + "d"}</div>
+                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold">{t.nombre}</p>{t.predeterminado && <Badge className="text-[10px] bg-gradient-to-r from-blue-600 to-sky-500 text-white border-0">Default</Badge>}</div><p className="text-xs text-muted-foreground mt-0.5">{t.desc}</p></div>
                     <div className="flex items-center gap-2">
                         {!t.predeterminado && <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={() => setDefault(t.id)}>Hacer default</Button>}
                         {!t.predeterminado && <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500" onClick={() => remove(t.id)}><Trash2 className="w-4 h-4" /></Button>}

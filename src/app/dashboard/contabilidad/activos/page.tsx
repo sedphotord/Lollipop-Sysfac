@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Boxes, DollarSign, Plus, TrendingDown } from "lucide-react";
+import { ArchiveBoxIcon, CurrencyDollarIcon, PlusIcon, ArrowTrendingDownIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 
 const ACTIVOS = [
@@ -20,10 +20,10 @@ export default function ActivosPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Activos Fijos</h2><p className="text-muted-foreground mt-1 text-sm">Control de activos de la empresa y su depreciación fiscal.</p></div>
-                <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Activo</Button>
+                <Button className="bg-primary shadow-lg shadow-primary/20"><PlusIcon className="w-4 h-4 mr-2" /> Nuevo Activo</Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[{ l: "Total Activos", v: `RD$ ${totalCosto.toLocaleString()}`, i: Boxes, c: "text-blue-600 bg-blue-500/10" }, { l: "Valor Neto", v: `RD$ ${totalActual.toLocaleString()}`, i: DollarSign, c: "text-emerald-600 bg-emerald-500/10" }, { l: "Depreciación Acum.", v: `RD$ ${(totalCosto - totalActual).toLocaleString()}`, i: TrendingDown, c: "text-amber-600 bg-amber-500/10" }].map((k, i) => (
+                {[{ l: "Total Activos", v: `RD$ ${totalCosto.toLocaleString()}`, i: ArchiveBoxIcon, c: "text-blue-600 bg-blue-500/10" }, { l: "Valor Neto", v: `RD$ ${totalActual.toLocaleString()}`, i: CurrencyDollarIcon, c: "text-emerald-600 bg-emerald-500/10" }, { l: "Depreciación Acum.", v: `RD$ ${(totalCosto - totalActual).toLocaleString()}`, i: ArrowTrendingDownIcon, c: "text-amber-600 bg-amber-500/10" }].map((k, i) => (
                     <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardContent className="p-4 flex items-center gap-3"><div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", k.c)}><k.i className="w-5 h-5" /></div><div><p className="text-xs font-medium text-muted-foreground">{k.l}</p><p className="text-lg font-bold">{k.v}</p></div></CardContent></Card>
                 ))}
             </div>

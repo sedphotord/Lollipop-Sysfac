@@ -59,7 +59,7 @@ export default function NumeracionesPage() {
                         <div className="flex-1"><p className="font-bold">{n.nombre}</p><p className="text-xs text-muted-foreground font-mono mt-0.5">{n.serie}</p></div>
                         <div className="text-center hidden sm:block"><p className="text-xs text-muted-foreground">Rango</p><p className="text-sm font-mono tabular-nums">{n.desde} - {n.hasta}</p></div>
                         <div className="text-center hidden sm:block"><p className="text-xs text-muted-foreground">Usados</p><p className="text-sm font-bold tabular-nums">{n.usado} / {n.hasta}</p></div>
-                        <div className="w-24 hidden sm:block"><div className="w-full h-2 bg-muted rounded-full overflow-hidden"><div className={cn("h-full rounded-full transition-all", low ? "bg-red-500" : "bg-gradient-to-r from-purple-500 to-cyan-500")} style={{ width: `${pct}%` }} /></div><p className={cn("text-[10px] text-center mt-1 font-bold tabular-nums", low ? "text-red-500" : "text-muted-foreground")}>{pct}%</p></div>
+                        <div className="w-24 hidden sm:block"><div className="w-full h-2 bg-muted rounded-full overflow-hidden"><div className={cn("h-full rounded-full transition-all", low ? "bg-red-500" : "bg-gradient-to-r from-blue-500 to-sky-500")} style={{ width: `${pct}%` }} /></div><p className={cn("text-[10px] text-center mt-1 font-bold tabular-nums", low ? "text-red-500" : "text-muted-foreground")}>{pct}%</p></div>
                         <Badge variant="outline" className={cn("text-xs", n.estado === "activa" ? "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" : "text-muted-foreground")}>{n.estado}</Badge>
                     </div></CardContent></Card>
                 );

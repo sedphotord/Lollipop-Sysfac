@@ -14,14 +14,14 @@ const LOGOS = [
 
 export function Trust() {
     return (
-        <section className="py-12 border-y border-purple-100/30 dark:border-purple-900/20 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-sm overflow-hidden">
+        <section className="py-12 border-y border-blue-100/30 dark:border-blue-900/20 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-sm overflow-hidden">
             <div className="container mx-auto px-4 mb-6">
-                <p className="text-center text-xs font-bold text-purple-400 tracking-[0.2em] uppercase">Empresas que confian en Lollipop</p>
+                <p className="text-center text-xs font-bold text-blue-400 tracking-[0.2em] uppercase">Empresas que confian en Lollipop</p>
             </div>
             <Marquee speed={35} pauseOnHover className="py-2">
                 {LOGOS.map(l => (
                     <div key={l.name} className="flex items-center gap-3 mx-8 group cursor-default">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-50 to-cyan-50 dark:from-purple-900/30 dark:to-cyan-900/20 border border-purple-100/40 dark:border-purple-800/30 flex items-center justify-center text-xs font-black text-purple-600 group-hover:shadow-md group-hover:shadow-purple-500/10 transition-shadow shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/30 dark:to-sky-900/20 border border-blue-100/40 dark:border-blue-800/30 flex items-center justify-center text-xs font-black text-blue-600 group-hover:shadow-md group-hover:shadow-blue-500/10 transition-shadow shrink-0">
                             {l.name.substring(0, 2)}
                         </div>
                         <div>

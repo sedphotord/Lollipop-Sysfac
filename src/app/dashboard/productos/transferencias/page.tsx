@@ -32,7 +32,7 @@ export default function TransferenciasPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Transferencias</h2>
                     <p className="text-muted-foreground text-sm">Mueve inventario entre tus almacenes y sucursales.</p>
                 </div>
-                <Button className="bg-gradient-brand text-white border-0 shadow-lg shadow-purple-500/20">
+                <Button className="bg-gradient-brand text-white border-0 shadow-lg shadow-blue-500/20">
                     <Plus className="w-4 h-4 mr-2" /> Nueva Transferencia
                 </Button>
             </div>

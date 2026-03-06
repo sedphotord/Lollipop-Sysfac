@@ -14,14 +14,14 @@ const HIGHLIGHTS = [
 
 export function AdvancedFeatures() {
     return (
-        <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-white to-purple-50/50 dark:from-neutral-950 dark:to-purple-950/20">
+        <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-white to-blue-50/50 dark:from-neutral-950 dark:to-blue-950/20">
             <Particles className="opacity-20" count={25} color="#06b6d4" />
 
             <div className="container mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
                     {/* Left: content */}
                     <div>
-                        <p className="text-xs font-bold text-purple-400 tracking-[0.2em] uppercase mb-3">Por que Lollipop</p>
+                        <p className="text-xs font-bold text-blue-400 tracking-[0.2em] uppercase mb-3">Por que Lollipop</p>
                         <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
                             Tecnologia que{" "}
                             <GradientText>impulsa</GradientText>
@@ -35,7 +35,7 @@ export function AdvancedFeatures() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                             {HIGHLIGHTS.map((h, i) => (
                                 <div key={i} className="flex items-start gap-3 group">
-                                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-purple-100 to-cyan-100 dark:from-purple-900/40 dark:to-cyan-900/30 flex items-center justify-center shrink-0 text-purple-500 group-hover:shadow-md group-hover:shadow-purple-500/15 transition-shadow">
+                                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-blue-100 to-sky-100 dark:from-blue-900/40 dark:to-sky-900/30 flex items-center justify-center shrink-0 text-blue-500 group-hover:shadow-md group-hover:shadow-blue-500/15 transition-shadow">
                                         <h.icon className="w-4 h-4" />
                                     </div>
                                     <div>
@@ -55,13 +55,13 @@ export function AdvancedFeatures() {
 
                     {/* Right: visual */}
                     <div className="relative">
-                        <div className="absolute -inset-4 bg-gradient-to-br from-purple-400/20 to-cyan-400/20 rounded-3xl blur-2xl pointer-events-none" />
-                        <div className="relative bg-white dark:bg-neutral-900 rounded-2xl border border-purple-200/50 dark:border-purple-800/30 shadow-xl shadow-purple-500/10 p-8">
+                        <div className="absolute -inset-4 bg-gradient-to-br from-blue-400/20 to-sky-400/20 rounded-3xl blur-2xl pointer-events-none" />
+                        <div className="relative bg-white dark:bg-neutral-900 rounded-2xl border border-blue-200/50 dark:border-blue-800/30 shadow-xl shadow-blue-500/10 p-8">
                             {/* Mock dashboard stats */}
                             <div className="space-y-4">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center text-white font-black text-sm">L</div>
+                                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-sm">L</div>
                                         <div><p className="font-bold text-sm">Panel de Control</p><p className="text-[10px] text-muted-foreground">Mi Empresa SRL</p></div>
                                     </div>
                                     <span className="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-bold">En linea</span>
@@ -70,7 +70,7 @@ export function AdvancedFeatures() {
                                     {[
                                         { label: "Ingresos", value: "$50,801", color: "text-emerald-600" },
                                         { label: "Gastos", value: "$30,200", color: "text-rose-500" },
-                                        { label: "Resultado", value: "$20,601", color: "text-purple-600" },
+                                        { label: "Resultado", value: "$20,601", color: "text-blue-600" },
                                     ].map((s, i) => (
                                         <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
                                             <p className="text-[10px] text-muted-foreground">{s.label}</p>
@@ -81,7 +81,7 @@ export function AdvancedFeatures() {
                                 <div className="space-y-2">
                                     {["Factura #1245 emitida a CLARO", "Pago de $45,000 recibido", "Stock bajo: Toner HP"].map((item, i) => (
                                         <div key={i} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 text-xs">
-                                            <CheckCircle2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
                                             <span className="text-muted-foreground">{item}</span>
                                         </div>
                                     ))}

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Download, Plus } from "lucide-react";
+import { ArrowDownTrayIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -23,9 +23,9 @@ export default function EntradaDiarioPage() {
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Entradas de Diario</h2><p className="text-muted-foreground mt-1 text-sm">Asientos contables manuales y automáticos del período.</p></div>
                 <div className="flex gap-2">
-                    <Button variant="outline"><Download className="w-4 h-4 mr-2" />Exportar</Button>
+                    <Button variant="outline"><ArrowDownTrayIcon className="w-4 h-4 mr-2" />Exportar</Button>
                     <Link href="/dashboard/contabilidad/diario/new">
-                        <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nuevo Asiento</Button>
+                        <Button className="bg-primary shadow-lg shadow-primary/20"><PlusIcon className="w-4 h-4 mr-2" /> Nuevo Asiento</Button>
                     </Link>
                 </div>
             </div>

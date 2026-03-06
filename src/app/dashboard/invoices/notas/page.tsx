@@ -32,7 +32,7 @@ export default function NotasCreditoPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Notas de Crédito y Débito</h2>
                     <p className="text-muted-foreground text-sm">Aplica devoluciones y ajustes a facturas ya emitidas (e-CF B04, B03).</p>
                 </div>
-                <Button className="bg-gradient-brand text-white border-0 shadow-lg shadow-purple-500/20">
+                <Button className="bg-gradient-brand text-white border-0 shadow-lg shadow-blue-500/20">
                     <Plus className="w-4 h-4 mr-2" /> Emitir Nota de Crédito
                 </Button>
             </div>

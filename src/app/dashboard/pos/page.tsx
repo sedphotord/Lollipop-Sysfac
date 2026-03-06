@@ -9,7 +9,8 @@ import { Separator } from "@/components/ui/separator";
 import {
     Check, CreditCard, DollarSign, Minus, Plus, Search,
     ShoppingBag, ShoppingCart, Trash2, Zap,
-    Printer, RefreshCw, Settings, Percent, Sliders, Tags, Package, X, Lock, Unlock, Clock3, ArrowRightLeft, FileDown, FileSpreadsheet, CheckCircle2
+    Printer, RefreshCw, Settings, Sliders, Tags, Package, X, Lock, Unlock, Clock3, FileDown, FileSpreadsheet, CheckCircle2, Delete, AlertCircle,
+    Bolt, Pencil, Wrench, User2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +21,11 @@ import Link from "next/link";
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
+import {
+    DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { OpenShiftModal } from "@/components/pos/OpenShiftModal";
+
 
 // Lazy-load invoice templates — only needed when printing, not on initial page load
 const InvoiceStandard = dynamic(() => import("@/components/templates/InvoiceStandard").then(m => m.InvoiceStandard), { ssr: false });
@@ -39,7 +45,10 @@ const INVOICE_TEMPLATES = {
 // ─────────────────────────────────────────────
 //  MOCK DATA (Shared with Invoice System)
 // ─────────────────────────────────────────────
+const CONSUMIDOR_FINAL = { id: "CF", rnc: "00000000000", name: "Consumidor Final", trade: "", type: "Consumidor Final", status: "Activo" };
+
 const DEFAULT_CLIENTS = [
+    CONSUMIDOR_FINAL,
     { id: "1", rnc: "101010101", name: "COMPAÑIA DOMINICANA DE TELEFONOS S.A.", trade: "CLARO", type: "SRL", status: "Activo" },
     { id: "2", rnc: "130000001", name: "JUAN ANTONIO PEREZ ROSARIO", trade: "", type: "Persona Física", status: "Activo" },
     { id: "3", rnc: "130819985", name: "ALTICE DOMINICANA S.A.", trade: "ALTICE", type: "SRL", status: "Activo" },
@@ -54,15 +63,25 @@ const INITIAL_PRODUCTS = [
     { id: "6", code: "SFT-001", name: "MS Office 365 (año)", description: "Suscripción anual que incluye Word, Excel, PowerPoint y 1TB de almacenamiento en la nube.", price: 6500, itbis: 18, category: "Software", image: "/keyboard_product_photo_1772472671935.png" },
 ];
 
-const TIPOS_NCF = [
+const TIPOS_NCF_TRADICIONAL = [
     { code: "B01", name: "Crédito Fiscal" },
     { code: "B02", name: "Consumo" },
     { code: "B14", name: "Gubernamental" },
     { code: "B15", name: "Exportación" },
 ];
 
-const VENDEDORES = ["Marcos Perez", "Ana Rodriguez", "Jose Manuel"];
+const TIPOS_NCF_ELECTRONICO = [
+    { code: "E31", name: "Crédito Fiscal (e-CF)" },
+    { code: "E32", name: "Consumidor Final (e-CF)" },
+    { code: "E44", name: "Gubernamental (e-CF)" },
+    { code: "E45", name: "Exportación (e-CF)" },
+];
+
+// Unified list for lookups (used in print templates)
+const TIPOS_NCF = [...TIPOS_NCF_TRADICIONAL, ...TIPOS_NCF_ELECTRONICO];
+
 const BANCOS = ["Popular", "BHD León", "Banreservas", "Scotiabank"];
+const DEFAULT_VENDEDORES_NAMES = ["Marcos Perez", "Ana Rodriguez", "Jose Manuel"];
 
 type CartItem = { id: string; name: string; description?: string; price: number; itbis: number; qty: number; image: string };
 type Client = typeof DEFAULT_CLIENTS[0];
@@ -72,12 +91,14 @@ export default function POSPage() {
     const [products, setProducts] = useState(INITIAL_PRODUCTS);
     const [cart, setCart] = useState<CartItem[]>([]);
     const [catFilter, setCatFilter] = useState("all");
-    const [selectedClient, setSelectedClient] = useState<Client | null>(null);
-    const [ncfType, setNcfType] = useState("B01");
+    const [selectedClient, setSelectedClient] = useState<Client | null>(CONSUMIDOR_FINAL);
+    const [ncfType, setNcfType] = useState("B02");
+    const [posMode, setPosMode] = useState<'tradicional' | 'electronico'>('tradicional');
     const [priceList, setPriceList] = useState("General");
     const [discount, setDiscount] = useState(0);
 
     const [clients, setClients] = useState<Client[]>(DEFAULT_CLIENTS);
+    const [VENDEDORES, setVENDEDORES] = useState<string[]>(DEFAULT_VENDEDORES_NAMES);
     const [clientSearch, setClientSearch] = useState("");
     const [showClientDropdown, setShowClientDropdown] = useState(false);
 
@@ -93,6 +114,16 @@ export default function POSPage() {
     const [newProdName, setNewProdName] = useState("");
     const [newProdPrice, setNewProdPrice] = useState("");
     const [newProdCat, setNewProdCat] = useState("Hardware");
+
+    // Form states for Custom Service (ephemeral — not added to catalog)
+    const [showNewServiceModal, setShowNewServiceModal] = useState(false);
+    const [newSvcName, setNewSvcName] = useState("");
+    const [newSvcPrice, setNewSvcPrice] = useState("");
+    const [newSvcITBIS, setNewSvcITBIS] = useState("18");
+
+    // Inline sequence editor
+    const [showSeqEditor, setShowSeqEditor] = useState(false);
+    const [seqEditValue, setSeqEditValue] = useState("");
 
     // Form states for New Client
     const [newClientName, setNewClientName] = useState("");
@@ -112,19 +143,60 @@ export default function POSPage() {
     const [globalTemplateId, setGlobalTemplateId] = useState('inv-standard');
     const [globalColor, setGlobalColor] = useState('#3b82f6');
 
-    // Cash Drawer / Shift state
     const [shiftOpen, setShiftOpen] = useState(false);
     const [showOpenShiftModal, setShowOpenShiftModal] = useState(false);
     const [showCloseShiftModal, setShowCloseShiftModal] = useState(false);
     const [shiftOpenTime, setShiftOpenTime] = useState<string | null>(null);
     const [openingFloat, setOpeningFloat] = useState("");
-    const [shiftSales, setShiftSales] = useState<{ id: string; total: number; method: string; time: string }[]>([]);
+    const [shiftSales, setShiftSales] = useState<{ id: string; ncf?: string; tipo?: string; total: number; method: string; time: string }[]>([]);
     const DENOMINATIONS = [2000, 1000, 500, 200, 100, 50, 25, 10, 5, 1];
     const [denomCounts, setDenomCounts] = useState<Record<number, string>>({});
     const [shiftClosed, setShiftClosed] = useState(false); // shows export step
     const [closedRecord, setClosedRecord] = useState<any>(null);
+    const [shiftHistory, setShiftHistory] = useState<any[]>([]);
+    const [shiftOpenVendedor, setShiftOpenVendedor] = useState("");
+    const [shiftCloseVendedor, setShiftCloseVendedor] = useState("");
+    // Close-shift PIN step: 'select' | 'pin' | 'cuadre'
+    const [closeShiftStep, setCloseShiftStep] = useState<'select' | 'pin' | 'cuadre'>('select');
+    const [closeShiftPin, setCloseShiftPin] = useState("");
+    const [closeShiftPinError, setCloseShiftPinError] = useState(false);
+    const [closeShiftShake, setCloseShiftShake] = useState(false);
 
     useEffect(() => {
+        const raw = localStorage.getItem('pos_shift_history');
+        if (raw) setShiftHistory(JSON.parse(raw));
+
+        // Load product catalog from sysfac_catalog (products page)
+        try {
+            const catRaw = localStorage.getItem('sysfac_catalog');
+            if (catRaw) {
+                const catalog = JSON.parse(catRaw);
+                const mapped = catalog
+                    .filter((c: any) => c.status === 'active')
+                    .map((c: any) => ({
+                        id: c.id,
+                        code: c.code || '',
+                        name: c.name,
+                        description: c.description || '',
+                        price: c.price || 0,
+                        itbis: c.itbis ?? 18,
+                        category: c.category || 'Otro',
+                        image: c.image || '',
+                    }));
+                if (mapped.length) setProducts(mapped);
+            }
+        } catch { }
+
+        // Load global vendor list
+        try {
+            const vRaw = localStorage.getItem('pos_vendedores');
+            if (vRaw) {
+                const vList: { nombre: string; activo: boolean }[] = JSON.parse(vRaw);
+                const names = vList.filter(v => v.activo).map(v => v.nombre);
+                if (names.length) setVENDEDORES(names);
+            }
+        } catch { }
+
         const savedColor = localStorage.getItem('lollipop_theme_color');
         if (savedColor) setGlobalColor(savedColor);
 
@@ -215,6 +287,44 @@ export default function POSPage() {
         setNewProdPrice("");
     };
 
+    const handleNewService = () => {
+        if (!newSvcName || !newSvcPrice) return;
+        const svc: CartItem = {
+            id: "SVC-" + Date.now(),
+            name: newSvcName,
+            description: "Servicio personalizado",
+            price: parseFloat(newSvcPrice),
+            itbis: parseInt(newSvcITBIS) || 0,
+            qty: 1,
+            image: "/laptop_product_photo_1772472640429.png",
+        };
+        setCart(prev => [...prev, svc]);
+        setShowNewServiceModal(false);
+        setNewSvcName("");
+        setNewSvcPrice("");
+        setNewSvcITBIS("18");
+    };
+
+    // When modality changes, auto-update ncfType to the appropriate default
+    const handlePosModeChange = (v: 'tradicional' | 'electronico') => {
+        setPosMode(v);
+        if (v === 'electronico') {
+            setNcfType('E32'); // Consumidor Final e-CF
+        } else {
+            setNcfType('B02'); // Consumo (Tradicional)
+        }
+    };
+
+    // Save a manually edited sequence counter for the current ncfType
+    const handleSaveSeq = () => {
+        const num = parseInt(seqEditValue, 10);
+        if (isNaN(num) || num < 1) return;
+        const key = `pos_ncf_counter_${ncfType}`;
+        localStorage.setItem(key, String(num - 1)); // store n-1, next call will return n
+        setShowSeqEditor(false);
+        setSeqEditValue("");
+    };
+
     const handleNewClient = () => {
         if (!newClientName || !newClientRnc) return;
         const newClient = {
@@ -247,6 +357,8 @@ export default function POSPage() {
         salesCount: shiftSales.length,
         sales: shiftSales,
         denomCounts: { ...denomCounts },
+        openVendedor: shiftOpenVendedor,
+        closeVendedor: shiftCloseVendedor,
     });
 
     const saveShiftToHistory = (record: any) => {
@@ -254,6 +366,7 @@ export default function POSPage() {
         const hist = raw ? JSON.parse(raw) : [];
         hist.unshift(record);
         localStorage.setItem('pos_shift_history', JSON.stringify(hist));
+        setShiftHistory(hist);
     };
 
     const exportShiftCSV = (rec: any) => {
@@ -335,27 +448,88 @@ export default function POSPage() {
         setDenomCounts({});
     };
 
+    // Sequential NCF counter from localStorage
+    const getNextNCF = (type: string): string => {
+        const key = `pos_ncf_counter_${type}`;
+        const raw = localStorage.getItem(key);
+        const current = raw ? parseInt(raw, 10) : 0;
+        const next = current + 1;
+        localStorage.setItem(key, String(next));
+        return `${type}${String(next).padStart(8, '0')}`;
+    };
+
+    // Invoice ID: POS-YYYYMMDD-NNNN
+    const getNextPosId = (): string => {
+        const today = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+        const key = `pos_inv_counter_${today}`;
+        const raw = localStorage.getItem(key);
+        const next = (raw ? parseInt(raw, 10) : 0) + 1;
+        localStorage.setItem(key, String(next));
+        return `POS-${today}-${String(next).padStart(4, '0')}`;
+    };
+
+    // Peek the NEXT NCF (without incrementing)
+    const peekNextNCF = (type: string): string => {
+        const key = `pos_ncf_counter_${type}`;
+        const raw = localStorage.getItem(key);
+        const next = (raw ? parseInt(raw, 10) : 0) + 1;
+        return `${type}${String(next).padStart(8, '0')}`;
+    };
+
     const handleCompletePayment = () => {
+        const invId = getNextPosId();
+        const ncf = getNextNCF(ncfType);
         const inv = {
-            id: Math.random().toString(36).substr(2, 6).toUpperCase(),
-            ncf: ncfType === 'B01' ? 'B0100000001' : 'B0200000001',
-            client: selectedClient?.name || "Consumidor final",
-            total: total,
+            id: invId,
+            ncf,
+            tipo: ncfType,
+            tipoName: TIPOS_NCF.find(t => t.code === ncfType)?.name || ncfType,
+            cliente: selectedClient?.name || 'Consumidor final',
+            rnc: selectedClient?.rnc || '',
             date: new Date().toLocaleDateString('es-DO'),
+            vencimiento: new Date().toLocaleDateString('es-DO'),
+            total,
+            status: 'accepted',
+            paymentStatus: 'pagada',
+            vendedor: selectedVendedor || shiftOpenVendedor || 'Admin',
+            plantilla: globalTemplateId || 'InvoiceStandard',
+            paymentTerms: 'Al contado',
+            moneda: 'DOP',
+            invoiceMode: posMode,
+            source: 'pos',
+            items: cart.map(i => ({ id: i.id, name: i.name, ref: '', qty: i.qty, price: i.price, disc: 0, itbis: i.itbis, desc: '' })),
+            totals: { subtotal, discount: discountVal, tax: itbisTotal, total },
             time: new Date().toLocaleTimeString('es-DO'),
-            method: paymentMethod || 'efectivo'
+            method: paymentMethod || 'efectivo',
         };
         setInvoiceCreated(inv);
-        setCheckoutStep("success");
-        // Record sale in shift
+        setCheckoutStep('success');
+        // Record sale in shift (with ncf for numerations report)
         if (shiftOpen) {
-            setShiftSales(prev => [...prev, { id: inv.id, total: inv.total, method: inv.method, time: inv.time }]);
+            setShiftSales(prev => [...prev, { id: inv.id, ncf: inv.ncf, tipo: inv.tipo, total: inv.total, method: inv.method, time: inv.time }]);
         }
+        // Sync to invoices list (invoice_emitted)
+        try {
+            const raw = localStorage.getItem('invoice_emitted');
+            const emitted = raw ? JSON.parse(raw) : [];
+            emitted.unshift(inv);
+            localStorage.setItem('invoice_emitted', JSON.stringify(emitted));
+        } catch { }
     };
 
     const handlePrint = (mode: 'ticket' | 'invoice') => {
         setPrintMode(mode);
-        setTimeout(() => window.print(), 100);
+        // Update @page size dynamically before printing
+        const pageStyleId = 'pos-page-style';
+        const existing = document.getElementById(pageStyleId);
+        if (existing) existing.remove();
+        const ps = document.createElement('style');
+        ps.id = pageStyleId;
+        ps.textContent = mode === 'ticket'
+            ? `@page { size: 80mm auto; margin: 0; }`
+            : `@page { size: letter; margin: 0; }`;
+        document.head.appendChild(ps);
+        setTimeout(() => window.print(), 150);
     };
 
     // Prevent hydration mismatch for currency formatting
@@ -367,127 +541,245 @@ export default function POSPage() {
         <>
             {/* ── Open Shift Modal ── */}
             {showOpenShiftModal && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowOpenShiftModal(false)}>
-                    <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-sm" onClick={e => e.stopPropagation()}>
-                        <div className="px-6 pt-6 pb-2 border-b">
-                            <div className="flex items-center gap-3 mb-1">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center"><Unlock className="w-5 h-5" /></div>
-                                <div>
-                                    <h2 className="font-bold text-lg">Abrir Turno</h2>
-                                    <p className="text-xs text-muted-foreground">{new Date().toLocaleString('es-DO')}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="px-6 py-5 space-y-4">
-                            <div className="space-y-1.5">
-                                <Label className="text-sm font-semibold">Monto de apertura (efectivo en caja)</Label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground">RD$</span>
-                                    <Input value={openingFloat} onChange={e => setOpeningFloat(e.target.value)} className="pl-10 h-11 text-lg font-bold" placeholder="0.00" type="number" />
-                                </div>
-                            </div>
-                        </div>
-                        <div className="px-6 pb-6 flex gap-3">
-                            <Button variant="outline" className="flex-1" onClick={() => setShowOpenShiftModal(false)}>Cancelar</Button>
-                            <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white gap-2" onClick={() => {
-                                setShiftOpen(true);
-                                setShiftOpenTime(new Date().toLocaleTimeString('es-DO'));
-                                setShiftSales([]);
-                                setDenomCounts({});
-                                setShowOpenShiftModal(false);
-                            }}>
-                                <Unlock className="w-4 h-4" /> Abrir Turno
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <OpenShiftModal
+                    vendedores={VENDEDORES}
+                    shiftOpenVendedor={shiftOpenVendedor}
+                    setShiftOpenVendedor={setShiftOpenVendedor}
+                    openingFloat={openingFloat}
+                    setOpeningFloat={setOpeningFloat}
+                    onClose={() => setShowOpenShiftModal(false)}
+                    onOpen={() => {
+                        setShiftOpen(true);
+                        setShiftOpenTime(new Date().toLocaleTimeString('es-DO'));
+                        setShiftSales([]);
+                        setDenomCounts({});
+                        setShiftCloseVendedor('');
+                        setShowOpenShiftModal(false);
+                    }}
+                />
             )}
 
             {/* ── Close Shift / Cuadre de Caja Modal ── */}
-            {showCloseShiftModal && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowCloseShiftModal(false)}>
-                    <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
-                        <div className="px-6 pt-6 pb-2 border-b sticky top-0 bg-background z-10">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center"><Lock className="w-5 h-5" /></div>
-                                    <div>
-                                        <h2 className="font-bold text-lg">Cuadre de Caja</h2>
-                                        <p className="text-xs text-muted-foreground">Turno abierto a las {shiftOpenTime}</p>
-                                    </div>
-                                </div>
-                                <button onClick={() => setShowCloseShiftModal(false)} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
-                            </div>
-                        </div>
-                        <div className="px-6 py-5 space-y-5">
-                            {/* Sales summary */}
-                            <div className="grid grid-cols-3 gap-3">
-                                {[{ label: 'Ventas', value: shiftSales.length.toString() },
-                                { label: 'Total vendido', value: `RD$ ${shiftSales.reduce((a, s) => a + s.total, 0).toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
-                                { label: 'Apertura', value: `RD$ ${parseFloat(openingFloat || '0').toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
-                                ].map(({ label, value }) => (
-                                    <div key={label} className="bg-muted/40 rounded-xl p-3">
-                                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</p>
-                                        <p className="font-bold text-sm mt-0.5">{value}</p>
-                                    </div>
-                                ))}
-                            </div>
+            {showCloseShiftModal && (() => {
+                // NCF numerations grouped by tipo
+                const ncfByTipo: Record<string, { first: string; last: string; count: number }> = {};
+                shiftSales.forEach(s => {
+                    if (!s.ncf || !s.tipo) return;
+                    if (!ncfByTipo[s.tipo]) ncfByTipo[s.tipo] = { first: s.ncf, last: s.ncf, count: 0 };
+                    ncfByTipo[s.tipo].last = s.ncf;
+                    ncfByTipo[s.tipo].count++;
+                });
+                const PAD_CLOSE = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
 
-                            {/* Denomination count */}
-                            <div>
-                                <p className="text-sm font-bold mb-3">Conteo de efectivo en caja</p>
-                                <div className="space-y-2">
-                                    {DENOMINATIONS.map(d => (
-                                        <div key={d} className="flex items-center gap-3">
-                                            <span className="w-20 text-sm font-mono text-right text-muted-foreground">RD$ {d}</span>
-                                            <Input
-                                                type="number" min={0}
-                                                value={denomCounts[d] || ""}
-                                                onChange={e => setDenomCounts(prev => ({ ...prev, [d]: e.target.value }))}
-                                                className="h-8 w-20 text-center font-mono"
-                                                placeholder="0"
-                                            />
-                                            <span className="text-sm text-muted-foreground">
-                                                = RD$ {((parseFloat(denomCounts[d] || '0') || 0) * d).toLocaleString('es-DO')}
-                                            </span>
+                const verifyClosePin = (pin: string) => {
+                    try {
+                        const raw = localStorage.getItem('pos_vendedores');
+                        if (raw) {
+                            const list: { nombre: string; pin?: string }[] = JSON.parse(raw);
+                            const match = list.find(v => v.nombre === shiftCloseVendedor);
+                            if (match?.pin && match.pin.length === 6 && match.pin !== pin) throw new Error('wrong');
+                        }
+                    } catch (e: any) {
+                        if (e?.message === 'wrong') {
+                            setCloseShiftShake(true);
+                            setCloseShiftPinError(true);
+                            setTimeout(() => { setCloseShiftShake(false); setCloseShiftPin(""); }, 600);
+                            return;
+                        }
+                    }
+                    setCloseShiftPin("");
+                    setCloseShiftPinError(false);
+                    setCloseShiftStep('cuadre');
+                };
+
+                return (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); setCloseShiftPin(''); }}>
+                        <div className="bg-background border border-border rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-auto" onClick={e => e.stopPropagation()}>
+                            <div className="px-6 pt-6 pb-3 border-b sticky top-0 bg-background z-10">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center"><Lock className="w-5 h-5" /></div>
+                                        <div>
+                                            <h2 className="font-bold text-lg">Cierre de Turno</h2>
+                                            <p className="text-xs text-muted-foreground">Abierto a las {shiftOpenTime} · {shiftSales.length} venta{shiftSales.length !== 1 ? 's' : ''}</p>
                                         </div>
+                                    </div>
+                                    <button onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); setCloseShiftPin(''); }} className="text-muted-foreground hover:text-foreground"><X className="w-5 h-5" /></button>
+                                </div>
+                                {/* Step indicators */}
+                                <div className="flex gap-2 mt-3">
+                                    {['select', 'pin', 'cuadre'].map((s, i) => (
+                                        <div key={s} className={cn("flex-1 h-1 rounded-full transition-all",
+                                            (closeShiftStep === 'select' && i === 0) ? "bg-red-500" :
+                                                (closeShiftStep === 'pin' && i <= 1) ? "bg-red-500" :
+                                                    closeShiftStep === 'cuadre' ? "bg-red-500" : "bg-muted"
+                                        )} />
                                     ))}
                                 </div>
-                                <div className="flex justify-between mt-3 pt-3 border-t font-bold text-base">
-                                    <span>Total efectivo contado</span>
-                                    <span className="text-emerald-600">
-                                        RD$ {DENOMINATIONS.reduce((a, d) => a + (parseFloat(denomCounts[d] || '0') || 0) * d, 0).toLocaleString('es-DO', { minimumFractionDigits: 2 })}
-                                    </span>
-                                </div>
                             </div>
 
-                            {/* Sales list */}
-                            {shiftSales.length > 0 && (
-                                <div>
-                                    <p className="text-sm font-bold mb-2">Ventas del turno</p>
-                                    <div className="divide-y border rounded-xl overflow-hidden">
-                                        {shiftSales.map(s => (
-                                            <div key={s.id} className="flex items-center justify-between px-4 py-2 text-sm">
-                                                <div>
-                                                    <span className="font-mono font-bold text-xs">{s.id}</span>
-                                                    <span className="text-muted-foreground ml-2 text-xs">{s.method} · {s.time}</span>
-                                                </div>
-                                                <span className="font-semibold">RD$ {s.total.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
-                                            </div>
-                                        ))}
+                            {/* STEP 1: Select vendor */}
+                            {closeShiftStep === 'select' && (
+                                <div className="px-6 py-5 space-y-4">
+                                    <div className="space-y-1.5">
+                                        <Label className="text-sm font-semibold">Vendedor que cierra el turno</Label>
+                                        <Select value={shiftCloseVendedor} onValueChange={setShiftCloseVendedor}>
+                                            <SelectTrigger className="h-11"><SelectValue placeholder="Seleccionar vendedor..." /></SelectTrigger>
+                                            <SelectContent>{VENDEDORES.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="flex gap-3 pt-2">
+                                        <Button variant="outline" className="flex-1" onClick={() => { setShowCloseShiftModal(false); setCloseShiftStep('select'); }}>Cancelar</Button>
+                                        <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white" disabled={!shiftCloseVendedor}
+                                            onClick={() => { setCloseShiftPin(''); setCloseShiftPinError(false); setCloseShiftStep('pin'); }}>
+                                            Continuar →
+                                        </Button>
                                     </div>
                                 </div>
                             )}
-                        </div>
-                        <div className="px-6 pb-6 flex gap-3 border-t pt-4">
-                            <Button variant="outline" className="flex-1" onClick={() => setShowCloseShiftModal(false)}>Cancelar</Button>
-                            <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" onClick={handleCloseShift}>
-                                <Lock className="w-4 h-4" /> Cerrar Turno
-                            </Button>
+
+                            {/* STEP 2: PIN */}
+                            {closeShiftStep === 'pin' && (
+                                <div className="px-6 py-5 space-y-4">
+                                    <div className="text-center">
+                                        <div className="w-14 h-14 rounded-2xl bg-red-500/10 text-red-600 flex items-center justify-center mx-auto mb-3">
+                                            <span className="text-xl font-black">{shiftCloseVendedor.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}</span>
+                                        </div>
+                                        <p className="font-bold text-base">{shiftCloseVendedor}</p>
+                                        <p className="text-xs text-muted-foreground mt-0.5">Ingresa tu PIN para cerrar el turno</p>
+                                    </div>
+                                    <div className={cn("flex justify-center gap-2", closeShiftShake && "animate-bounce")}>
+                                        {Array.from({ length: 6 }).map((_, i) => (
+                                            <div key={i} className={cn(
+                                                "w-10 h-10 rounded-xl border-2 flex items-center justify-center text-xl font-black transition-all",
+                                                i < closeShiftPin.length
+                                                    ? closeShiftPinError ? "border-red-500 bg-red-500 text-white" : "border-red-600 bg-red-600 text-white"
+                                                    : "border-border"
+                                            )}>{i < closeShiftPin.length ? '•' : ''}</div>
+                                        ))}
+                                    </div>
+                                    {closeShiftPinError && <p className="text-center text-xs text-red-500 font-semibold">❌ PIN incorrecto — intenta de nuevo</p>}
+                                    <div className="grid grid-cols-3 gap-2">
+                                        {PAD_CLOSE.map((k, i) => k === '' ? <div key={i} /> :
+                                            k === '⌫' ? (
+                                                <button key={i} onClick={() => setCloseShiftPin(p => p.slice(0, -1))}
+                                                    className="h-12 rounded-xl bg-muted hover:bg-muted/70 flex items-center justify-center transition-colors">
+                                                    <Delete className="w-5 h-5 text-muted-foreground" />
+                                                </button>
+                                            ) : (
+                                                <button key={i} onClick={() => {
+                                                    if (closeShiftPin.length >= 6) return;
+                                                    const next = closeShiftPin + k;
+                                                    setCloseShiftPin(next);
+                                                    setCloseShiftPinError(false);
+                                                    if (next.length === 6) verifyClosePin(next);
+                                                }} className="h-12 rounded-xl bg-muted hover:bg-muted/70 active:scale-95 font-bold text-base transition-all">{k}</button>
+                                            )
+                                        )}
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <Button variant="outline" className="flex-1" onClick={() => { setCloseShiftStep('select'); setCloseShiftPin(''); }}>← Atrás</Button>
+                                        <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" disabled={closeShiftPin.length < 6} onClick={() => verifyClosePin(closeShiftPin)}>
+                                            <Lock className="w-4 h-4" /> Verificar PIN
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* STEP 3: Cuadre + numerations */}
+                            {closeShiftStep === 'cuadre' && (<>
+                                <div className="px-6 py-5 space-y-5">
+                                    {/* Sales summary */}
+                                    <div className="grid grid-cols-3 gap-3">
+                                        {[{ label: 'Ventas', value: shiftSales.length.toString() },
+                                        { label: 'Total vendido', value: `RD$ ${shiftSales.reduce((a, s) => a + s.total, 0).toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
+                                        { label: 'Apertura', value: `RD$ ${parseFloat(openingFloat || '0').toLocaleString('es-DO', { minimumFractionDigits: 2 })}` },
+                                        ].map(({ label, value }) => (
+                                            <div key={label} className="bg-muted/40 rounded-xl p-3">
+                                                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">{label}</p>
+                                                <p className="font-bold text-sm mt-0.5">{value}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* NCF numerations */}
+                                    {Object.keys(ncfByTipo).length > 0 && (
+                                        <div>
+                                            <p className="text-sm font-bold mb-2 flex items-center gap-1.5">
+                                                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+                                                Comprobantes emitidos en este turno
+                                            </p>
+                                            <div className="divide-y border rounded-xl overflow-hidden">
+                                                {Object.entries(ncfByTipo).map(([tipo, data]) => (
+                                                    <div key={tipo} className="flex items-center justify-between px-4 py-2.5 text-xs">
+                                                        <div>
+                                                            <span className="font-bold text-primary font-mono">{tipo}</span>
+                                                            <span className="text-muted-foreground ml-2">{TIPOS_NCF.find(t => t.code === tipo)?.name}</span>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="font-mono font-bold text-[11px]">{data.first} → {data.last}</p>
+                                                            <p className="text-muted-foreground">{data.count} comprobante{data.count !== 1 ? 's' : ''}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Denomination count */}
+                                    <div>
+                                        <p className="text-sm font-bold mb-3">Conteo de efectivo en caja</p>
+                                        <div className="space-y-2">
+                                            {DENOMINATIONS.map(d => (
+                                                <div key={d} className="flex items-center gap-3">
+                                                    <span className="w-20 text-sm font-mono text-right text-muted-foreground">RD$ {d}</span>
+                                                    <Input type="number" min={0} value={denomCounts[d] || ""}
+                                                        onChange={e => setDenomCounts(prev => ({ ...prev, [d]: e.target.value }))}
+                                                        className="h-8 w-20 text-center font-mono" placeholder="0" />
+                                                    <span className="text-sm text-muted-foreground">
+                                                        = RD$ {((parseFloat(denomCounts[d] || '0') || 0) * d).toLocaleString('es-DO')}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex justify-between mt-3 pt-3 border-t font-bold text-base">
+                                            <span>Total efectivo contado</span>
+                                            <span className="text-emerald-600">
+                                                RD$ {DENOMINATIONS.reduce((a, d) => a + (parseFloat(denomCounts[d] || '0') || 0) * d, 0).toLocaleString('es-DO', { minimumFractionDigits: 2 })}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Sales list with NCF */}
+                                    {shiftSales.length > 0 && (
+                                        <div>
+                                            <p className="text-sm font-bold mb-2">Ventas del turno</p>
+                                            <div className="divide-y border rounded-xl overflow-hidden">
+                                                {shiftSales.map(s => (
+                                                    <div key={s.id} className="flex items-center justify-between px-4 py-2 text-sm">
+                                                        <div>
+                                                            <span className="font-mono font-bold text-xs">{s.id}</span>
+                                                            {s.ncf && <span className="font-mono text-[10px] text-primary ml-2 bg-primary/10 px-1.5 py-0.5 rounded">{s.ncf}</span>}
+                                                            <span className="text-muted-foreground ml-2 text-xs">{s.method} · {s.time}</span>
+                                                        </div>
+                                                        <span className="font-semibold">RD$ {s.total.toLocaleString('es-DO', { minimumFractionDigits: 2 })}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="px-6 pb-6 flex gap-3 border-t pt-4">
+                                    <Button variant="outline" className="flex-1" onClick={() => setCloseShiftStep('pin')}>← PIN</Button>
+                                    <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-2" onClick={() => { handleCloseShift(); setCloseShiftStep('select'); setCloseShiftPin(''); }}>
+                                        <Lock className="w-4 h-4" /> Confirmar Cierre
+                                    </Button>
+                                </div>
+                            </>)}
                         </div>
                     </div>
-                </div>
-            )}
+                );
+            })()}
 
             {/* ── Shift Closed — Export Modal ── */}
             {shiftClosed && closedRecord && (
@@ -566,11 +858,54 @@ export default function POSPage() {
                             {shiftOpen ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                             {shiftOpen ? 'Turno abierto' : 'Abrir turno'}
                         </button>
-                        <Link href="/dashboard/pos/turnos">
-                            <Button variant="outline" className="h-10 gap-1.5 text-xs font-bold">
-                                <Clock3 className="w-4 h-4" /> Historial
-                            </Button>
-                        </Link>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="h-10 gap-1.5 text-xs font-bold">
+                                    <Package className="w-4 h-4" /> Módulos
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56">
+                                <DropdownMenuLabel>Módulos POS</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link href="/dashboard/pos/turnos" className="gap-2 cursor-pointer flex items-center">
+                                        <Clock3 className="w-4 h-4 text-primary" />
+                                        <span className="font-semibold text-sm">Historial de Turnos</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="gap-2 cursor-pointer" onClick={() => shiftOpen ? setShowCloseShiftModal(true) : setShowOpenShiftModal(true)}>
+                                    {shiftOpen ? <Lock className="w-4 h-4 text-red-500" /> : <Unlock className="w-4 h-4 text-emerald-600" />}
+                                    <span className="font-semibold text-sm">{shiftOpen ? 'Cerrar Turno' : 'Abrir Turno'}</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link href="/dashboard/invoices" className="gap-2 cursor-pointer flex items-center">
+                                        <FileDown className="w-4 h-4 text-blue-500" />
+                                        <span className="font-semibold text-sm">Ver Facturas</span>
+                                    </Link>
+                                </DropdownMenuItem>
+                                {shiftHistory.length > 0 && (
+                                    <>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuLabel className="text-[10px]" >Últimas ventas del turno</DropdownMenuLabel>
+                                        {shiftSales.slice(-3).reverse().map(s => (
+                                            <DropdownMenuItem key={s.id} className="text-xs gap-2">
+                                                <span className="font-mono font-bold">{s.id}</span>
+                                                <span className="text-muted-foreground">{s.method}</span>
+                                                <span className="ml-auto font-semibold">RD$ {s.total.toFixed(0)}</span>
+                                            </DropdownMenuItem>
+                                        ))}
+                                    </>
+                                )}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Button
+                            onClick={() => setShowNewServiceModal(true)}
+                            variant="outline"
+                            className="h-10 gap-2 font-bold uppercase text-[10px] border-dashed border-border/70 hover:border-primary/60 hover:bg-primary/5 rounded-xl"
+                        >
+                            <Wrench className="w-4 h-4" /> Servicio rapido
+                        </Button>
                         <Button
                             onClick={() => setShowNewProductModal(true)}
                             className="h-10 bg-gradient-brand text-white font-bold uppercase text-[10px] gap-2 hover:opacity-90 shadow-brand group rounded-xl"
@@ -595,28 +930,35 @@ export default function POSPage() {
                             {filtered.map(p => {
                                 const inCart = cart.find(i => i.id === p.id);
                                 return (
-                                    <button key={p.id} onClick={() => addToCart(p)} className={cn(
-                                        "text-left p-3 rounded-2xl transition-all hover:shadow-xl active:scale-95 group relative border hover:-translate-y-1 duration-300",
-                                        inCart ? "border-primary ring-2 ring-primary/20 bg-white" : "bg-white hover:bg-white border-border/30 hover:border-primary/30 shadow-sm"
+                                    <div key={p.id} className={cn(
+                                        "relative group border rounded-2xl transition-all hover:shadow-xl duration-300 overflow-hidden",
+                                        inCart ? "border-primary ring-2 ring-primary/20 bg-white" : "bg-white border-border/30 hover:border-primary/30 shadow-sm"
                                     )}>
-                                        <div className="aspect-square relative mb-3 rounded-xl overflow-hidden border border-border/20 bg-muted/20">
-                                            <Image
-                                                src={p.image}
-                                                alt={p.name}
-                                                fill
-                                                sizes="200px"
-                                                className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                            />
-                                        </div>
-                                        <h3 className="text-xs font-bold text-foreground line-clamp-1 mb-0.5 leading-tight">{p.name}</h3>
-                                        <p className="text-[10px] text-muted-foreground line-clamp-2 mb-2 h-7 leading-tight">{p.description}</p>
-                                        <p className="text-sm font-bold text-primary">{formatCurrency(p.price)}</p>
+                                        <button onClick={() => addToCart(p)} className="text-left p-3 w-full hover:-translate-y-0.5 transition-transform duration-200">
+                                            <div className="aspect-square relative mb-3 rounded-xl overflow-hidden border border-border/20 bg-muted/20">
+                                                {p.image ? (
+                                                    // eslint-disable-next-line @next/next/no-img-element
+                                                    <img
+                                                        src={p.image}
+                                                        alt={p.name}
+                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-muted-foreground/30">
+                                                        <Package className="w-10 h-10" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <h3 className="text-xs font-bold text-foreground line-clamp-1 mb-0.5 leading-tight">{p.name}</h3>
+                                            <p className="text-[10px] text-muted-foreground line-clamp-2 mb-2 h-7 leading-tight">{p.description}</p>
+                                            <p className="text-sm font-bold text-primary">{formatCurrency(p.price)}</p>
+                                        </button>
                                         {inCart && (
-                                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-brand">
+                                            <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-brand">
                                                 {inCart.qty}
                                             </div>
                                         )}
-                                    </button>
+                                    </div>
                                 );
                             })}
                         </div>
@@ -633,12 +975,30 @@ export default function POSPage() {
                                 <Zap className="w-3 h-3 text-primary fill-primary" />
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 text-muted-foreground">
-                            <button className="hover:text-primary transition-colors"><Percent className="w-5 h-5" /></button>
-                            <button onClick={() => handlePrint('ticket')} className="hover:text-primary transition-colors"><Printer className="w-5 h-5" /></button>
-                            <button onClick={() => setIsConfigOpen(true)} className="hover:text-primary transition-colors"><Sliders className="w-5 h-5" /></button>
-                            <button onClick={() => setCart([])} className="hover:text-destructive transition-colors"><Trash2 className="w-5 h-5" /></button>
-                        </div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="hover:bg-muted/50 rounded-xl transition-colors">
+                                    <Settings className="w-5 h-5 text-muted-foreground" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-56 rounded-xl shadow-xl">
+                                <DropdownMenuLabel className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Opciones de Venta</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => setIsConfigOpen(true)} className="gap-2 cursor-pointer py-2.5">
+                                    <Sliders className="w-4 h-4 text-primary" />
+                                    <span className="font-semibold text-sm">Configuración</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handlePrint('ticket')} className="gap-2 cursor-pointer py-2.5">
+                                    <Printer className="w-4 h-4 text-emerald-600" />
+                                    <span className="font-semibold text-sm">Imprimir Ticket</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => setCart([])} className="gap-2 cursor-pointer py-2.5 text-destructive focus:text-destructive focus:bg-destructive/10">
+                                    <Trash2 className="w-4 h-4" />
+                                    <span className="font-semibold text-sm">Vaciar Carrito</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
 
                     {/* Selectors Area */}
@@ -663,11 +1023,66 @@ export default function POSPage() {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {TIPOS_NCF.map(t => (
-                                            <SelectItem key={t.code} value={t.code}>{t.name}</SelectItem>
+                                        {(posMode === 'electronico' ? TIPOS_NCF_ELECTRONICO : TIPOS_NCF_TRADICIONAL).map(t => (
+                                            <SelectItem key={t.code} value={t.code}>{t.code} — {t.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
+                            </div>
+                        </div>
+
+                        {/* NCF sequence preview + Modalidad row */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1.5">
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Modalidad</Label>
+                                <Select value={posMode} onValueChange={(v: 'tradicional' | 'electronico') => handlePosModeChange(v)}>
+                                    <SelectTrigger className="h-10 bg-white border-border/60 rounded-xl text-xs font-bold">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="electronico">
+                                            <span className="flex items-center gap-2"><Bolt className="w-3.5 h-3.5 text-amber-500" /> e-CF (Electrónico)</span>
+                                        </SelectItem>
+                                        <SelectItem value="tradicional">
+                                            <span className="flex items-center gap-2"><Printer className="w-3.5 h-3.5 text-muted-foreground" /> Tradicional</span>
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <Label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Próximo comprobante</Label>
+                                {showSeqEditor ? (
+                                    <div className="flex gap-1.5">
+                                        <Input
+                                            autoFocus
+                                            type="number"
+                                            min={1}
+                                            placeholder="Número inicio"
+                                            className="h-10 text-xs font-mono font-bold bg-white border-border/60 rounded-xl"
+                                            value={seqEditValue}
+                                            onChange={e => setSeqEditValue(e.target.value)}
+                                            onKeyDown={e => { if (e.key === 'Enter') handleSaveSeq(); if (e.key === 'Escape') setShowSeqEditor(false); }}
+                                        />
+                                        <button onClick={handleSaveSeq} className="h-10 px-3 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary/90 transition-colors flex items-center gap-1">
+                                            <Check className="w-3.5 h-3.5" />
+                                        </button>
+                                        <button onClick={() => setShowSeqEditor(false)} className="h-10 px-2 rounded-xl text-muted-foreground hover:text-foreground text-xs">
+                                            <X className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="h-10 bg-muted/40 border border-border/40 rounded-xl flex items-center px-3 gap-2">
+                                        <span className="text-[10px] font-mono font-bold text-primary tracking-wider flex-1">{peekNextNCF(ncfType)}</span>
+                                        <span className="text-[9px] text-muted-foreground">{TIPOS_NCF.find(t => t.code === ncfType)?.name}</span>
+                                        <button
+                                            onClick={() => { setSeqEditValue(String((parseInt(localStorage.getItem(`pos_ncf_counter_${ncfType}`) || '0', 10) + 1))); setShowSeqEditor(true); }}
+                                            className="ml-1 text-muted-foreground hover:text-primary transition-colors"
+                                            title="Editar secuencia"
+                                        >
+                                            <Pencil className="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -686,13 +1101,7 @@ export default function POSPage() {
                                             className="pl-9 h-10 font-sans text-sm bg-white border-border/60 rounded-xl focus-visible:ring-primary shadow-sm"
                                         />
                                         {showClientDropdown && (
-                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-border/50 rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto">
-                                                <button
-                                                    className="w-full text-left px-4 py-3 hover:bg-primary/5 text-sm font-sans border-b border-border/30 flex items-center transition-colors"
-                                                    onClick={() => { setSelectedClient(null); setClientSearch(""); setShowClientDropdown(false); }}
-                                                >
-                                                    <span className="font-medium text-foreground">Consumidor final</span>
-                                                </button>
+                                            <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-border/50 rounded-xl shadow-xl overflow-hidden max-h-60 overflow-y-auto z-50">
                                                 {clients.filter(c => c.name.toLowerCase().includes(clientSearch.toLowerCase()) || c.rnc.includes(clientSearch)).length > 0 ? (
                                                     clients.filter(c => c.name.toLowerCase().includes(clientSearch.toLowerCase()) || c.rnc.includes(clientSearch)).map(c => (
                                                         <button
@@ -700,8 +1109,12 @@ export default function POSPage() {
                                                             className="w-full text-left px-4 py-2.5 hover:bg-primary/5 border-b border-border/30 last:border-0 flex flex-col gap-0.5 transition-colors"
                                                             onClick={() => { setSelectedClient(c); setClientSearch(""); setShowClientDropdown(false); }}
                                                         >
-                                                            <span className="font-medium text-sm text-foreground">{c.name}</span>
-                                                            <span className="text-xs font-mono text-muted-foreground">RNC: {c.rnc}</span>
+                                                            <div className="flex items-center gap-2">
+                                                                {c.id === "CF" && <User2 className="w-3.5 h-3.5 text-muted-foreground shrink-0" />}
+                                                                <span className="font-medium text-sm text-foreground">{c.name}</span>
+                                                                {c.id === "CF" && <span className="text-[10px] bg-muted/60 text-muted-foreground px-1.5 py-0.5 rounded font-bold">Por defecto</span>}
+                                                            </div>
+                                                            {c.id !== "CF" && <span className="text-xs font-mono text-muted-foreground">RNC: {c.rnc}</span>}
                                                         </button>
                                                     ))
                                                 ) : (
@@ -750,28 +1163,29 @@ export default function POSPage() {
                         ) : (
                             <div className="space-y-4">
                                 {cart.map(item => (
-                                    <div key={item.id} className="flex gap-4 items-center animate-in fade-in slide-in-from-right-2 duration-300 p-2 rounded-xl border border-transparent hover:border-border/40 hover:bg-white/50 transition-all">
+                                    <div key={item.id} className="flex gap-4 items-center animate-in fade-in slide-in-from-right-2 duration-300 p-2 rounded-xl border border-transparent hover:border-border/40 hover:bg-white/50 transition-all group">
                                         <div className="w-12 h-12 rounded-xl bg-muted/20 border border-border/20 relative shrink-0 overflow-hidden shadow-sm">
-                                            <Image
-                                                src={item.image}
-                                                alt={item.name}
-                                                fill
-                                                sizes="48px"
-                                                className="object-cover"
-                                            />
+                                            <Image src={item.image} alt={item.name} fill sizes="48px" className="object-cover" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <h4 className="text-xs font-bold text-foreground truncate mb-0.5">{item.name}</h4>
                                             <p className="text-[10px] text-muted-foreground truncate mb-1">{item.description}</p>
                                             <p className="text-[10px] font-bold text-primary uppercase tracking-wider">{formatCurrency(item.price)}</p>
                                         </div>
-                                        <div className="flex items-center gap-3">
+                                        <div className="flex items-center gap-2">
                                             <div className="flex items-center bg-muted/40 rounded-lg p-1">
                                                 <button onClick={() => updateQty(item.id, -1)} className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"><Minus className="w-3 h-3" /></button>
                                                 <span className="text-xs font-bold w-6 text-center">{item.qty}</span>
                                                 <button onClick={() => updateQty(item.id, 1)} className="w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"><Plus className="w-3 h-3" /></button>
                                             </div>
-                                            <span className="text-xs font-bold text-foreground whitespace-nowrap">{formatCurrency(item.price * item.qty)}</span>
+                                            <span className="text-xs font-bold text-foreground whitespace-nowrap w-20 text-right">{formatCurrency(item.price * item.qty)}</span>
+                                            <button
+                                                onClick={() => setCart(prev => prev.filter(i => i.id !== item.id))}
+                                                className="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:text-red-600 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                                                title="Quitar del carrito"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
@@ -781,6 +1195,19 @@ export default function POSPage() {
 
                     {/* Sticky Footer */}
                     <div className="p-6 border-t bg-muted/30 space-y-4">
+                        {/* Shift closed warning */}
+                        {!shiftOpen && (
+                            <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                                <Lock className="w-4 h-4 shrink-0" />
+                                <span className="text-xs font-bold">Abre un turno para facturar</span>
+                                <button
+                                    onClick={() => setShowOpenShiftModal(true)}
+                                    className="ml-auto text-[10px] font-bold underline underline-offset-2 hover:text-red-900 whitespace-nowrap"
+                                >
+                                    Abrir turno
+                                </button>
+                            </div>
+                        )}
                         <div className="space-y-2">
                             <div className="flex justify-between text-xs font-bold text-muted-foreground">
                                 <span>Subtotal</span>
@@ -811,16 +1238,22 @@ export default function POSPage() {
 
                         <Button
                             onClick={() => {
+                                if (!shiftOpen) { setShowOpenShiftModal(true); return; }
                                 setCheckoutStep("methods");
                                 setPaymentMethod(null);
                                 setAmountPaid(total.toString());
                                 setShowPayModal(true);
                             }}
                             disabled={cart.length === 0}
-                            className="w-full h-14 bg-gradient-brand hover:opacity-90 text-white font-bold text-sm flex justify-between px-8 rounded-2xl transition-all active:scale-95 shadow-brand shadow-primary/20"
+                            className={cn(
+                                "w-full h-14 text-white font-bold text-sm flex justify-between px-8 rounded-2xl transition-all active:scale-95",
+                                shiftOpen
+                                    ? "bg-gradient-brand hover:opacity-90 shadow-brand shadow-primary/20"
+                                    : "bg-muted-foreground/40 cursor-not-allowed"
+                            )}
                         >
-                            <span>Completar Venta</span>
-                            <ShoppingCart className="w-5 h-5 ml-2" />
+                            <span>{shiftOpen ? 'Completar Venta' : 'Turno cerrado'}</span>
+                            {shiftOpen ? <ShoppingCart className="w-5 h-5 ml-2" /> : <Lock className="w-5 h-5 ml-2" />}
                         </Button>
                         <div className="flex items-center justify-between text-[11px] px-2 font-bold uppercase tracking-wider text-muted-foreground/60">
                             <span>{cart.length} Artículos</span>
@@ -879,6 +1312,67 @@ export default function POSPage() {
                                 onClick={handleNewProduct}
                             >
                                 Añadir a la venta
+                            </Button>
+                        </div>
+                    </DialogContent>
+                </Dialog>
+
+                {/* ── Custom Service Modal (ephemeral: cart only, not catalog) ─────── */}
+                <Dialog open={showNewServiceModal} onOpenChange={setShowNewServiceModal}>
+                    <DialogContent className="sm:max-w-[420px] p-0 font-sans overflow-hidden border-none rounded-3xl shadow-3xl glass backdrop-blur-2xl">
+                        <div className="p-6 bg-white/60 border-b border-border/40 flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                                <Wrench className="w-4 h-4" />
+                            </div>
+                            <DialogTitle className="text-lg font-bold text-foreground tracking-tight">Servicio personalizado</DialogTitle>
+                        </div>
+                        <div className="p-7 space-y-5">
+                            <p className="text-xs text-muted-foreground bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 leading-relaxed">
+                                Este servicio se agrega directamente al carrito y <strong>no queda guardado en el catalogo</strong>.
+                            </p>
+                            <div className="space-y-2">
+                                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Descripcion del servicio</Label>
+                                <Input
+                                    placeholder="Ej: Instalacion de red, Hora de consultoria..."
+                                    className="h-12 text-sm font-bold bg-white border-border/60 rounded-xl"
+                                    value={newSvcName}
+                                    onChange={e => setNewSvcName(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleNewService()}
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Precio (RD$)</Label>
+                                    <Input
+                                        type="number"
+                                        placeholder="0.00"
+                                        className="h-12 text-sm font-bold bg-white border-border/60 rounded-xl"
+                                        value={newSvcPrice}
+                                        onChange={e => setNewSvcPrice(e.target.value)}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">ITBIS %</Label>
+                                    <Select value={newSvcITBIS} onValueChange={setNewSvcITBIS}>
+                                        <SelectTrigger className="h-12 bg-white border-border/60 rounded-xl text-sm font-bold">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="0">Exento (0%)</SelectItem>
+                                            <SelectItem value="18">ITBIS 18%</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="p-6 bg-muted/20 border-t border-border/40 flex gap-3">
+                            <Button variant="ghost" className="flex-1 h-12 font-bold text-xs uppercase text-muted-foreground" onClick={() => setShowNewServiceModal(false)}>Cancelar</Button>
+                            <Button
+                                className="flex-1 h-12 bg-primary hover:bg-primary/90 text-white font-bold text-xs uppercase rounded-xl shadow-brand"
+                                onClick={handleNewService}
+                                disabled={!newSvcName || !newSvcPrice}
+                            >
+                                Agregar al carrito
                             </Button>
                         </div>
                     </DialogContent>
@@ -1157,7 +1651,7 @@ export default function POSPage() {
                                             <Printer className="w-5 h-5" /> Ticket 80mm
                                         </Button>
                                         <Button onClick={() => handlePrint('invoice')} variant="outline" className="flex-1 h-14 border-2 font-bold gap-2 hover:bg-white transition-all rounded-2xl shadow-sm text-xs uppercase tracking-wider text-primary border-primary/20">
-                                            <Printer className="w-5 h-5" /> Factura A4
+                                            <Printer className="w-5 h-5" /> Factura 8.5×11
                                         </Button>
                                         <Button
                                             onClick={() => {
@@ -1226,106 +1720,111 @@ export default function POSPage() {
 
 
                 {/* ── Hidden Print Ticket (Thermal 80mm) ────────────────────────── */}
-                <div id="print-ticket" className="hidden print:block bg-white p-6 w-[80mm] mx-auto text-black font-mono text-[12px] leading-tight">
-                    <div className="text-center space-y-2 mb-6">
-                        <h1 className="text-lg font-bold uppercase tracking-tighter">Lollipop Commercial</h1>
-                        <p className="font-bold">RNC: 1-30-00000-1</p>
-                        <p>Av. Winston Churchill #123</p>
-                        <p>Santo Domingo, R.D.</p>
-                        <p>Tel: (809) 555-5555</p>
-                    </div>
-
-                    <div className="border-y border-dashed py-3 mb-4 space-y-1">
-                        <p className="flex justify-between"><span>FACTURA:</span> <span className="font-bold">#{invoiceCreated?.id || 'PRO-FORMA'}</span></p>
-                        <p className="flex justify-between"><span>NCF:</span> <span className="font-bold">{ncfType === 'B01' ? 'B0100000001' : 'B0200000001'}</span></p>
-                        <p className="flex justify-between"><span>FECHA:</span> <span>{new Date().toLocaleDateString('es-DO')} {new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' })}</span></p>
-                        <p className="flex justify-between"><span>CLIENTE:</span> <span className="uppercase">{selectedClient?.name || 'CONSUMIDOR FINAL'}</span></p>
-                    </div>
-
-                    <div className="mb-4">
-                        <div className="flex justify-between font-bold border-b border-black pb-1 mb-2">
-                            <span>Cant / Item</span>
-                            <span>Total</span>
+                {printMode === 'ticket' && (
+                    <div id="print-ticket" className="hidden print:block bg-white p-6 w-[80mm] mx-auto text-black font-mono text-[12px] leading-tight">
+                        <div className="text-center space-y-2 mb-6">
+                            <h1 className="text-lg font-bold uppercase tracking-tighter">Lollipop Commercial</h1>
+                            <p className="font-bold">RNC: 1-30-00000-1</p>
+                            <p>Av. Winston Churchill #123</p>
+                            <p>Santo Domingo, R.D.</p>
+                            <p>Tel: (809) 555-5555</p>
                         </div>
-                        {cart.map(item => (
-                            <div key={item.id} className="mb-2">
-                                <p className="font-bold uppercase">{item.name}</p>
-                                <div className="flex justify-between text-[11px]">
-                                    <span>{item.qty} x {formatCurrency(item.price).replace('RD$', '')}</span>
-                                    <span>{formatCurrency(item.price * item.qty).replace('RD$', '')}</span>
-                                </div>
+
+                        <div className="border-y border-dashed py-3 mb-4 space-y-1">
+                            <p className="flex justify-between"><span>FACTURA:</span> <span className="font-bold">#{invoiceCreated?.id || 'PRO-FORMA'}</span></p>
+                            <p className="flex justify-between"><span>NCF:</span> <span className="font-bold">{invoiceCreated?.ncf || (ncfType === 'B01' ? 'B0100000001' : 'B0200000001')}</span></p>
+                            <p className="flex justify-between"><span>FECHA:</span> <span>{new Date().toLocaleDateString('es-DO')} {new Date().toLocaleTimeString('es-DO', { hour: '2-digit', minute: '2-digit' })}</span></p>
+                            <p className="flex justify-between"><span>CLIENTE:</span> <span className="uppercase">{selectedClient?.name || 'CONSUMIDOR FINAL'}</span></p>
+                            {selectedVendedor && <p className="flex justify-between"><span>VENDEDOR:</span> <span>{selectedVendedor}</span></p>}
+                        </div>
+
+                        <div className="mb-4">
+                            <div className="flex justify-between font-bold border-b border-black pb-1 mb-2">
+                                <span>Cant / Item</span>
+                                <span>Total</span>
                             </div>
-                        ))}
-                    </div>
+                            {cart.map(item => (
+                                <div key={item.id} className="mb-2">
+                                    <p className="font-bold uppercase">{item.name}</p>
+                                    <div className="flex justify-between text-[11px]">
+                                        <span>{item.qty} x {formatCurrency(item.price).replace('RD$', '')}</span>
+                                        <span>{formatCurrency(item.price * item.qty).replace('RD$', '')}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
 
-                    <div className="border-t border-black pt-3 space-y-1 uppercase font-bold text-[11px]">
-                        <div className="flex justify-between"><span>Subtotal:</span> <span>{formatCurrency(subtotal).replace('RD$', '')}</span></div>
-                        {discount > 0 && <div className="flex justify-between"><span>Desc {discount}%:</span> <span>-{formatCurrency(discountVal).replace('RD$', '')}</span></div>}
-                        <div className="flex justify-between"><span>ITBIS:</span> <span>{formatCurrency(itbisTotal).replace('RD$', '')}</span></div>
-                        <div className="flex justify-between text-[14px] font-bold border-t border-black mt-2 pt-2">
-                            <span>TOTAL:</span>
-                            <span>RD$ {total.toLocaleString()}</span>
+                        <div className="border-t border-black pt-3 space-y-1 uppercase font-bold text-[11px]">
+                            <div className="flex justify-between"><span>Subtotal:</span> <span>{formatCurrency(subtotal).replace('RD$', '')}</span></div>
+                            {discount > 0 && <div className="flex justify-between"><span>Desc {discount}%:</span> <span>-{formatCurrency(discountVal).replace('RD$', '')}</span></div>}
+                            <div className="flex justify-between"><span>ITBIS:</span> <span>{formatCurrency(itbisTotal).replace('RD$', '')}</span></div>
+                            <div className="flex justify-between text-[14px] font-bold border-t border-black mt-2 pt-2">
+                                <span>TOTAL:</span>
+                                <span>RD$ {total.toLocaleString()}</span>
+                            </div>
+                        </div>
+
+                        <div className="mt-10 text-center space-y-4">
+                            <p className="text-[10px] font-bold">¡GRACIAS POR SU COMPRA!</p>
+                            <div className="flex justify-center grayscale opacity-10">
+                                <Zap className="w-12 h-12" />
+                            </div>
+                            <p className="text-[9px] uppercase tracking-wider opacity-30">Powered by Lollipop</p>
                         </div>
                     </div>
+                )}
 
-                    <div className="mt-10 text-center space-y-4">
-                        <p className="text-[10px] font-bold">¡GRACIAS POR SU COMPRA!</p>
-                        <div className="flex justify-center grayscale opacity-10">
-                            <Zap className="w-12 h-12" />
+                {/* ── Hidden Print Invoice (Letter 8.5x11) ────────────────────────── */}
+                {printMode === 'invoice' && invoiceCreated && (() => {
+                    const ActiveTemplate = INVOICE_TEMPLATES[globalTemplateId as keyof typeof INVOICE_TEMPLATES] || InvoiceStandard;
+                    return (
+                        <div id="print-invoice" className="hidden print:block w-full bg-white">
+                            <style>{`
+                                @media print {
+                                    #print-invoice { display: block !important; width: 8.5in !important; min-height: 11in !important; padding: 0 !important; break-inside: avoid; }
+                                    #print-invoice > * { page-break-inside: avoid; }
+                                }
+                            `}</style>
+                            <ActiveTemplate data={{
+                                color: { primary: globalColor },
+                                company: {
+                                    name: "Lollipop Commercial",
+                                    rnc: "1-30-00000-1",
+                                    phone: "(809) 555-5555",
+                                    email: "facturacion@lollipop.do",
+                                    address: "Av. Winston Churchill #123, Santo Domingo, R.D.",
+                                },
+                                client: {
+                                    name: selectedClient?.name || "Consumidor final",
+                                    address: "",
+                                    rnc: selectedClient?.rnc || "",
+                                },
+                                document: {
+                                    type: TIPOS_NCF.find(t => t.code === ncfType)?.name || ncfType,
+                                    number: invoiceCreated.id,
+                                    date: invoiceCreated.date || new Date().toLocaleDateString('es-DO'),
+                                    ncf: invoiceCreated.ncf,
+                                    seller: selectedVendedor || shiftOpenVendedor || "Vendedor",
+                                },
+                                items: cart.map(i => ({
+                                    id: i.id,
+                                    description: i.name,
+                                    qty: i.qty,
+                                    price: i.price,
+                                    discount: 0,
+                                    tax: i.price * i.qty * (i.itbis / 100),
+                                    total: i.qty * i.price
+                                })),
+                                totals: { subtotal, discount: discountVal, tax: itbisTotal, total },
+                                payments: [{
+                                    date: invoiceCreated?.date || "",
+                                    method: paymentMethod || "Efectivo",
+                                    amount: parseFloat(amountPaid) || total
+                                }]
+                            }} />
                         </div>
-                        <p className="text-[9px] uppercase tracking-wider opacity-30">Powered by Lollipop</p>
-                    </div>
-                    {/* ── Hidden Print Invoice (Letter 8.5x11) ────────────────────────── */}
-                    <div id="print-invoice" className="hidden print:block absolute top-0 left-0 w-[8.5in] bg-white">
-                        {invoiceCreated && (() => {
-                            const ActiveTemplate = INVOICE_TEMPLATES[globalTemplateId as keyof typeof INVOICE_TEMPLATES] || InvoiceStandard;
-                            return (
-                                <ActiveTemplate data={{
-                                    color: { primary: globalColor },
-                                    company: {
-                                        name: "Lollipop Commercial",
-                                        rnc: "1-30-00000-1",
-                                        phone: "(809) 555-5555",
-                                        email: "facturacion@lollipop.do",
-                                        address: "Av. Winston Churchill #123, Santo Domingo, R.D.",
-                                    },
-                                    client: {
-                                        name: selectedClient?.name || "Consumidor final",
-                                        address: "",
-                                        rnc: selectedClient?.rnc || "",
-                                    },
-                                    document: {
-                                        type: ncfType === 'B01' ? "Factura de Crédito Fiscal" : "Factura de Consumo",
-                                        number: invoiceCreated.id || "PRO-FORMA",
-                                        date: invoiceCreated.date || "",
-                                        ncf: invoiceCreated.ncf || "",
-                                        seller: selectedVendedor || "Vendedor",
-                                    },
-                                    items: cart.map(i => ({
-                                        id: i.id,
-                                        description: i.name,
-                                        qty: i.qty,
-                                        price: i.price,
-                                        discount: 0,
-                                        tax: i.price * i.qty * (i.itbis / 100),
-                                        total: i.qty * i.price
-                                    })),
-                                    totals: {
-                                        subtotal: subtotal,
-                                        discount: discountVal,
-                                        tax: itbisTotal,
-                                        total: total
-                                    },
-                                    payments: [{
-                                        date: invoiceCreated?.date || "",
-                                        method: paymentMethod || "Efectivo",
-                                        amount: parseFloat(amountPaid) || total
-                                    }]
-                                }} />
-                            );
-                        })()}
-                    </div>
-                </div>
+                    );
+                })()}
             </div>
             );
         </>

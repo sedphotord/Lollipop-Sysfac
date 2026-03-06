@@ -20,7 +20,7 @@ const USERS = [
 ];
 
 const ROLES: Record<string, { label: string; color: string; perms: string }> = {
-    admin: { label: "Administrador", color: "bg-purple-500/10 text-purple-600 border-purple-500/20", perms: "Acceso total al sistema" },
+    admin: { label: "Administrador", color: "bg-blue-500/10 text-blue-600 border-blue-500/20", perms: "Acceso total al sistema" },
     contador: { label: "Contador", color: "bg-blue-500/10 text-blue-600 border-blue-500/20", perms: "Facturacion, reportes, contabilidad" },
     vendedor: { label: "Vendedor", color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20", perms: "Facturas, cotizaciones, POS, clientes" },
     viewer: { label: "Solo lectura", color: "bg-muted text-muted-foreground", perms: "Ver reportes y documentos" },
@@ -51,7 +51,7 @@ export default function UsuariosPage() {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {[{ l: "Total Usuarios", v: users.length, i: Users, c: "text-purple-600 bg-purple-500/10" }, { l: "Activos", v: users.filter(u => u.status === "activo").length, i: UserCheck, c: "text-emerald-600 bg-emerald-500/10" }, { l: "Pendientes", v: users.filter(u => u.status === "pendiente").length, i: Clock, c: "text-amber-600 bg-amber-500/10" }, { l: "Roles", v: Object.keys(ROLES).length, i: Shield, c: "text-blue-600 bg-blue-500/10" }].map((k, i) => (
+                {[{ l: "Total Usuarios", v: users.length, i: Users, c: "text-blue-600 bg-blue-500/10" }, { l: "Activos", v: users.filter(u => u.status === "activo").length, i: UserCheck, c: "text-emerald-600 bg-emerald-500/10" }, { l: "Pendientes", v: users.filter(u => u.status === "pendiente").length, i: Clock, c: "text-amber-600 bg-amber-500/10" }, { l: "Roles", v: Object.keys(ROLES).length, i: Shield, c: "text-blue-600 bg-blue-500/10" }].map((k, i) => (
                     <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardContent className="p-4 flex items-center gap-3"><div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", k.c)}><k.i className="w-5 h-5" /></div><div><p className="text-xs font-medium text-muted-foreground">{k.l}</p><p className="text-lg font-bold">{k.v}</p></div></CardContent></Card>
                 ))}
             </div>
@@ -60,8 +60,8 @@ export default function UsuariosPage() {
 
             <div className="grid gap-3">{filtered.map(u => (
                 <Card key={u.id} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardContent className="p-4"><div className="flex items-center gap-4">
-                    <Avatar className="w-10 h-10 border-2 border-purple-200/50"><AvatarFallback className="bg-gradient-to-br from-purple-500/20 to-cyan-500/20 text-purple-700 font-bold text-xs">{u.name.split(" ").map(n => n[0]).join("")}</AvatarFallback></Avatar>
-                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold text-sm">{u.name}</p>{u.role === "admin" && <BadgeCheck className="w-3.5 h-3.5 text-purple-500" />}</div><p className="text-xs text-muted-foreground">{u.email}</p></div>
+                    <Avatar className="w-10 h-10 border-2 border-blue-200/50"><AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-sky-500/20 text-blue-700 font-bold text-xs">{u.name.split(" ").map(n => n[0]).join("")}</AvatarFallback></Avatar>
+                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold text-sm">{u.name}</p>{u.role === "admin" && <BadgeCheck className="w-3.5 h-3.5 text-blue-500" />}</div><p className="text-xs text-muted-foreground">{u.email}</p></div>
                     <Badge variant="outline" className={cn("text-[10px]", ROLES[u.role]?.color)}>{ROLES[u.role]?.label}</Badge>
                     <div className="text-right hidden sm:block"><p className="text-[10px] text-muted-foreground">Ultimo acceso</p><p className="text-xs font-medium">{u.lastLogin}</p></div>
                     <Badge variant="outline" className={cn("text-[10px]", u.status === "activo" ? "text-emerald-600 bg-emerald-500/10 border-emerald-500/20" : "text-amber-600 bg-amber-500/10 border-amber-500/20")}>{u.status}</Badge>

@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Building2, Receipt, KeySquare, CheckCircle2, Upload, Image, Save, BadgeCheck, Palette, FileText, Mail, Phone, MapPin, Globe, X, Eye } from "lucide-react";
+import { Lock, Building2, Receipt, KeySquare, CheckCircle2, Upload, Image, Save, BadgeCheck, Palette, FileText, Mail, Phone, MapPin, Globe, X, Eye, LayoutTemplate, Shield, Users, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function SettingsPage() {
     const [saved, setSaved] = useState(false);
@@ -33,6 +34,10 @@ export default function SettingsPage() {
                 if (co.web) setWeb(co.web);
             } catch { }
         }
+        const savedMode = localStorage.getItem('sysfac_invoice_mode');
+        if (savedMode === 'tradicional' || savedMode === 'electronico') {
+            setInvoiceMode(savedMode);
+        }
     }, []);
 
     // Company info state
@@ -45,6 +50,7 @@ export default function SettingsPage() {
     const [web, setWeb] = useState("www.miempresa.com.do");
     const [municipio, setMunicipio] = useState("Distrito Nacional");
     const [provincia, setProvincia] = useState("Santo Domingo");
+    const [invoiceMode, setInvoiceMode] = useState<'tradicional' | 'electronico'>('electronico');
 
     // Invoice/quote customization
     const [colorPrimario, setColorPrimario] = useState("#7c3aed");
@@ -89,6 +95,7 @@ export default function SettingsPage() {
             email,
             web,
         }));
+        localStorage.setItem('sysfac_invoice_mode', invoiceMode);
         setSaved(true);
         setTimeout(() => setSaved(false), 2500);
     };
@@ -107,12 +114,13 @@ export default function SettingsPage() {
             </div>
 
             <Tabs defaultValue="empresa" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 lg:w-[700px] h-auto p-1 bg-muted/50 backdrop-blur-md">
+                <TabsList className="grid w-full grid-cols-2 md:grid-cols-6 lg:w-[850px] h-auto p-1 bg-muted/50 backdrop-blur-md">
                     <TabsTrigger value="empresa" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Building2 className="w-4 h-4 mr-2" /> Empresa</TabsTrigger>
                     <TabsTrigger value="documentos" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><FileText className="w-4 h-4 mr-2" /> Documentos</TabsTrigger>
                     <TabsTrigger value="facturacion" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Receipt className="w-4 h-4 mr-2" /> e-CF / DGII</TabsTrigger>
                     <TabsTrigger value="certificacion" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Lock className="w-4 h-4 mr-2" /> Certificado</TabsTrigger>
                     <TabsTrigger value="api" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><KeySquare className="w-4 h-4 mr-2" /> API</TabsTrigger>
+                    <TabsTrigger value="roles" className="py-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"><Shield className="w-4 h-4 mr-2" /> Roles</TabsTrigger>
                 </TabsList>
 
                 {/* ═══════════════════════════════════════ EMPRESA TAB ═══════════════════════════════════════ */}
@@ -120,22 +128,22 @@ export default function SettingsPage() {
                     {/* Logo Upload */}
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Image className="w-5 h-5 text-purple-500" /> Logo de la Empresa</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Image className="w-5 h-5 text-blue-500" /> Logo de la Empresa</CardTitle>
                             <CardDescription>Este logo aparecera en tus facturas, cotizaciones, notas de credito y correos.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex items-center gap-6">
                                 <div className="relative group shrink-0">
                                     {logo ? (
-                                        <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-purple-200 dark:border-purple-800 overflow-hidden bg-white">
+                                        <div className="relative w-28 h-28 rounded-2xl border-2 border-dashed border-blue-200 dark:border-blue-800 overflow-hidden bg-white">
                                             <img src={logo} alt="Logo" className="w-full h-full object-contain p-2" />
                                             <button onClick={handleRemoveLogo} className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><X className="w-3 h-3" /></button>
                                         </div>
                                     ) : (
                                         <button onClick={() => fileRef.current?.click()}
-                                            className="w-28 h-28 rounded-2xl border-2 border-dashed border-purple-200 dark:border-purple-800 hover:border-purple-400 dark:hover:border-purple-600 bg-purple-50/50 dark:bg-purple-900/10 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer">
-                                            <Upload className="w-6 h-6 text-purple-400" />
-                                            <span className="text-[10px] text-purple-400 font-medium">Subir Logo</span>
+                                            className="w-28 h-28 rounded-2xl border-2 border-dashed border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 bg-blue-50/50 dark:bg-blue-900/10 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer">
+                                            <Upload className="w-6 h-6 text-blue-400" />
+                                            <span className="text-[10px] text-blue-400 font-medium">Subir Logo</span>
                                         </button>
                                     )}
                                     <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleLogo} />
@@ -157,7 +165,7 @@ export default function SettingsPage() {
                     {/* Company Info */}
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Building2 className="w-5 h-5 text-purple-500" /> Informacion Legal</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Building2 className="w-5 h-5 text-blue-500" /> Informacion Legal</CardTitle>
                             <CardDescription>Estos datos aparecen en el encabezado de facturas, cotizaciones y notas de credito.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -182,7 +190,7 @@ export default function SettingsPage() {
                     {/* Visibility toggles */}
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Eye className="w-5 h-5 text-purple-500" /> Visibilidad en Documentos</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Eye className="w-5 h-5 text-blue-500" /> Visibilidad en Documentos</CardTitle>
                             <CardDescription>Elige que datos mostrar en el encabezado de facturas y cotizaciones.</CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -203,13 +211,33 @@ export default function SettingsPage() {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* Link to Theme Builder */}
+                    <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60 hover:border-blue-500/50 transition-colors cursor-pointer group">
+                        <Link href="/dashboard/settings/plantillas">
+                            <CardContent className="p-6 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                        <LayoutTemplate className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-lg group-hover:text-blue-600 transition-colors">Constructor de Plantillas PDF</h3>
+                                        <p className="text-sm text-muted-foreground mt-0.5">Diseña visualmente tus facturas y ajusta columnas, colores y tipografía.</p>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" size="icon" className="group-hover:translate-x-1 transition-transform">
+                                    →
+                                </Button>
+                            </CardContent>
+                        </Link>
+                    </Card>
                 </TabsContent>
 
                 {/* ═══════════════════════════════════════ DOCUMENTOS TAB ═══════════════════════════════════════ */}
                 <TabsContent value="documentos" className="mt-6 space-y-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Palette className="w-5 h-5 text-purple-500" /> Personalizacion de Documentos</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><Palette className="w-5 h-5 text-blue-500" /> Personalizacion de Documentos</CardTitle>
                             <CardDescription>Configura la apariencia y contenido por defecto de tus facturas y cotizaciones.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -251,7 +279,7 @@ export default function SettingsPage() {
 
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-purple-500" /> Notas y Condiciones por Defecto</CardTitle>
+                            <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-blue-500" /> Notas y Condiciones por Defecto</CardTitle>
                             <CardDescription>Textos que se insertan automaticamente al crear nuevos documentos. Puedes editarlos individualmente en cada factura.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -272,7 +300,7 @@ export default function SettingsPage() {
 
                     {/* Live Preview */}
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
-                        <CardHeader><CardTitle className="flex items-center gap-2"><Eye className="w-5 h-5 text-purple-500" /> Vista Previa del Encabezado</CardTitle></CardHeader>
+                        <CardHeader><CardTitle className="flex items-center gap-2"><Eye className="w-5 h-5 text-blue-500" /> Vista Previa del Encabezado</CardTitle></CardHeader>
                         <CardContent>
                             <div className="bg-white dark:bg-neutral-900 rounded-xl border border-border/60 p-6">
                                 <div className="flex items-start justify-between gap-6">
@@ -280,7 +308,7 @@ export default function SettingsPage() {
                                         {mostrarLogo && (
                                             <div className="w-16 h-16 rounded-lg border flex items-center justify-center bg-muted/30 shrink-0 overflow-hidden">
                                                 {logo ? <img src={logo} alt="Logo" className="w-full h-full object-contain p-1" /> :
-                                                    <span className="text-2xl font-black bg-gradient-to-br from-purple-600 to-cyan-500 bg-clip-text text-transparent">L</span>}
+                                                    <span className="text-2xl font-black bg-gradient-to-br from-blue-600 to-sky-500 bg-clip-text text-transparent">L</span>}
                                             </div>
                                         )}
                                         <div>
@@ -295,8 +323,12 @@ export default function SettingsPage() {
                                         </div>
                                     </div>
                                     <div className="text-right">
-                                        <Badge style={{ backgroundColor: colorPrimario }} className="text-white text-xs border-0">FACTURA e-CF</Badge>
-                                        <p className="text-xs text-muted-foreground mt-1 font-mono">E310000000001</p>
+                                        <Badge style={{ backgroundColor: colorPrimario }} className="text-white text-xs border-0">
+                                            {invoiceMode === 'electronico' ? 'FACTURA e-CF' : 'FACTura VALIDA PARA CREDITO FISCAL'}
+                                        </Badge>
+                                        <p className="text-xs text-muted-foreground mt-1 font-mono">
+                                            {invoiceMode === 'electronico' ? 'E310000000001' : 'B0100000001'}
+                                        </p>
                                         <p className="text-xs text-muted-foreground">Credito {terminoPago} dias</p>
                                     </div>
                                 </div>
@@ -311,10 +343,41 @@ export default function SettingsPage() {
                 </TabsContent>
 
                 {/* ═══════════════════════════════════════ FACTURACION TAB ═══════════════════════════════════════ */}
-                <TabsContent value="facturacion" className="mt-6">
+                <TabsContent value="facturacion" className="mt-6 space-y-6">
                     <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
                         <CardHeader>
-                            <CardTitle>Secuencias e-CF (Aprobado por DGII)</CardTitle>
+                            <CardTitle>Régimen y Modalidad de Facturación</CardTitle>
+                            <CardDescription>Selecciona si tu empresa opera bajo Facturación Electrónica (e-CF) o si usas NCFs tradicionales.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-4">
+                                <Label>Modalidad de Emisión</Label>
+                                <Select value={invoiceMode} onValueChange={(v: 'tradicional' | 'electronico') => setInvoiceMode(v)}>
+                                    <SelectTrigger className="w-full md:w-1/2">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="electronico">Facturación Electrónica DGII (e-CF)</SelectItem>
+                                        <SelectItem value="tradicional">Facturación Tradicional (Impresora Fiscal / Pre-impreso B01)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                {invoiceMode === 'tradicional' && (
+                                    <p className="text-sm text-muted-foreground mt-2 border-l-2 border-amber-500 pl-3">
+                                        Se generarán comprobantes con la estructura tradicional (ej. B0100000001). Debes reportar tu formato 607 mensualmente.
+                                    </p>
+                                )}
+                                {invoiceMode === 'electronico' && (
+                                    <p className="text-sm text-muted-foreground mt-2 border-l-2 border-blue-500 pl-3">
+                                        Se generarán comprobantes electrónicos (ej. E310000000001). Certificación automatizada con conexión DGII.
+                                    </p>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
+                        <CardHeader>
+                            <CardTitle>Secuencias Autoliquidadas (Aprobado por DGII)</CardTitle>
                             <CardDescription>Control de proximas secuencias para garantizar la correcta continuidad.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -370,27 +433,92 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
-                {/* ═══════════════════════════════════════ API TAB ═══════════════════════════════════════ */}
-                <TabsContent value="api" className="mt-6">
-                    <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
-                        <CardHeader>
-                            <CardTitle>API Integrations</CardTitle>
-                            <CardDescription>Conecta Lollipop con tus aplicaciones de terceros.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label>API Key (Produccion)</Label>
-                                    <div className="flex gap-2">
-                                        <Input readOnly type="password" value="api_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" className="font-mono bg-muted/30" />
-                                        <Button variant="secondary">Revelar</Button>
-                                        <Button variant="outline">Copiar</Button>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground">No compartas tu API Key en publico.</p>
+                {/* ═══════════════════════════════════════ ROLES TAB ═══════════════════════════════════════ */}
+                <TabsContent value="roles" className="mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {/* Roles Sidebar */}
+                        <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60 md:col-span-1 h-fit">
+                            <CardHeader className="pb-4 border-b">
+                                <CardTitle className="text-lg flex items-center gap-2"><Users className="w-5 h-5 text-blue-500" /> Roles del Sistema</CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-2">
+                                <div className="space-y-1 mt-2">
+                                    <button className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors">Administrador <Badge variant="secondary" className="ml-2 text-[10px]">Total</Badge></button>
+                                    <button className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium bg-blue-50 text-blue-700 border border-blue-100 transition-colors">Cajero <Badge variant="outline" className="ml-2 bg-white text-[10px]">Restringido</Badge></button>
+                                    <button className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors">Contador Externo</button>
+                                    <button className="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-muted/50 transition-colors">Vendedor (POS)</button>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                                <div className="mt-4 px-2 mb-2">
+                                    <Button variant="outline" className="w-full text-xs box-border border-dashed">
+                                        <Plus className="w-3.5 h-3.5 mr-2" /> Crear Nuevo Rol
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Permission Matrix */}
+                        <div className="md:col-span-3 space-y-6">
+                            <Card className="bg-card/40 backdrop-blur-xl shadow-sm border-border/60">
+                                <CardHeader className="pb-4">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <CardTitle className="text-xl">Permisos: Cajero</CardTitle>
+                                            <CardDescription>Define qué módulos y acciones puede ejecutar este rol.</CardDescription>
+                                        </div>
+                                        <Button className="bg-primary hover:bg-primary/90 text-white shadow-md h-9 text-sm">Guardar Permisos</Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="space-y-6">
+                                    {/* Ventas Module */}
+                                    <div className="border rounded-xl overflow-hidden">
+                                        <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Receipt className="w-4 h-4 text-blue-600" />
+                                                <h4 className="font-semibold text-sm">Módulo de Ventas</h4>
+                                            </div>
+                                            <Switch defaultChecked />
+                                        </div>
+                                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="flex items-center justify-between"><span className="text-sm">Crear Facturas</span><Switch defaultChecked /></div>
+                                            <div className="flex items-center justify-between"><span className="text-sm">Eliminar Facturas</span><Switch checked={false} /></div>
+                                            <div className="flex items-center justify-between"><span className="text-sm">Aplicar Descuentos Mayores al 10%</span><Switch checked={false} /></div>
+                                            <div className="flex items-center justify-between"><span className="text-sm">Ver Costos de Productos</span><Switch checked={false} /></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Compras Module */}
+                                    <div className="border rounded-xl overflow-hidden">
+                                        <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between opacity-70">
+                                            <div className="flex items-center gap-2">
+                                                <Building2 className="w-4 h-4 text-muted-foreground" />
+                                                <h4 className="font-semibold text-sm">Módulo de Compras / Gastos</h4>
+                                            </div>
+                                            <Switch checked={false} />
+                                        </div>
+                                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4 opacity-50 pointer-events-none">
+                                            <div className="flex items-center justify-between"><span className="text-sm">Registrar Gastos</span><Switch checked={false} /></div>
+                                            <div className="flex items-center justify-between"><span className="text-sm">Aprobar Pagos</span><Switch checked={false} /></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Caja Module */}
+                                    <div className="border rounded-xl overflow-hidden">
+                                        <div className="bg-muted/40 px-4 py-3 border-b flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Lock className="w-4 h-4 text-emerald-600" />
+                                                <h4 className="font-semibold text-sm">Bancos y Cajas</h4>
+                                            </div>
+                                            <Switch defaultChecked />
+                                        </div>
+                                        <div className="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="flex items-center justify-between"><span className="text-sm">Apertura / Cierre de Turno</span><Switch defaultChecked /></div>
+                                            <div className="flex items-center justify-between"><span className="text-sm">Ver Balance de Cuentas Banco</span><Switch checked={false} /></div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
                 </TabsContent>
             </Tabs>
         </div>

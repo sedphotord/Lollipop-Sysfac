@@ -25,7 +25,7 @@ export default function ContabilidadConfigPage() {
                 <Button onClick={handleSave} className="gap-2">{saved ? <BadgeCheck className="w-4 h-4" /> : <Save className="w-4 h-4" />}{saved ? "Guardado!" : "Guardar"}</Button>
             </div>
 
-            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><Calculator className="w-5 h-5 text-purple-500" />Metodo Contable</CardTitle></CardHeader>
+            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><Calculator className="w-5 h-5 text-blue-500" />Metodo Contable</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2"><Label>Metodo de contabilidad</Label>
                         <Select value={metodo} onValueChange={setMetodo}><SelectTrigger className="w-full max-w-sm"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="devengado">Devengado (Accrual)</SelectItem><SelectItem value="efectivo">Base de Efectivo (Cash)</SelectItem></SelectContent></Select>
@@ -36,11 +36,10 @@ export default function ContabilidadConfigPage() {
                     </div>
                 </CardContent></Card>
 
-            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><Settings className="w-5 h-5 text-purple-500" />Automatizaciones</CardTitle></CardHeader>
+            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><Settings className="w-5 h-5 text-blue-500" />Automatizaciones</CardTitle></CardHeader>
                 <CardContent className="space-y-5">
                     {[
                         { label: "Asientos automaticos", desc: "Genera asientos contables al emitir facturas y registrar pagos.", checked: autoAsientos, onChange: setAutoAsientos },
-                        { label: "Retenciones automaticas", desc: "Calcula y aplica retenciones TSS/ISR al procesar nomina.", checked: retencionAuto, onChange: setRetencionAuto },
                         { label: "Cierre mensual automatico", desc: "Cierra el periodo contable automaticamente el ultimo dia del mes.", checked: cierreAuto, onChange: setCierreAuto },
                     ].map((item, i) => (
                         <div key={i} className="flex items-center justify-between gap-4">
@@ -50,7 +49,7 @@ export default function ContabilidadConfigPage() {
                     ))}
                 </CardContent></Card>
 
-            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><BookOpen className="w-5 h-5 text-purple-500" />Periodo Fiscal</CardTitle></CardHeader>
+            <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardHeader><CardTitle className="flex items-center gap-2 text-base"><BookOpen className="w-5 h-5 text-blue-500" />Periodo Fiscal</CardTitle></CardHeader>
                 <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2"><Label>Inicio del ejercicio</Label><Select defaultValue="enero"><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"].map(m => <SelectItem key={m} value={m}>{m.charAt(0).toUpperCase() + m.slice(1)}</SelectItem>)}</SelectContent></Select></div>

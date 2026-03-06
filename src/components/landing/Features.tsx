@@ -5,20 +5,17 @@ import { FileText, ShoppingCart, Calculator, Boxes, PieChart, Users, Receipt, Za
 const FEATURES = [
     {
         icon: Zap, title: "Facturacion e-CF", desc: "Emite comprobantes electronicos B01, B02, B04, B14, B15 validados por la DGII en tiempo real.", size: "col-span-2",
-        color: "from-purple-500/20 to-purple-600/10 text-purple-600", highlight: true,
+        color: "from-blue-500/20 to-blue-600/10 text-blue-600", highlight: true,
     },
     {
         icon: Store, title: "Punto de Venta", desc: "POS moderno con busqueda rapida, lectores y tickets. Ideal para retail.", size: "col-span-1",
-        color: "from-cyan-500/20 to-cyan-600/10 text-cyan-600", highlight: false,
+        color: "from-sky-500/20 to-sky-600/10 text-sky-600", highlight: false,
     },
     {
         icon: Calculator, title: "Contabilidad", desc: "Plan de cuentas DR, asientos automaticos, balance y estados financieros NIIF.", size: "col-span-1",
         color: "from-amber-500/20 to-amber-600/10 text-amber-600", highlight: false,
     },
-    {
-        icon: Users, title: "Nomina y TSS", desc: "Calcula sueldos, descuentos TSS/ISR, genera el formato 606 y reportes de nomina.", size: "col-span-1",
-        color: "from-rose-500/20 to-rose-600/10 text-rose-600", highlight: false,
-    },
+
     {
         icon: Boxes, title: "Inventario Multi-Almacen", desc: "Productos, categorias, ajustes de stock y alertas de minimo. Todo organizado.", size: "col-span-1",
         color: "from-emerald-500/20 to-emerald-600/10 text-emerald-600", highlight: false,
@@ -42,10 +39,10 @@ export function Features() {
         <section className="py-20 md:py-28 relative" id="features">
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-2xl mx-auto mb-14">
-                    <p className="text-xs font-bold text-purple-400 tracking-[0.2em] uppercase mb-3">Todo en uno</p>
+                    <p className="text-xs font-bold text-blue-400 tracking-[0.2em] uppercase mb-3">Todo en uno</p>
                     <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
                         Una plataforma,{" "}
-                        <span className="bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">infinitas posibilidades</span>
+                        <span className="bg-gradient-to-r from-blue-600 to-sky-500 bg-clip-text text-transparent">infinitas posibilidades</span>
                     </h2>
                     <p className="text-muted-foreground">Cada herramienta que tu negocio necesita, integrada y lista para usar desde el dia uno.</p>
                 </div>

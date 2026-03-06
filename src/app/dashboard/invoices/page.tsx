@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,18 +23,17 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { MOCK_INVOICES } from "@/lib/mock-invoices";
 
-const INVOICES = [
-    { id: "0042", ecf: "E3100000006", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "CLARO (CODETEL)", rnc: "101010101", date: "20 Oct 2024", vencimiento: "19 Nov 2024", total: 605800, status: "accepted" },
-    { id: "0041", ecf: "E3200000010", tipo: "B02", tipoName: "Consumo", cliente: "Juan Pérez", rnc: "00114356789", date: "18 Oct 2024", vencimiento: "18 Oct 2024", total: 3500, status: "accepted" },
-    { id: "0040", ecf: "E3100000005", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "ALTICE DOMINICANA", rnc: "130819985", date: "15 Oct 2024", vencimiento: "14 Nov 2024", total: 125000, status: "pending" },
-    { id: "0039", ecf: "E3100000004", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "GRUPO RAMOS", rnc: "101001010", date: "10 Oct 2024", vencimiento: "09 Nov 2024", total: 95000, status: "accepted" },
-    { id: "0038", ecf: "E3200000009", tipo: "B02", tipoName: "Consumo", cliente: "María Santos", rnc: "40212345678", date: "08 Oct 2024", vencimiento: "08 Oct 2024", total: 8750, status: "rejected" },
-    { id: "0037", ecf: "E3100000003", tipo: "B01", tipoName: "Crédito Fiscal", cliente: "BANRESERVAS", rnc: "101288345", date: "01 Oct 2024", vencimiento: "31 Oct 2024", total: 250000, status: "accepted" },
-    { id: "0036", ecf: "E3200000008", tipo: "B02", tipoName: "Consumo", cliente: "Pedro Almonte", rnc: "001555999", date: "28 Sep 2024", vencimiento: "28 Sep 2024", total: 12300, status: "accepted" },
-];
 
 const STATUS_MAP: Record<string, { label: string; cls: string; icon: any }> = {
     accepted: { label: "Aceptado", cls: "text-emerald-600 bg-emerald-500/10 border-emerald-500/30", icon: CheckCircle2 },
@@ -43,9 +43,10 @@ const STATUS_MAP: Record<string, { label: string; cls: string; icon: any }> = {
 };
 
 export default function InvoicesPage() {
-    const [search, setSearch] = useState("");
+    const searchParams = useSearchParams();
+    const [search, setSearch] = useState(searchParams?.get("search") ?? "");
     const [statusFilter, setStatusFilter] = useState("all");
-    const [invoices, setInvoices] = useState<any[]>(INVOICES);
+    const [invoices, setInvoices] = useState<any[]>(MOCK_INVOICES);
     const [invoiceToDelete, setInvoiceToDelete] = useState<any>(null);
 
     useEffect(() => {
@@ -54,6 +55,12 @@ export default function InvoicesPage() {
         // Load emitted invoices from localStorage
         try {
             const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
+
+            // Allow manual clearing of data persistence in case it was seeded earlier
+            if (localStorage.getItem('mock_invoices_seeded')) {
+                localStorage.removeItem('mock_invoices_seeded');
+            }
+
             result.push(...emitted);
         } catch { }
 
@@ -94,7 +101,16 @@ export default function InvoicesPage() {
             return acc;
         }, {});
 
-        const combined = [...draftRows, ...result, ...INVOICES].map(i => {
+        // Merge: draftRows + localStorage emitted (result) + MOCK defaults, deduplicated by ID
+        // Entries earlier in the array take precedence (real data > mock defaults)
+        const seen = new Set<string>();
+        const deduplicated = [...draftRows, ...result, ...MOCK_INVOICES].filter(i => {
+            if (seen.has(i.id)) return false;
+            seen.add(i.id);
+            return true;
+        });
+
+        const combined = deduplicated.map(i => {
             if (i.status === 'draft') return { ...i, paymentStatus: 'n/a' };
             const paid = invoicePayments[i.id] || 0;
             if (paid >= i.total) return { ...i, paymentStatus: 'pagada' };
@@ -102,9 +118,7 @@ export default function InvoicesPage() {
             return { ...i, paymentStatus: 'no pagada' };
         });
 
-        if (combined.length > 0) {
-            setInvoices(combined);
-        }
+        setInvoices(combined);
     }, []);
 
     const handleDeleteInvoice = () => {
@@ -117,7 +131,6 @@ export default function InvoicesPage() {
             const current = JSON.parse(localStorage.getItem(storageKey) || '[]');
             const updated = current.filter((i: any) => i.id !== invoiceToDelete.id);
             localStorage.setItem(storageKey, JSON.stringify(updated));
-            setInvoices(invoices.filter(i => i.id !== invoiceToDelete.id));
         } catch { }
 
         // Also clean up legacy draft if that was it
@@ -130,6 +143,8 @@ export default function InvoicesPage() {
             } catch { }
         }
 
+        // Always remove from UI state
+        setInvoices(invoices.filter(i => i.id !== invoiceToDelete.id));
         setInvoiceToDelete(null);
     };
 
@@ -138,9 +153,11 @@ export default function InvoicesPage() {
     const totalPendiente = invoices.filter(i => i.status === 'pending').reduce((a, i) => a + i.total, 0);
 
     const filtered = invoices.filter(inv => {
-        const matchSearch = inv.cliente.toLowerCase().includes(search.toLowerCase()) ||
-            inv.id.toLowerCase().includes(search.toLowerCase()) ||
-            inv.ecf.toLowerCase().includes(search.toLowerCase());
+        const s = search.toLowerCase();
+        const matchSearch = !search ||
+            (inv.cliente || inv.client || '').toLowerCase().includes(s) ||
+            (inv.id || '').toLowerCase().includes(s) ||
+            (inv.ecf || inv.ncf || '').toLowerCase().includes(s);
         const matchStatus = statusFilter === "all" || inv.status === statusFilter;
         return matchSearch && matchStatus;
     });
@@ -176,7 +193,7 @@ export default function InvoicesPage() {
                         <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center"><CheckCircle2 className="w-5 h-5" /></div>
                         <div>
                             <p className="text-xs font-medium text-muted-foreground">Aceptadas DGII</p>
-                            <p className="text-lg font-bold tracking-tight">{totalAceptadas} <span className="text-sm font-normal text-muted-foreground">de {INVOICES.length}</span></p>
+                            <p className="text-lg font-bold tracking-tight">{totalAceptadas} <span className="text-sm font-normal text-muted-foreground">de {MOCK_INVOICES.length}</span></p>
                         </div>
                     </CardContent>
                 </Card>
@@ -231,6 +248,7 @@ export default function InvoicesPage() {
                                 <TableHead>NCF</TableHead>
                                 <TableHead>Tipo</TableHead>
                                 <TableHead>Cliente</TableHead>
+                                <TableHead>Vendedor</TableHead>
                                 <TableHead>Fecha</TableHead>
                                 <TableHead className="text-right">Total</TableHead>
                                 <TableHead>Cobro</TableHead>
@@ -254,17 +272,46 @@ export default function InvoicesPage() {
                                                     {inv.ecf}
                                                 </Link>
                                             )}
-                                            <p className="text-[10px] text-muted-foreground">{(inv as any).isDraft ? 'Borrador — clic para continuar' : inv.id}</p>
+                                            {(inv as any).isDraft ? (
+                                                <p className="text-[10px] text-muted-foreground">Borrador — clic para continuar</p>
+                                            ) : (
+                                                <p className="text-[10px] text-muted-foreground">
+                                                    {(!String(inv.id).startsWith('INV-') && !String(inv.id).startsWith('POS-') && inv.source !== 'pos') ? inv.id : ''}
+                                                </p>
+                                            )}
                                         </TableCell>
                                         <TableCell>
                                             <div>
                                                 <span className="text-xs font-semibold">{inv.tipoName}</span>
                                                 <p className="text-xs text-muted-foreground font-mono">{inv.tipo}</p>
+                                                {(inv.source === 'pos' || String(inv.id).startsWith('POS-')) ? (
+                                                    <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200 mt-1">
+                                                        <svg className="w-2 h-2" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18l-2 13H5L3 6zm6 5a1 1 0 10-2 0v3a1 1 0 102 0v-3zm6 0a1 1 0 10-2 0v3a1 1 0 102 0v-3z" /></svg>
+                                                        POS
+                                                    </span>
+                                                ) : (inv as any).isDraft ? null : (
+                                                    <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-200 mt-1">
+                                                        <svg className="w-2 h-2" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" /></svg>
+                                                        Normal
+                                                    </span>
+                                                )}
                                             </div>
                                         </TableCell>
                                         <TableCell>
                                             <p className="font-medium text-sm">{inv.cliente}</p>
                                             <p className="text-xs text-muted-foreground font-mono">{inv.rnc}</p>
+                                        </TableCell>
+                                        <TableCell>
+                                            {inv.vendedor ? (
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[9px] font-bold shrink-0">
+                                                        {(inv.vendedor as string).split(' ').map((w: string) => w[0]).join('').slice(0, 2)}
+                                                    </div>
+                                                    <span className="text-xs font-medium truncate max-w-[90px]">{inv.vendedor}</span>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-muted-foreground">—</span>
+                                            )}
                                         </TableCell>
                                         <TableCell>
                                             <p className="text-sm">{inv.date}</p>
@@ -291,14 +338,27 @@ export default function InvoicesPage() {
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <Link href={`/dashboard/invoices/${inv.id}`}>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
-                                                        <ArrowUpRight className="w-4 h-4" />
-                                                    </Button>
-                                                </Link>
-                                                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => setInvoiceToDelete(inv)}>
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground"><MoreVertical className="w-4 h-4" /></Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end" className="w-44">
+                                                        <DropdownMenuItem asChild>
+                                                            <Link href={`/dashboard/invoices/${inv.id}`} className="cursor-pointer font-medium"><ArrowUpRight className="w-4 h-4 mr-2 text-primary" /> Ver Factura</Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem asChild>
+                                                            <Link href={`/dashboard/invoices/${inv.id}/edit`} className="cursor-pointer"><FileText className="w-4 h-4 mr-2" /> Editar</Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem asChild>
+                                                            <Link href={`/dashboard/invoices/preview?id=${inv.id}`} className="cursor-pointer"><Send className="w-4 h-4 mr-2 text-blue-500" /> Enviar por Correo</Link>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem onClick={() => setInvoiceToDelete(inv)} className="text-destructive focus:bg-destructive focus:text-destructive-foreground cursor-pointer">
+                                                            <Trash2 className="w-4 h-4 mr-2" /> Eliminar
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
                                             </div>
                                         </TableCell>
                                     </TableRow>

@@ -4,242 +4,218 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, Clock, DollarSign, Download, Plus, Search, Building2, Calendar, FileText, CreditCard, X } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Printer, Edit } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+    PlusIcon, MagnifyingGlassIcon, BanknotesIcon, CheckCircleIcon,
+    EllipsisHorizontalIcon, TrashIcon, EyeIcon, CreditCardIcon, WalletIcon
+} from "@heroicons/react/24/outline";
+import { cn } from "@/lib/utils";
 
-const INITIAL_DATA = [
-    { id: "PAG-001", fecha: "20 Oct 2024", cliente: "CLARO", factura: "0042", metodo: "Transferencia", monto: 605800, status: "confirmado" },
-    { id: "PAG-002", fecha: "15 Oct 2024", cliente: "ALTICE", factura: "0040", metodo: "Cheque", monto: 147500, status: "pendiente" },
-    { id: "PAG-003", fecha: "01 Oct 2024", cliente: "BANRESERVAS", factura: "0037", metodo: "Transferencia", monto: 297500, status: "confirmado" },
-    { id: "PAG-004", fecha: "28 Sep 2024", cliente: "Pedro Almonte", factura: "0036", metodo: "Efectivo", monto: 14514, status: "confirmado" },
+const LS_KEY = "lollipop_pagos_recibidos";
+
+type Pago = {
+    id: string; fecha: string; cliente: string; facturaRef: string;
+    metodo: string; monto: number; moneda: string; notas: string;
+};
+
+const SAMPLE: Pago[] = [
+    { id: "1", fecha: "2025-03-05", cliente: "CLARO", facturaRef: "E310000000047", metodo: "Transferencia", monto: 885000, moneda: "DOP", notas: "" },
+    { id: "2", fecha: "2025-03-03", cliente: "ALTICE", facturaRef: "E310000000046", metodo: "Cheque", monto: 448400, moneda: "DOP", notas: "Cheque #10234" },
+    { id: "3", fecha: "2025-03-01", cliente: "Joey Mantia", facturaRef: "E310000000044", metodo: "Efectivo", monto: 12500, moneda: "DOP", notas: "" },
 ];
 
+const METODOS = ["Efectivo", "Transferencia Bancaria", "Cheque", "Tarjeta de Crédito/Débito", "Depósito Bancario", "PayPal", "Otro"];
+const EMPTY_FORM = { fecha: new Date().toISOString().split("T")[0], cliente: "", facturaRef: "", metodo: "Transferencia Bancaria", monto: "", moneda: "DOP", notas: "" };
+
 export default function PagosRecibidosPage() {
+    const [list, setList] = useState<Pago[]>([]);
     const [search, setSearch] = useState("");
-    const [pagos, setPagos] = useState<any[]>(INITIAL_DATA);
-    const [selectedPayment, setSelectedPayment] = useState<any>(null);
-    const [isEditingPayment, setIsEditingPayment] = useState(false);
-    const [editForm, setEditForm] = useState<any>({});
+    const [open, setOpen] = useState(false);
+    const [form, setForm] = useState(EMPTY_FORM);
+    const [saved, setSaved] = useState(false);
+    const [invoices, setInvoices] = useState<any[]>([]);
 
     useEffect(() => {
-        // Load saved payments
         try {
-            const savedPagos = JSON.parse(localStorage.getItem('pagos_recibidos') || '[]');
-            if (savedPagos.length > 0) {
-                setPagos([...savedPagos, ...INITIAL_DATA]);
-            }
-        } catch { }
+            const raw = localStorage.getItem(LS_KEY);
+            setList(raw ? JSON.parse(raw) : SAMPLE);
+            const inv = JSON.parse(localStorage.getItem("invoice_emitted") || "[]");
+            setInvoices(inv.filter((i: any) => i.paymentStatus !== "pagado"));
+        } catch { setList(SAMPLE); }
     }, []);
 
-    const handleUpdatePayment = () => {
-        const updatedPagos = pagos.map(p => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
-        const existingRaw = localStorage.getItem('pagos_recibidos');
-        let existing = [];
-        try { existing = JSON.parse(existingRaw || '[]'); } catch { }
-        const newStorage = existing.map((p: any) => p.id === selectedPayment.id ? { ...p, ...editForm, monto: parseFloat(editForm.monto) || 0 } : p);
+    const save = (data: Pago[]) => { setList(data); try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch { } };
+    const set = (k: keyof typeof form) => (v: string) => setForm(p => ({ ...p, [k]: v }));
 
-        localStorage.setItem('pagos_recibidos', JSON.stringify(newStorage));
-        setPagos(updatedPagos);
-        setSelectedPayment({ ...selectedPayment, ...editForm, monto: parseFloat(editForm.monto) || 0 });
-        setIsEditingPayment(false);
+    const handleAdd = () => {
+        if (!form.cliente || !form.monto) return;
+        const newPago: Pago = { id: Date.now().toString(), fecha: form.fecha, cliente: form.cliente, facturaRef: form.facturaRef, metodo: form.metodo, monto: parseFloat(form.monto), moneda: form.moneda, notas: form.notas };
+
+        // Mark invoice as paid if referenced
+        if (form.facturaRef) {
+            try {
+                const inv = JSON.parse(localStorage.getItem("invoice_emitted") || "[]");
+                const updated = inv.map((i: any) => i.ncf === form.facturaRef ? { ...i, paymentStatus: "pagado" } : i);
+                localStorage.setItem("invoice_emitted", JSON.stringify(updated));
+            } catch { }
+        }
+        save([newPago, ...list]);
+        setForm(EMPTY_FORM); setSaved(true);
+        setTimeout(() => { setSaved(false); setOpen(false); }, 1200);
     };
 
-    const handlePrint = () => {
-        window.print();
-    };
+    const filtered = list.filter(c =>
+        c.cliente.toLowerCase().includes(search.toLowerCase()) ||
+        c.facturaRef.toLowerCase().includes(search.toLowerCase())
+    );
 
-    const total = pagos.filter(d => d.status === 'confirmado').reduce((a, d) => a + d.monto, 0);
+    const totalMes = list.reduce((a, c) => a + c.monto, 0);
+    const metodoColors: Record<string, string> = { "Efectivo": "bg-emerald-500/10 text-emerald-600", "Transferencia Bancaria": "bg-blue-500/10 text-blue-600", "Cheque": "bg-violet-500/10 text-violet-600", "Tarjeta de Crédito/Débito": "bg-amber-500/10 text-amber-600" };
+    const metodoIcon = (m: string) => m === "Efectivo" ? WalletIcon : m.includes("Tarjeta") ? CreditCardIcon : BanknotesIcon;
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Recibos de Ingreso</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Registro de cobros y conciliación con facturas emitidas.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Pagos Recibidos</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Registra cobros vinculados a facturas emitidas.</p>
                 </div>
-                <Link href="/dashboard/ingresos/pagos/new">
-                    <Button className="bg-primary shadow-lg shadow-primary/20">
-                        <Plus className="w-4 h-4 mr-2" /> Registrar Pago
-                    </Button>
-                </Link>
+                <Button className="bg-gradient-brand border-0 text-white gap-2" onClick={() => setOpen(true)}>
+                    <PlusIcon className="w-4 h-4" /> Registrar Pago
+                </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {[
-                    { label: "Total Cobrado", value: `RD$ ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "text-emerald-600 bg-emerald-500/10" },
-                    { label: "Confirmados", value: pagos.filter(d => d.status === 'confirmado').length, icon: CheckCircle2, color: "text-blue-600 bg-blue-500/10" },
-                    { label: "Pendientes", value: pagos.filter(d => d.status === 'pendiente').length, icon: Clock, color: "text-amber-600 bg-amber-500/10" },
-                ].map((k, i) => (
-                    <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
-                        <CardContent className="p-4 flex items-center gap-3">
-                            <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", k.color)}>
-                                <k.icon className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <p className="text-xs font-medium text-muted-foreground">{k.label}</p>
-                                <p className="text-lg font-bold">{k.value}</p>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                    { l: "Total Cobrado", v: `RD$ ${totalMes.toLocaleString("es-DO", { minimumFractionDigits: 2 })}`, c: "text-emerald-600 bg-emerald-500/10", i: BanknotesIcon },
+                    { l: "Pagos Registrados", v: list.length.toString(), c: "text-blue-600 bg-blue-500/10", i: CheckCircleIcon },
+                    { l: "Promedio por Pago", v: list.length ? `RD$ ${(totalMes / list.length).toLocaleString("es-DO", { maximumFractionDigits: 0 })}` : "—", c: "text-violet-600 bg-violet-500/10", i: CreditCardIcon },
+                ].map((k, i) => {
+                    const Ic = k.i;
+                    return (
+                        <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
+                            <CardContent className="p-4 flex items-center gap-3">
+                                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", k.c)}><Ic className="w-5 h-5" /></div>
+                                <div><p className="text-xs font-medium text-muted-foreground">{k.l}</p><p className="text-base font-bold leading-snug">{k.v}</p></div>
+                            </CardContent>
+                        </Card>
+                    );
+                })}
             </div>
 
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">
                     <div className="flex gap-3 mb-4">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input placeholder="Buscar pagos..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
+                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input placeholder="Buscar cliente o factura..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
                         </div>
-                        <Button variant="outline"><Download className="w-4 h-4 mr-2" /> Exportar</Button>
                     </div>
                     <div className="border rounded-lg overflow-hidden">
                         <Table>
                             <TableHeader className="bg-muted/50">
                                 <TableRow>
-                                    <TableHead>ID</TableHead>
                                     <TableHead>Fecha</TableHead>
                                     <TableHead>Cliente</TableHead>
-                                    <TableHead>Factura Ref.</TableHead>
+                                    <TableHead>Factura / Ref.</TableHead>
                                     <TableHead>Método</TableHead>
                                     <TableHead className="text-right">Monto</TableHead>
-                                    <TableHead>Estado</TableHead>
+                                    <TableHead>Notas</TableHead>
+                                    <TableHead className="w-10" />
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {pagos.filter(d => d.cliente.toLowerCase().includes(search.toLowerCase()) || d.factura.toLowerCase().includes(search.toLowerCase())).map((d, i) => (
-                                    <TableRow key={i} className="hover:bg-muted/20 cursor-pointer" onClick={() => { setSelectedPayment(d); setIsEditingPayment(false); }}>
-                                        <TableCell className="font-mono text-xs">{d.id}</TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">{d.fecha}</TableCell>
-                                        <TableCell className="font-semibold">{d.cliente}</TableCell>
-                                        <TableCell className="font-mono text-xs text-primary">{d.factura}</TableCell>
-                                        <TableCell><Badge variant="outline" className="text-xs">{d.metodo}</Badge></TableCell>
-                                        <TableCell className="text-right font-bold tabular-nums text-emerald-600">
-                                            RD$ {d.monto.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline" className={cn("text-xs", d.status === 'confirmado' ? 'text-emerald-600 border-emerald-500/30 bg-emerald-500/10' : 'text-amber-600 border-amber-500/30 bg-amber-500/10')}>
-                                                {d.status}
-                                            </Badge>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
+                                {filtered.map(p => {
+                                    const Ic = metodoIcon(p.metodo);
+                                    return (
+                                        <TableRow key={p.id} className="hover:bg-muted/20 group">
+                                            <TableCell className="text-sm text-muted-foreground">{p.fecha}</TableCell>
+                                            <TableCell className="font-semibold">{p.cliente}</TableCell>
+                                            <TableCell className="font-mono text-xs text-primary">{p.facturaRef || "—"}</TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline" className={cn("text-xs gap-1", metodoColors[p.metodo] || "bg-muted")}>
+                                                    <Ic className="w-3 h-3" /> {p.metodo}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-right tabular-nums font-bold text-emerald-600">
+                                                {p.moneda === "USD" ? "US$" : "RD$"} {p.monto.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
+                                            </TableCell>
+                                            <TableCell className="text-xs text-muted-foreground max-w-[120px] truncate">{p.notas || "—"}</TableCell>
+                                            <TableCell>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100">
+                                                            <EllipsisHorizontalIcon className="w-4 h-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem className="gap-2 cursor-pointer"><EyeIcon className="w-4 h-4" /> Ver detalle</DropdownMenuItem>
+                                                        <DropdownMenuItem className="gap-2 cursor-pointer text-red-500 focus:text-red-500 focus:bg-red-50" onClick={() => save(list.filter(x => x.id !== p.id))}>
+                                                            <TrashIcon className="w-4 h-4" /> Eliminar
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                                {filtered.length === 0 && <TableRow><TableCell colSpan={7} className="py-12 text-center text-muted-foreground">No hay pagos registrados.</TableCell></TableRow>}
                             </TableBody>
                         </Table>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Receipt Detail Modal */}
-            {selectedPayment && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={() => setSelectedPayment(null)}>
-                    <div className="bg-background rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative print:shadow-none print:w-full print:max-w-none print:h-full" onClick={e => e.stopPropagation()}>
-                        {/* Header Actions (hidden on print) */}
-                        <div className="px-6 py-4 flex items-center justify-between border-b bg-muted/20 print:hidden">
-                            <h2 className="font-bold text-lg text-foreground">Recibo de Ingreso</h2>
-                            <div className="flex items-center gap-2">
-                                <Button variant="outline" size="icon" onClick={() => { setEditForm({ fecha: selectedPayment.fecha, metodo: selectedPayment.metodo, referencia: selectedPayment.referencia || '', monto: selectedPayment.monto, status: selectedPayment.status }), setIsEditingPayment(!isEditingPayment) }} className="w-8 h-8">
-                                    <Edit className="w-4 h-4 text-muted-foreground" />
-                                </Button>
-                                <Button variant="outline" size="icon" onClick={handlePrint} className="w-8 h-8">
-                                    <Printer className="w-4 h-4 text-muted-foreground" />
-                                </Button>
-                                <Button variant="ghost" size="icon" onClick={() => setSelectedPayment(null)} className="w-8 h-8 hover:bg-muted text-muted-foreground text-xl leading-none">
-                                    ×
-                                </Button>
+            <Dialog open={open} onOpenChange={setOpen}>
+                <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader><DialogTitle>Registrar Pago Recibido</DialogTitle></DialogHeader>
+                    <div className="grid gap-4 py-2">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2"><Label>Fecha</Label><Input type="date" value={form.fecha} onChange={e => set("fecha")(e.target.value)} /></div>
+                            <div className="space-y-2">
+                                <Label>Moneda</Label>
+                                <Select value={form.moneda} onValueChange={set("moneda")}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent><SelectItem value="DOP">DOP – Peso</SelectItem><SelectItem value="USD">USD – Dólar</SelectItem><SelectItem value="EUR">EUR – Euro</SelectItem></SelectContent>
+                                </Select>
                             </div>
                         </div>
-
-                        {/* Receipt Body */}
-                        <div className="p-8 print:p-0 space-y-6">
-                            <div className="text-center space-y-2 mb-6 border-b border-dashed pb-6">
-                                <div className="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 print:hidden">
-                                    <CheckCircle2 className="w-8 h-8 text-emerald-600" />
-                                </div>
-                                <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-teal-600 print:text-black">
-                                    RD$ {parseFloat(selectedPayment.monto).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                </h3>
-                                <p className="text-sm font-medium text-muted-foreground">Cobro realizado exitosamente</p>
-                            </div>
-
-                            {isEditingPayment ? (
-                                <div className="space-y-4 animate-in slide-in-from-top-2">
-                                    <div className="space-y-1.5">
-                                        <Label className="text-xs text-muted-foreground">Fecha</Label>
-                                        <Input value={editForm.fecha} onChange={e => setEditForm({ ...editForm, fecha: e.target.value })} className="h-9" />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-xs text-muted-foreground">Monto (RD$)</Label>
-                                            <Input type="number" value={editForm.monto} onChange={e => setEditForm({ ...editForm, monto: e.target.value })} className="h-9 font-bold text-emerald-600" />
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label className="text-xs text-muted-foreground">Método</Label>
-                                            <Select value={editForm.metodo} onValueChange={v => setEditForm({ ...editForm, metodo: v })}>
-                                                <SelectTrigger className="h-9"><SelectValue /></SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Transferencia">Transferencia</SelectItem>
-                                                    <SelectItem value="Efectivo">Efectivo</SelectItem>
-                                                    <SelectItem value="Tarjeta">Tarjeta</SelectItem>
-                                                    <SelectItem value="Cheque">Cheque</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-1.5">
-                                        <Label className="text-xs text-muted-foreground">Referencia</Label>
-                                        <Input value={editForm.referencia} onChange={e => setEditForm({ ...editForm, referencia: e.target.value })} className="h-9" />
-                                    </div>
-                                    <Button onClick={handleUpdatePayment} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mt-4">Guardar Cambios</Button>
-                                </div>
+                        <div className="space-y-2"><Label>Cliente *</Label><Input placeholder="Nombre del cliente" value={form.cliente} onChange={e => set("cliente")(e.target.value)} /></div>
+                        <div className="space-y-2">
+                            <Label>Factura Referenciada</Label>
+                            {invoices.length > 0 ? (
+                                <Select value={form.facturaRef} onValueChange={v => { set("facturaRef")(v); const inv = invoices.find((i: any) => i.ncf === v); if (inv) set("cliente")(inv.clientName || inv.client?.name || form.cliente); }}>
+                                    <SelectTrigger><SelectValue placeholder="Seleccionar factura pendiente" /></SelectTrigger>
+                                    <SelectContent>{invoices.map((i: any) => <SelectItem key={i.id} value={i.ncf}>{i.ncf} — {i.clientName || i.client?.name}</SelectItem>)}</SelectContent>
+                                </Select>
                             ) : (
-                                <div className="space-y-4">
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">ID Recibo</span>
-                                        <span className="text-sm font-mono font-medium">{selectedPayment.id}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">Fecha Pago</span>
-                                        <span className="text-sm font-medium">{selectedPayment.fecha}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">Cliente</span>
-                                        <span className="text-sm font-bold text-foreground text-right max-w-[200px] truncate" title={selectedPayment.cliente}>{selectedPayment.cliente}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">Factura Pagada</span>
-                                        <span className="text-sm font-mono text-primary font-medium">{selectedPayment.factura}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40 items-start">
-                                        <span className="text-sm text-muted-foreground mt-0.5">Método</span>
-                                        <div className="text-right">
-                                            <span className="text-sm font-medium block">{selectedPayment.metodo}</span>
-                                            {selectedPayment.referencia && <span className="text-xs text-muted-foreground font-mono block mt-1">Ref: {selectedPayment.referencia}</span>}
-                                        </div>
-                                    </div>
-                                    <div className="flex justify-between items-center py-2 border-b border-border/40">
-                                        <span className="text-sm text-muted-foreground">Estado</span>
-                                        <Badge variant="outline" className={cn("text-xs uppercase tracking-wider", selectedPayment.status === 'confirmado' ? 'text-emerald-600 border-emerald-500/30 bg-emerald-500/10' : 'text-amber-600 border-amber-500/30 bg-amber-500/10')}>{selectedPayment.status}</Badge>
-                                    </div>
-                                </div>
+                                <Input placeholder="NCF de la factura" className="font-mono" value={form.facturaRef} onChange={e => set("facturaRef")(e.target.value)} />
                             )}
                         </div>
-
-                        {!isEditingPayment && (
-                            <div className="bg-muted/30 p-6 text-center print:hidden border-t">
-                                <p className="text-xs text-muted-foreground">
-                                    Este recibo es un comprobante interno del sistema. No tiene validez fiscal por sí solo.
-                                </p>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label>Método de Pago</Label>
+                                <Select value={form.metodo} onValueChange={set("metodo")}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                    <SelectContent>{METODOS.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}</SelectContent>
+                                </Select>
                             </div>
-                        )}
+                            <div className="space-y-2"><Label>Monto *</Label><Input type="number" placeholder="0.00" value={form.monto} onChange={e => set("monto")(e.target.value)} /></div>
+                        </div>
+                        <div className="space-y-2"><Label>Notas</Label><Input placeholder="Número de cheque, referencia, etc." value={form.notas} onChange={e => set("notas")(e.target.value)} /></div>
                     </div>
-                </div>
-            )}
+                    <div className="flex justify-end gap-3 pt-2">
+                        <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+                        <Button onClick={handleAdd} className="bg-gradient-brand border-0 text-white" disabled={!form.cliente || !form.monto}>
+                            {saved ? <><CheckCircleIcon className="w-4 h-4 mr-2" /> Guardado!</> : <><PlusIcon className="w-4 h-4 mr-2" /> Registrar Pago</>}
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Plus, Search } from "lucide-react";
+import { ChevronDownIcon, ChevronRightIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 
 const CUENTAS = [
@@ -66,13 +66,13 @@ export default function CatalogoCuentasPage() {
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Catálogo de Cuentas</h2><p className="text-muted-foreground mt-1 text-sm">Plan de cuentas contables detallado con vista jerárquica.</p></div>
-                <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Nueva Cuenta</Button>
+                <Button className="bg-primary shadow-lg shadow-primary/20"><PlusIcon className="w-4 h-4 mr-2" /> Nueva Cuenta</Button>
             </div>
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">
                     <div className="flex gap-3 mb-4 flex-wrap">
                         <div className="relative flex-1 min-w-[200px]">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input placeholder="Buscar por código o nombre..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" />
                         </div>
                         {!isSearching && (
@@ -99,7 +99,7 @@ export default function CatalogoCuentasPage() {
                                                     <div className="flex items-center gap-1" style={{ paddingLeft }}>
                                                         {c.tipo === 'grupo' && !isSearching ? (
                                                             <button onClick={(e) => { e.stopPropagation(); toggleExpand(c.codigo); }} className="p-0.5 rounded-md hover:bg-muted/60">
-                                                                {isExpanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
+                                                                {isExpanded ? <ChevronDownIcon className="w-3.5 h-3.5" /> : <ChevronRightIcon className="w-3.5 h-3.5" />}
                                                             </button>
                                                         ) : (
                                                             <div className="w-4.5" /> // spacer

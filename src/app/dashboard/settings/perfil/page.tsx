@@ -29,13 +29,13 @@ export default function PerfilPage() {
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardContent className="p-6">
                 <div className="flex items-center gap-6 mb-6">
                     <div className="relative">
-                        <Avatar className="w-20 h-20 border-4 border-purple-200/50"><AvatarFallback className="bg-gradient-to-br from-purple-500/20 to-cyan-500/20 text-purple-700 font-bold text-xl">JP</AvatarFallback></Avatar>
+                        <Avatar className="w-20 h-20 border-4 border-blue-200/50"><AvatarFallback className="bg-gradient-to-br from-blue-500/20 to-sky-500/20 text-blue-700 font-bold text-xl">JP</AvatarFallback></Avatar>
                         <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary rounded-full flex items-center justify-center text-white shadow-lg"><Camera className="w-3.5 h-3.5" /></button>
                     </div>
                     <div>
                         <p className="text-xl font-bold">{name}</p>
                         <p className="text-sm text-muted-foreground">{email}</p>
-                        <div className="flex items-center gap-1 mt-1"><BadgeCheck className="w-3.5 h-3.5 text-purple-500" /><span className="text-xs font-semibold text-purple-600">{role}</span></div>
+                        <div className="flex items-center gap-1 mt-1"><BadgeCheck className="w-3.5 h-3.5 text-blue-500" /><span className="text-xs font-semibold text-blue-600">{role}</span></div>
                     </div>
                 </div>
                 <div className="grid gap-4">
@@ -52,7 +52,7 @@ export default function PerfilPage() {
             </CardContent></Card>
 
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm"><CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><KeyRound className="w-5 h-5 text-purple-500" />Cambiar Contrasena</h3>
+                <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><KeyRound className="w-5 h-5 text-blue-500" />Cambiar Contrasena</h3>
                 <div className="grid gap-4">
                     <div className="space-y-2"><Label>Contrasena actual</Label><Input type="password" value={currentPass} onChange={e => setCurrentPass(e.target.value)} placeholder="********" /></div>
                     <div className="grid grid-cols-2 gap-4">

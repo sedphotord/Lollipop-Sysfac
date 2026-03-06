@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
-import { Download, FileText, Plus, Search } from "lucide-react";
+import { ArrowDownTrayIcon, DocumentTextIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -23,14 +23,15 @@ export default function ProveedoresPage() {
             <div className="flex items-center justify-between">
                 <div><h2 className="text-3xl font-bold tracking-tight">Facturas de Proveedores</h2><p className="text-muted-foreground mt-1 text-sm">Gestión de Cuentas por Pagar y documentos de compra.</p></div>
                 <Link href="/dashboard/gastos/proveedores/new">
-                    <Button className="bg-primary shadow-lg shadow-primary/20"><Plus className="w-4 h-4 mr-2" /> Registrar Factura</Button>
+                    <Button className="bg-primary shadow-lg shadow-primary/20"><PlusIcon className="w-4 h-4 mr-2" /> Registrar Factura</Button>
                 </Link>
             </div>
             <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                 <CardContent className="p-4">
                     <div className="flex gap-3 mb-4 flex-wrap">
-                        <div className="relative flex-1 min-w-[180px]"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder="Buscar proveedor o NCF..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" /></div>
-                        <Button variant="outline"><Download className="w-4 h-4 mr-2" />606 DGII</Button>
+                        <div className="relative flex-1 min-w-[180px]"><MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder="Buscar proveedor o NCF..." value={search} onChange={e => setSearch(e.target.value)} className="pl-9 bg-background" /></div>
+                        <Button variant="outline"><ArrowDownTrayIcon className="w-4 h-4 mr-2" />606 DGII</Button>
+
                     </div>
                     <div className="border rounded-lg overflow-hidden">
                         <Table>

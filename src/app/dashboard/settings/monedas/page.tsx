@@ -48,15 +48,15 @@ export default function MonedasPage() {
             </div>
             <div className="grid gap-3">{list.map(c => (
                 <Card key={c.code} className={cn("bg-card/50 backdrop-blur-xl border-border/60 shadow-sm transition-all", !c.on && "opacity-50")}><CardContent className="p-5"><div className="flex items-center gap-4">
-                    <div className={cn("w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 font-black text-sm", c.def ? "bg-gradient-to-br from-purple-600 to-cyan-500 text-white" : "bg-muted text-foreground")}><span>{c.symbol}</span></div>
-                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold">{c.name}</p>{c.def && <Badge className="text-[10px] bg-gradient-to-r from-purple-600 to-cyan-500 text-white border-0">Principal</Badge>}</div><p className="text-xs text-muted-foreground font-mono mt-0.5">{c.code}</p></div>
+                    <div className={cn("w-14 h-14 rounded-xl flex flex-col items-center justify-center shrink-0 font-black text-sm", c.def ? "bg-gradient-to-br from-blue-600 to-sky-500 text-white" : "bg-muted text-foreground")}><span>{c.symbol}</span></div>
+                    <div className="flex-1"><div className="flex items-center gap-2"><p className="font-bold">{c.name}</p>{c.def && <Badge className="text-[10px] bg-gradient-to-r from-blue-600 to-sky-500 text-white border-0">Principal</Badge>}</div><p className="text-xs text-muted-foreground font-mono mt-0.5">{c.code}</p></div>
                     <div className="text-center hidden sm:block"><p className="text-xs text-muted-foreground">Tasa</p><p className="font-black text-lg tabular-nums">RD$ {c.rate.toFixed(2)}</p>
                         {c.trend !== 0 && <p className={cn("text-xs flex items-center gap-0.5 justify-center", c.trend > 0 ? "text-emerald-600" : "text-red-500")}>{c.trend > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}{Math.abs(c.trend).toFixed(2)}</p>}
                     </div>
                     <Switch checked={c.on} onCheckedChange={() => toggle(c.code)} disabled={c.def} />
                 </div></CardContent></Card>
             ))}</div>
-            <Card className="bg-gradient-to-r from-purple-50 to-cyan-50 dark:from-purple-900/20 dark:to-cyan-900/10 border-purple-200/50 dark:border-purple-800/30"><CardContent className="p-5 flex items-center gap-4"><Globe className="w-8 h-8 text-purple-500 shrink-0" /><div><p className="font-bold text-sm">Tasas automaticas</p><p className="text-xs text-muted-foreground mt-0.5">Actualizacion diaria desde el Banco Central de la RD.</p></div><Button variant="outline" className="shrink-0 ml-auto">Configurar</Button></CardContent></Card>
+            <Card className="bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/10 border-blue-200/50 dark:border-blue-800/30"><CardContent className="p-5 flex items-center gap-4"><Globe className="w-8 h-8 text-blue-500 shrink-0" /><div><p className="font-bold text-sm">Tasas automaticas</p><p className="text-xs text-muted-foreground mt-0.5">Actualizacion diaria desde el Banco Central de la RD.</p></div><Button variant="outline" className="shrink-0 ml-auto">Configurar</Button></CardContent></Card>
         </div>
     );
 }

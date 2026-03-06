@@ -1,193 +1,716 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-    AlertTriangle, ArrowUpRight, DollarSign, Download, Filter,
-    Grid3X3, List, Package, Plus, Search, ShoppingCart, Star, Tag, TrendingDown, TrendingUp, XCircle
+    AlertTriangle, Box, Briefcase, Camera, Clock, DollarSign,
+    Download, Filter, Grid3X3, Image as ImageIcon, List, Package, Plus, Search, Sparkles,
+    XCircle
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
 import {
-    Dialog, DialogContent, DialogDescription, DialogFooter,
-    DialogHeader, DialogTitle,
+    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-const PRODUCTS = [
+// ─── Types ────────────────────────────────────────────────────────────────────
+type ItemType = "producto" | "servicio";
+
+type CatalogItem = {
+    id: string; type: ItemType; code: string; name: string; description: string;
+    category: string; cost: number; price: number; itbis: number;
+    status: "active" | "inactive"; attributes: { key: string; value: string }[];
+    image?: string; // base64 data URL or URL path
+    // Producto-specific
+    brand?: string; supplier?: string; warehouse?: string;
+    unitType?: string; size?: string; stock?: number | null;
+    // Servicio-specific
+    serviceType?: string; billingMode?: string; duration?: string;
+    sla?: string; coverage?: string; deliverable?: string;
+};
+
+// ─── Initial data ─────────────────────────────────────────────────────────────
+const INITIAL_ITEMS: CatalogItem[] = [
     {
-        id: "1", code: "SRV-001", name: "Consultoría IT", description: "Asesoría técnica especializada",
-        category: "Servicio", cost: 2500, price: 5000, itbis: 18,
-        unit: "Unidad", unitType: "Unidad", brand: "Lollipop", supplier: "Interno",
-        stock: null, status: "active", size: "N/A", warehouse: "Almacén Central"
+        id: "1", type: "servicio", code: "SRV-001", name: "Consultoría IT",
+        description: "Asesoría técnica especializada en infraestructura y Cloud.",
+        category: "Consultoría", cost: 2500, price: 5000, itbis: 18,
+        status: "active", attributes: [],
+        serviceType: "Técnico", billingMode: "Por hora", duration: "40 horas",
+        sla: "24 horas", coverage: "L-V 8am-6pm", deliverable: "Informe ejecutivo"
     },
     {
-        id: "2", code: "PRD-002", name: "Laptop Dell XPS 15", description: "Laptop profesional de alto rendimiento",
+        id: "2", type: "producto", code: "PRD-002", name: "Laptop Dell XPS 15",
+        description: "Laptop profesional de alto rendimiento con pantalla OLED.",
         category: "Hardware", cost: 65000, price: 85000, itbis: 18,
-        unit: "Unidad", unitType: "Unidad", brand: "Dell", supplier: "Dell Latin America",
-        stock: 8, status: "active", size: "15.6\"", warehouse: "Tienda Principal"
+        status: "active", attributes: [{ key: "RAM", value: "32GB" }, { key: "Almacenamiento", value: "1TB SSD" }],
+        brand: "Dell", supplier: "Dell Latin America", warehouse: "Tienda Principal",
+        unitType: "Unidad", size: "15.6\"", stock: 8
     },
     {
-        id: "3", code: "PRD-003", name: "Libro de Contabilidad", description: "Manual práctico de contabilidad básica",
+        id: "3", type: "producto", code: "PRD-003", name: "Libro de Contabilidad",
+        description: "Manual práctico de contabilidad básica para PYMES.",
         category: "Papelería", cost: 900, price: 1500, itbis: 0,
-        unit: "Unidad", unitType: "Unidad", brand: "Editora Nacional", supplier: "Papelería Herrera",
-        stock: 24, status: "active", size: "A4", warehouse: "Depósito 1"
+        status: "active", attributes: [],
+        brand: "Editora Nacional", supplier: "Papelería Herrera", warehouse: "Depósito 1",
+        unitType: "Unidad", size: "A4", stock: 24
     },
     {
-        id: "4", code: "SRV-004", name: "Soporte Técnico Mensual", description: "Mantenimiento preventivo mensual",
-        category: "Servicio", cost: 6000, price: 12000, itbis: 18,
-        unit: "Mes", unitType: "Unidad", brand: "Lollipop", supplier: "Interno",
-        stock: null, status: "active", size: "N/A", warehouse: "Almacén Central"
+        id: "4", type: "servicio", code: "SRV-004", name: "Soporte Técnico Mensual",
+        description: "Plan de mantenimiento preventivo y correctivo mensual.",
+        category: "Soporte", cost: 6000, price: 12000, itbis: 18,
+        status: "active", attributes: [],
+        serviceType: "Soporte", billingMode: "Mensual", duration: "1 mes",
+        sla: "4 horas", coverage: "7/24", deliverable: "Ticket de cierre"
     },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
     "Servicio": "bg-violet-500/10 text-violet-600 border-violet-500/20",
+    "Consultoría": "bg-violet-500/10 text-violet-600 border-violet-500/20",
+    "Soporte": "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
+    "Diseño": "bg-pink-500/10 text-pink-600 border-pink-500/20",
     "Hardware": "bg-blue-500/10 text-blue-600 border-blue-500/20",
-    "Software": "bg-cyan-500/10 text-cyan-600 border-cyan-500/20",
+    "Software": "bg-sky-500/10 text-sky-600 border-sky-500/20",
     "Papelería": "bg-amber-500/10 text-amber-600 border-amber-500/20",
-};
-
-const ITBIS_COLORS: Record<number, string> = {
-    18: "bg-red-500/10 text-red-600 border-red-500/20",
-    16: "bg-orange-500/10 text-orange-600 border-orange-500/20",
-    0: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    "Electrónica": "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
 };
 
 type ViewMode = "grid" | "list";
 
+// ─── Empty forms ──────────────────────────────────────────────────────────────
+const emptyProduct = (): CatalogItem => ({
+    id: "", type: "producto", code: "", name: "", description: "",
+    category: "Hardware", cost: 0, price: 0, itbis: 18,
+    status: "active", attributes: [],
+    brand: "", supplier: "", warehouse: "Almacén Central",
+    unitType: "Unidad", size: "", stock: 0
+});
+
+const emptyService = (): CatalogItem => ({
+    id: "", type: "servicio", code: "", name: "", description: "",
+    category: "Consultoría", cost: 0, price: 0, itbis: 18,
+    status: "active", attributes: [],
+    serviceType: "Técnico", billingMode: "Por hora", duration: "",
+    sla: "", coverage: "L-V 8am-6pm", deliverable: ""
+});
+
+const CATALOG_KEY = "sysfac_catalog";
+
+// ─── Image Upload ─────────────────────────────────────────────────────────────
+function ImageUpload({ value, onChange }: { value?: string; onChange: (b64: string) => void }) {
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => { if (ev.target?.result) onChange(ev.target.result as string); };
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="relative group cursor-pointer" onClick={() => inputRef.current?.click()}>
+            <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+            <div className={cn(
+                "aspect-square rounded-2xl border-2 border-dashed transition-all overflow-hidden flex items-center justify-center",
+                value ? "border-primary/30" : "border-border/40 bg-muted/20 hover:border-primary/50 hover:bg-muted/40"
+            )}>
+                {value ? (
+                    <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={value} alt="preview" className="w-full h-full object-cover group-hover:opacity-60 transition-opacity" />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 rounded-2xl">
+                            <div className="text-white text-center">
+                                <Camera className="w-6 h-6 mx-auto mb-1" />
+                                <p className="text-xs font-bold">Cambiar foto</p>
+                            </div>
+                        </div>
+                    </>
+                ) : (
+                    <div className="text-center text-muted-foreground p-4">
+                        <ImageIcon className="w-9 h-9 mx-auto mb-2 opacity-25" />
+                        <p className="text-xs font-bold">Subir imagen</p>
+                        <p className="text-[10px] opacity-60 mt-0.5">JPG, PNG, WEBP</p>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// ─── Field helpers ────────────────────────────────────────────────────────────
+function FieldLabel({ children }: { children: React.ReactNode }) {
+    return <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">{children}</Label>;
+}
+
+function FieldInput({ value, onChange, placeholder, type = "text", className = "" }: {
+    value: string | number; onChange: (v: string) => void;
+    placeholder?: string; type?: string; className?: string;
+}) {
+    return (
+        <Input
+            type={type}
+            className={cn("h-10 bg-background border-border/60 rounded-lg font-medium", className)}
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            placeholder={placeholder}
+        />
+    );
+}
+
+function FieldSelect({ value, onChange, options, className = "" }: {
+    value: string; onChange: (v: string) => void;
+    options: { value: string; label: string }[]; className?: string;
+}) {
+    return (
+        <Select value={value} onValueChange={onChange}>
+            <SelectTrigger className={cn("h-10 bg-background border-border/60 rounded-lg font-medium", className)}>
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+                {options.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}
+            </SelectContent>
+        </Select>
+    );
+}
+
+// ─── Product Form ─────────────────────────────────────────────────────────────
+function ProductForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
+    const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
+    return (
+        <div className="space-y-5">
+            {/* Image + Identification */}
+            <div className="grid grid-cols-[120px_1fr] gap-4">
+                <div className="space-y-1.5">
+                    <FieldLabel>Foto</FieldLabel>
+                    <ImageUpload value={form.image} onChange={img => setForm({ ...form, image: img })} />
+                </div>
+                <div>
+                    <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
+                        <Box className="w-3.5 h-3.5" /> Identificación
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5 col-span-2">
+                            <FieldLabel>Nombre del Producto *</FieldLabel>
+                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Laptop Dell XPS 15" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <FieldLabel>Código / SKU</FieldLabel>
+                            <FieldInput value={form.code} onChange={F("code")} placeholder="PRD-001" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <FieldLabel>Categoría</FieldLabel>
+                            <FieldSelect value={form.category} onChange={F("category")} options={[
+                                { value: "Hardware", label: "Hardware" },
+                                { value: "Software", label: "Software" },
+                                { value: "Papelería", label: "Papelería" },
+                                { value: "Electrónica", label: "Electrónica" },
+                                { value: "Otro", label: "Otro" },
+                            ]} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Stock & Logistics */}
+            <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-blue-600 mb-3 flex items-center gap-1.5">
+                    <Package className="w-3.5 h-3.5" /> Logística e Inventario
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                        <FieldLabel>Almacén</FieldLabel>
+                        <FieldSelect value={form.warehouse || "Almacén Central"} onChange={F("warehouse")} options={[
+                            { value: "Almacén Central", label: "Almacén Central" },
+                            { value: "Tienda Principal", label: "Tienda Principal" },
+                            { value: "Depósito 1", label: "Depósito 1" },
+                        ]} />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Unidad</FieldLabel>
+                        <FieldSelect value={form.unitType || "Unidad"} onChange={F("unitType")} options={[
+                            { value: "Unidad", label: "Unidad" },
+                            { value: "Caja", label: "Caja" },
+                            { value: "Kg", label: "Kilogramo" },
+                            { value: "Litro", label: "Litro" },
+                            { value: "Metro", label: "Metro" },
+                        ]} />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Stock Inicial</FieldLabel>
+                        <FieldInput type="number" value={form.stock ?? 0} onChange={v => setForm({ ...form, stock: parseInt(v) || 0 })} placeholder="0" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Marca</FieldLabel>
+                        <FieldInput value={form.brand || ""} onChange={F("brand")} placeholder="Dell, HP, Apple..." />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Proveedor</FieldLabel>
+                        <FieldInput value={form.supplier || ""} onChange={F("supplier")} placeholder="Nombre del suplidor" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Talla / Tamaño</FieldLabel>
+                        <FieldInput value={form.size || ""} onChange={F("size")} placeholder={'15.6", A4, XL...'} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Pricing */}
+            <div className="bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-emerald-600 mb-3 flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5" /> Precios y Fiscalidad
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                        <FieldLabel>Costo (RD$)</FieldLabel>
+                        <FieldInput type="number" value={form.cost} onChange={v => setForm({ ...form, cost: parseFloat(v) || 0 })} placeholder="0.00" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                            <FieldLabel>Precio Venta (RD$)</FieldLabel>
+                            {form.price > 0 && form.cost > 0 && (
+                                <span className={cn("text-[9px] font-black px-1.5 py-0.5 rounded-md", (((form.price - form.cost) / form.price) * 100) > 20 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")}>
+                                    {(((form.price - form.cost) / form.price) * 100).toFixed(0)}% margen
+                                </span>
+                            )}
+                        </div>
+                        <FieldInput type="number" value={form.price} onChange={v => setForm({ ...form, price: parseFloat(v) || 0 })} placeholder="0.00" className="border-primary/30 bg-primary/5" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>ITBIS (%)</FieldLabel>
+                        <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
+                            { value: "18", label: "18% — ITBIS Estándar" },
+                            { value: "16", label: "16% — ITBIS Reducido" },
+                            { value: "0", label: "0% — Exento" },
+                        ]} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Attributes */}
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <FieldLabel>Atributos personalizados</FieldLabel>
+                    <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
+                        onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
+                        <Plus className="w-3 h-3 mr-1" /> Añadir
+                    </Button>
+                </div>
+                {form.attributes.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">No hay atributos — Ej. Color, Material, Garantía</p>
+                ) : (
+                    <div className="space-y-2">
+                        {form.attributes.map((attr, idx) => (
+                            <div key={idx} className="flex gap-2 items-center">
+                                <Input className="h-8 text-xs" placeholder="Atributo" value={attr.key} onChange={e => {
+                                    const a = [...form.attributes]; a[idx].key = e.target.value; setForm({ ...form, attributes: a });
+                                }} />
+                                <Input className="h-8 text-xs" placeholder="Valor" value={attr.value} onChange={e => {
+                                    const a = [...form.attributes]; a[idx].value = e.target.value; setForm({ ...form, attributes: a });
+                                }} />
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:bg-red-50 shrink-0" onClick={() => {
+                                    setForm({ ...form, attributes: form.attributes.filter((_, i) => i !== idx) });
+                                }}><XCircle className="w-3.5 h-3.5" /></Button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1.5">
+                <FieldLabel>Descripción</FieldLabel>
+                <textarea
+                    className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
+                    value={form.description}
+                    onChange={e => setForm({ ...form, description: e.target.value })}
+                    placeholder="Descripción detallada del producto..."
+                />
+            </div>
+        </div>
+    );
+}
+
+// ─── Service Form ─────────────────────────────────────────────────────────────
+function ServiceForm({ form, setForm }: { form: CatalogItem; setForm: (f: CatalogItem) => void }) {
+    const F = (key: keyof CatalogItem) => (v: string) => setForm({ ...form, [key]: v });
+    return (
+        <div className="space-y-5">
+            {/* Image + Identity */}
+            <div className="grid grid-cols-[120px_1fr] gap-4">
+                <div className="space-y-1.5">
+                    <FieldLabel>Imagen</FieldLabel>
+                    <ImageUpload value={form.image} onChange={img => setForm({ ...form, image: img })} />
+                </div>
+                <div>
+                    <p className="text-xs font-bold text-primary mb-3 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5" /> Identificación del Servicio
+                    </p>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1.5 col-span-2">
+                            <FieldLabel>Nombre del Servicio *</FieldLabel>
+                            <FieldInput value={form.name} onChange={F("name")} placeholder="Ej. Soporte Técnico Mensual" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <FieldLabel>Código</FieldLabel>
+                            <FieldInput value={form.code} onChange={F("code")} placeholder="SRV-001" />
+                        </div>
+                        <div className="space-y-1.5">
+                            <FieldLabel>Categoría de Servicio</FieldLabel>
+                            <FieldSelect value={form.category} onChange={F("category")} options={[
+                                { value: "Consultoría", label: "Consultoría" },
+                                { value: "Soporte", label: "Soporte Técnico" },
+                                { value: "Diseño", label: "Diseño y Creatividad" },
+                                { value: "Desarrollo", label: "Desarrollo de Software" },
+                                { value: "Capacitación", label: "Capacitación y Training" },
+                                { value: "Legal", label: "Legal y Compliance" },
+                                { value: "Contabilidad", label: "Contabilidad" },
+                                { value: "Marketing", label: "Marketing" },
+                            ]} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tipo Servicio + Modalidad */}
+            <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                    <FieldLabel>Tipo de Servicio</FieldLabel>
+                    <FieldSelect value={form.serviceType || "Técnico"} onChange={F("serviceType")} options={[
+                        { value: "Técnico", label: "🔧 Técnico" },
+                        { value: "Profesional", label: "💼 Profesional" },
+                        { value: "Creativo", label: "🎨 Creativo" },
+                        { value: "Administrativo", label: "📋 Administrativo" },
+                        { value: "Formativo", label: "📚 Formativo" },
+                    ]} />
+                </div>
+                <div className="space-y-1.5">
+                    <FieldLabel>Modalidad de Cobro</FieldLabel>
+                    <FieldSelect value={form.billingMode || "Por hora"} onChange={F("billingMode")} options={[
+                        { value: "Por hora", label: "⏱ Por hora" },
+                        { value: "Por proyecto", label: "📁 Por proyecto (fijo)" },
+                        { value: "Mensual", label: "📆 Mensual (recurrente)" },
+                        { value: "Anual", label: "📅 Anual (recurrente)" },
+                        { value: "Por sesión", label: "🎯 Por sesión" },
+                        { value: "Por entregable", label: "📦 Por entregable" },
+                    ]} />
+                </div>
+            </div>
+
+            {/* SLA & Coverage */}
+            <div className="bg-violet-50/50 dark:bg-violet-900/10 border border-violet-100 dark:border-violet-800/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-violet-600 mb-3 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" /> Cobertura y Entregables
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
+                        <FieldLabel>Duración Estimada</FieldLabel>
+                        <FieldInput value={form.duration || ""} onChange={F("duration")} placeholder="Ej. 40 horas, 1 mes..." />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>SLA / Tiempo de Respuesta</FieldLabel>
+                        <FieldSelect value={form.sla || ""} onChange={F("sla")} options={[
+                            { value: "1 hora", label: "1 hora" },
+                            { value: "4 horas", label: "4 horas" },
+                            { value: "8 horas", label: "8 horas" },
+                            { value: "24 horas", label: "24 horas" },
+                            { value: "48 horas", label: "48 horas" },
+                            { value: "N/A", label: "No aplica" },
+                        ]} />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Horario de Cobertura</FieldLabel>
+                        <FieldSelect value={form.coverage || "L-V 8am-6pm"} onChange={F("coverage")} options={[
+                            { value: "L-V 8am-5pm", label: "L-V 8am–5pm" },
+                            { value: "L-V 8am-6pm", label: "L-V 8am–6pm" },
+                            { value: "L-S 8am-6pm", label: "L-S 8am–6pm" },
+                            { value: "7/24", label: "7/24 — Todo el tiempo" },
+                            { value: "A convenir", label: "A convenir" },
+                        ]} />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>Entregable Principal</FieldLabel>
+                        <FieldInput value={form.deliverable || ""} onChange={F("deliverable")} placeholder="Informe, código, diseño..." />
+                    </div>
+                </div>
+            </div>
+
+            {/* Pricing */}
+            <div className="bg-emerald-50/50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/30 rounded-xl p-4">
+                <p className="text-xs font-bold text-emerald-600 mb-3 flex items-center gap-1.5">
+                    <DollarSign className="w-3.5 h-3.5" /> Precios y Fiscalidad
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                        <FieldLabel>Costo Interno (RD$)</FieldLabel>
+                        <FieldInput type="number" value={form.cost} onChange={v => setForm({ ...form, cost: parseFloat(v) || 0 })} placeholder="0.00" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                            <FieldLabel>Precio de Venta (RD$)</FieldLabel>
+                            {form.price > 0 && form.cost > 0 && (
+                                <span className={cn("text-[9px] font-black px-1.5 py-0.5 rounded-md", (((form.price - form.cost) / form.price) * 100) > 30 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")}>
+                                    {(((form.price - form.cost) / form.price) * 100).toFixed(0)}% margen
+                                </span>
+                            )}
+                        </div>
+                        <FieldInput type="number" value={form.price} onChange={v => setForm({ ...form, price: parseFloat(v) || 0 })} placeholder="0.00" className="border-primary/30 bg-primary/5" />
+                    </div>
+                    <div className="space-y-1.5">
+                        <FieldLabel>ITBIS (%)</FieldLabel>
+                        <FieldSelect value={String(form.itbis)} onChange={v => setForm({ ...form, itbis: parseInt(v) })} options={[
+                            { value: "18", label: "18% — ITBIS Estándar" },
+                            { value: "16", label: "16% — ITBIS Reducido" },
+                            { value: "0", label: "0% — Exento" },
+                        ]} />
+                    </div>
+                </div>
+            </div>
+
+            {/* Attributes */}
+            <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                    <FieldLabel>Características adicionales</FieldLabel>
+                    <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold"
+                        onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
+                        <Plus className="w-3 h-3 mr-1" /> Añadir
+                    </Button>
+                </div>
+                {form.attributes.length === 0 ? (
+                    <p className="text-xs text-muted-foreground italic text-center py-3 bg-muted/30 rounded-lg">Sin características — Ej. Número de usuarios, Idioma, Plataforma</p>
+                ) : (
+                    <div className="space-y-2">
+                        {form.attributes.map((attr, idx) => (
+                            <div key={idx} className="flex gap-2 items-center">
+                                <Input className="h-8 text-xs" placeholder="Característica" value={attr.key} onChange={e => {
+                                    const a = [...form.attributes]; a[idx].key = e.target.value; setForm({ ...form, attributes: a });
+                                }} />
+                                <Input className="h-8 text-xs" placeholder="Valor" value={attr.value} onChange={e => {
+                                    const a = [...form.attributes]; a[idx].value = e.target.value; setForm({ ...form, attributes: a });
+                                }} />
+                                <Button variant="ghost" size="icon" className="h-8 w-8 text-red-400 hover:bg-red-50 shrink-0" onClick={() => {
+                                    setForm({ ...form, attributes: form.attributes.filter((_, i) => i !== idx) });
+                                }}><XCircle className="w-3.5 h-3.5" /></Button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            {/* Description */}
+            <div className="space-y-1.5">
+                <FieldLabel>Descripción del Servicio</FieldLabel>
+                <textarea
+                    className="w-full h-20 bg-background border border-border/60 rounded-lg p-3 text-sm font-medium focus:ring-primary focus:outline-none resize-none"
+                    value={form.description}
+                    onChange={e => setForm({ ...form, description: e.target.value })}
+                    placeholder="Descripción detallada: alcance, limitaciones, condiciones..."
+                />
+            </div>
+        </div>
+    );
+}
+
+// ─── Catalog Modal ─────────────────────────────────────────────────────────────
+function CatalogModal({
+    open, onOpenChange, itemType, isEditing, form, setForm, onSave, onDelete, onToggleStatus
+}: {
+    open: boolean; onOpenChange: (v: boolean) => void;
+    itemType: ItemType; isEditing: boolean;
+    form: CatalogItem; setForm: (f: CatalogItem) => void;
+    onSave: () => void; onDelete: () => void; onToggleStatus: () => void;
+}) {
+    const isProduct = itemType === "producto";
+    const accentColor = isProduct ? "text-blue-600" : "text-violet-600";
+    const accentBg = isProduct ? "from-blue-500/20 to-blue-500/5 border-blue-500/20" : "from-violet-500/20 to-violet-500/5 border-violet-500/20";
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-2xl p-0 overflow-hidden rounded-2xl shadow-2xl border-0">
+                {/* Header */}
+                <div className={cn("relative overflow-hidden px-6 pt-6 pb-5", isProduct ? "bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-blue-950/30 dark:to-indigo-950/20" : "bg-gradient-to-br from-violet-50 to-purple-50/50 dark:from-violet-950/30 dark:to-purple-950/20")}>
+                    <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full opacity-10" style={{ background: isProduct ? '#3b82f6' : '#8b5cf6' }} />
+                    <DialogHeader>
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className={cn("w-12 h-12 rounded-2xl bg-gradient-to-tr border flex items-center justify-center shrink-0", accentBg)}>
+                                    {isProduct
+                                        ? <Package className="w-6 h-6 text-blue-600" />
+                                        : <Briefcase className="w-6 h-6 text-violet-600" />
+                                    }
+                                </div>
+                                <div>
+                                    <DialogTitle className={cn("text-xl font-black tracking-tight", accentColor)}>
+                                        {isEditing
+                                            ? `Editar ${isProduct ? 'Producto' : 'Servicio'}`
+                                            : `Nuevo ${isProduct ? 'Producto' : 'Servicio'}`
+                                        }
+                                    </DialogTitle>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {isEditing ? form.name : (isProduct ? 'Completa los datos del producto físico' : 'Define las características del servicio')}
+                                    </p>
+                                    <DialogDescription className="sr-only">Modal de creación/edición</DialogDescription>
+                                </div>
+                            </div>
+                            {isEditing && (
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <Button onClick={onToggleStatus} variant="outline" size="sm" className="h-8 text-xs">
+                                        {form.status === 'active' ? '⏸ Desactivar' : '▶ Activar'}
+                                    </Button>
+                                    <Button onClick={onDelete} variant="ghost" size="sm" className="h-8 text-xs text-red-500 hover:bg-red-50">
+                                        Eliminar
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    </DialogHeader>
+                </div>
+
+                {/* Scrollable form */}
+                <div className="overflow-y-auto max-h-[60vh] px-6 py-5">
+                    {isProduct
+                        ? <ProductForm form={form} setForm={setForm} />
+                        : <ServiceForm form={form} setForm={setForm} />
+                    }
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 bg-muted/30 border-t border-border/60 flex gap-3">
+                    <Button variant="ghost" className="flex-1 h-11" onClick={() => onOpenChange(false)}>Cancelar</Button>
+                    <Button
+                        className={cn("flex-1 h-11 font-bold text-white", isProduct ? "bg-blue-600 hover:bg-blue-700" : "bg-violet-600 hover:bg-violet-700")}
+                        onClick={onSave}
+                        disabled={!form.name}
+                    >
+                        {isEditing
+                            ? `Guardar ${isProduct ? 'Producto' : 'Servicio'}`
+                            : `Crear ${isProduct ? 'Producto' : 'Servicio'}`
+                        }
+                    </Button>
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ProductsPage() {
     const [view, setView] = useState<ViewMode>("grid");
     const [search, setSearch] = useState("");
+    const [typeFilter, setTypeFilter] = useState<"all" | "producto" | "servicio">("all");
     const [categoryFilter, setCategoryFilter] = useState("all");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [currentType, setCurrentType] = useState<ItemType>("producto");
+    const [form, setForm] = useState<CatalogItem>(emptyProduct());
+    const [items, setItems] = useState<CatalogItem[]>(INITIAL_ITEMS);
 
-    const initialForm = {
-        id: "",
-        name: "",
-        code: "",
-        category: "Hardware",
-        brand: "",
-        supplier: "",
-        warehouse: "Almacén Central",
-        cost: "",
-        price: "",
-        itbis: "18",
-        unitType: "Unidad",
-        size: "",
-        description: "",
-        stock: "",
-        attributes: [] as { key: string, value: string }[],
-        status: "active" as "active" | "inactive"
+    // Load from / save to localStorage
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(CATALOG_KEY);
+            if (raw) setItems(JSON.parse(raw));
+        } catch { }
+    }, []);
+
+    const persistItems = (next: CatalogItem[]) => {
+        setItems(next);
+        try { localStorage.setItem(CATALOG_KEY, JSON.stringify(next)); } catch { }
     };
 
-    const [form, setForm] = useState(initialForm);
+    const categories = Array.from(new Set(items.map(p => p.category)));
 
-    const [products, setProducts] = useState(PRODUCTS.map(p => ({ ...p, warehouse: "Almacén Central" })));
-
-    const categories = Array.from(new Set(products.map(p => p.category)));
-
-    const filtered = products.filter(p => {
-        const matchSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.code.toLowerCase().includes(search.toLowerCase());
+    const filtered = items.filter(p => {
+        const matchSearch = !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.code.toLowerCase().includes(search.toLowerCase());
+        const matchType = typeFilter === "all" || p.type === typeFilter;
         const matchCat = categoryFilter === "all" || p.category === categoryFilter;
-        return matchSearch && matchCat;
+        return matchSearch && matchType && matchCat;
     });
 
-    const openCreate = () => {
-        setForm(initialForm);
+    const openCreate = (type: ItemType) => {
+        setCurrentType(type);
+        setForm(type === "producto" ? emptyProduct() : emptyService());
         setIsEditing(false);
         setIsModalOpen(true);
     };
 
-    const openEdit = (p: any) => {
-        setForm({
-            ...p,
-            cost: p.cost.toString(),
-            price: p.price.toString(),
-            stock: (p.stock ?? "").toString(),
-            itbis: p.itbis.toString(),
-            attributes: p.attributes || [],
-        });
+    const openEdit = (item: CatalogItem) => {
+        setCurrentType(item.type);
+        setForm({ ...item });
         setIsEditing(true);
         setIsModalOpen(true);
     };
 
     const handleSave = () => {
-        const p = {
+        const prefix = currentType === "producto" ? "PRD" : "SRV";
+        const saved = {
             ...form,
             id: isEditing ? form.id : Math.random().toString(),
-            code: form.code || `PRD-${Math.floor(Math.random() * 1000)}`,
-            cost: parseFloat(form.cost) || 0,
-            price: parseFloat(form.price) || 0,
-            itbis: parseInt(form.itbis),
-            stock: form.category === 'Servicio' ? null : (parseInt(form.stock) || 0),
+            code: form.code || `${prefix}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
         };
-
-        if (isEditing) {
-            // @ts-ignore
-            setProducts(products.map(item => item.id === p.id ? p : item));
-        } else {
-            // @ts-ignore
-            setProducts([p, ...products]);
-        }
+        const next = isEditing ? items.map(i => i.id === saved.id ? saved : i) : [saved, ...items];
+        persistItems(next);
         setIsModalOpen(false);
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
-            setProducts(products.filter(p => p.id !== id));
+    const handleDelete = () => {
+        if (confirm("¿Eliminar este elemento del catálogo?")) {
+            persistItems(items.filter(i => i.id !== form.id));
             setIsModalOpen(false);
         }
     };
 
-    const toggleStatus = () => {
-        setForm(prev => ({
-            ...prev,
-            status: prev.status === 'active' ? 'inactive' : 'active'
-        }));
+    const handleToggleStatus = () => {
+        setForm(prev => ({ ...prev, status: prev.status === 'active' ? 'inactive' : 'active' }));
     };
 
-    const totalProducts = products.length;
-    const activeProducts = products.filter(p => p.status === 'active').length;
-    const lowStock = products.filter(p => p.stock !== null && p.stock <= 3).length;
-
     const getMarginColor = (cost: number, price: number) => {
-        const margin = price > 0 ? ((price - cost) / price) * 100 : 0;
-        if (margin >= 30) return "text-emerald-600 bg-emerald-500/10 border-emerald-500/20";
-        if (margin >= 15) return "text-amber-600 bg-amber-500/10 border-amber-500/20";
+        const m = price > 0 ? ((price - cost) / price) * 100 : 0;
+        if (m >= 30) return "text-emerald-600 bg-emerald-500/10 border-emerald-500/20";
+        if (m >= 15) return "text-amber-600 bg-amber-500/10 border-amber-500/20";
         return "text-red-600 bg-red-500/10 border-red-500/20";
     };
 
-    const getMarginValue = (cost: number, price: number) => {
-        return price > 0 ? (((price - cost) / price) * 100).toFixed(1) : "0.0";
-    };
+    const getMarginValue = (cost: number, price: number) =>
+        price > 0 ? (((price - cost) / price) * 100).toFixed(1) : "0.0";
+
+    const totalItems = items.length;
+    const activeItems = items.filter(p => p.status === 'active').length;
+    const products = items.filter(p => p.type === 'producto');
+    const services = items.filter(p => p.type === 'servicio');
+    const lowStock = products.filter(p => (p.stock ?? 99) <= 3).length;
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Catálogo de Productos</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Productos y servicios con tasas ITBIS configuradas.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Catálogo</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">Productos físicos y servicios con ITBIS configurado.</p>
                 </div>
-                <Button onClick={openCreate} className="bg-primary shadow-lg shadow-primary/20 hover:bg-primary/90">
-                    <Plus className="w-4 h-4 mr-2" /> Nuevo Producto
-                </Button>
+                <div className="flex gap-2">
+                    <Button onClick={() => openCreate("producto")} className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20">
+                        <Package className="w-4 h-4 mr-2" /> Nuevo Producto
+                    </Button>
+                    <Button onClick={() => openCreate("servicio")} className="bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-500/20">
+                        <Briefcase className="w-4 h-4 mr-2" /> Nuevo Servicio
+                    </Button>
+                </div>
             </div>
 
             {/* KPI Strip */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                    { label: "Total Catálogo", value: totalProducts.toString(), icon: Package, color: "text-blue-600 bg-blue-500/10" },
-                    { label: "Activos", value: activeProducts.toString(), icon: Star, color: "text-emerald-600 bg-emerald-500/10" },
-                    { label: "Stock Bajo", value: lowStock.toString(), icon: AlertTriangle, color: lowStock > 0 ? "text-amber-600 bg-amber-500/10" : "text-muted-foreground bg-muted" },
-                    { label: "Sin Stock", value: products.filter(p => p.stock === 0).length.toString(), icon: TrendingDown, color: "text-red-500 bg-red-500/10" },
+                    { label: "Total Catálogo", value: totalItems, icon: Package, color: "text-blue-600 bg-blue-500/10" },
+                    { label: "Productos", value: products.length, icon: Box, color: "text-blue-600 bg-blue-500/10" },
+                    { label: "Servicios", value: services.length, icon: Briefcase, color: "text-violet-600 bg-violet-500/10" },
+                    { label: "Stock Bajo", value: lowStock, icon: AlertTriangle, color: lowStock > 0 ? "text-amber-600 bg-amber-500/10" : "text-muted-foreground bg-muted" },
                 ].map((kpi, i) => (
                     <Card key={i} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm">
                         <CardContent className="p-4 flex items-center gap-3">
@@ -211,13 +734,24 @@ export default function ProductsPage() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input placeholder="Buscar por nombre o código..." value={search} onChange={e => setSearch(e.target.value)} className="pl-10 bg-background" />
                         </div>
+                        {/* Type filter tabs */}
+                        <div className="flex gap-1 border rounded-lg p-1 bg-background h-10 shrink-0">
+                            {(["all", "producto", "servicio"] as const).map(t => (
+                                <button key={t}
+                                    onClick={() => setTypeFilter(t)}
+                                    className={cn("px-3 h-8 rounded-md text-xs font-bold transition-colors", typeFilter === t ? "bg-secondary text-secondary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground")}
+                                >
+                                    {t === "all" ? "Todos" : t === "producto" ? "Productos" : "Servicios"}
+                                </button>
+                            ))}
+                        </div>
                         <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                            <SelectTrigger className="w-full sm:w-[180px] bg-background">
+                            <SelectTrigger className="w-full sm:w-[160px] bg-background">
                                 <Filter className="w-4 h-4 mr-2 text-muted-foreground" />
                                 <SelectValue placeholder="Categoría" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">Todas las categorías</SelectItem>
+                                <SelectItem value="all">Todas</SelectItem>
                                 {categories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
                             </SelectContent>
                         </Select>
@@ -233,62 +767,72 @@ export default function ProductsPage() {
             {/* Grid View */}
             {view === 'grid' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {filtered.map(product => (
-                        <Card key={product.id}
-                            onClick={() => openEdit(product)}
+                    {filtered.map(item => (
+                        <Card key={item.id}
+                            onClick={() => openEdit(item)}
                             className={cn(
                                 "bg-card/50 backdrop-blur-xl border-border/60 shadow-sm hover:shadow-md hover:border-primary/30 transition-all duration-200 group cursor-pointer",
-                                product.status === 'inactive' && "opacity-60 grayscale-[0.5]"
+                                item.status === 'inactive' && "opacity-60 grayscale-[0.5]"
                             )}>
                             <CardContent className="p-5">
                                 <div className="flex justify-between items-start mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-primary/20 to-primary/5 border border-primary/15 flex items-center justify-center text-primary">
-                                        {product.category === 'Servicio' ? <Star className="w-6 h-6" /> :
-                                            product.category === 'Software' ? <Tag className="w-6 h-6" /> :
-                                                <Package className="w-6 h-6" />}
-                                    </div>
+                                    {item.image ? (
+                                        <div className="w-14 h-14 rounded-xl overflow-hidden border border-border/20 shrink-0">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className={cn("w-12 h-12 rounded-xl flex items-center justify-center", item.type === 'producto' ? "bg-blue-500/10 text-blue-600" : "bg-violet-500/10 text-violet-600")}>
+                                            {item.type === 'producto' ? <Package className="w-6 h-6" /> : <Briefcase className="w-6 h-6" />}
+                                        </div>
+                                    )}
                                     <div className="flex flex-col items-end gap-1">
-                                        <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 h-5", CATEGORY_COLORS[product.category] || "bg-muted")}>
-                                            {product.category}
+                                        <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 h-5", CATEGORY_COLORS[item.category] || "bg-muted")}>
+                                            {item.category}
                                         </Badge>
-                                        {product.status === 'inactive' && <Badge variant="destructive" className="text-[8px] h-4 uppercase font-black">Agotado</Badge>}
+                                        <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 h-4 font-bold uppercase", item.type === 'producto' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-violet-50 text-violet-600 border-violet-200")}>
+                                            {item.type === 'producto' ? '📦 Producto' : '⚡ Servicio'}
+                                        </Badge>
                                     </div>
                                 </div>
 
-                                <p className="font-mono text-[10px] text-muted-foreground mb-1">{product.code} • {product.brand}</p>
-                                <h3 className="font-bold text-sm leading-snug mb-0.5 group-hover:text-primary transition-colors">{product.name}</h3>
-                                <p className="text-[10px] text-muted-foreground line-clamp-2 h-7 mb-2">{product.description}</p>
+                                <p className="font-mono text-[10px] text-muted-foreground mb-1">{item.code}{item.brand ? ` • ${item.brand}` : ''}</p>
+                                <h3 className="font-bold text-sm leading-snug mb-0.5 group-hover:text-primary transition-colors">{item.name}</h3>
+                                <p className="text-[10px] text-muted-foreground line-clamp-2 h-7 mb-3">{item.description}</p>
 
-                                <div className="flex items-center gap-2 mb-3">
-                                    <Badge variant="outline" className={cn("text-[9px] px-1.5 py-0 h-4 uppercase font-black", product.unitType === 'Peso' ? 'bg-orange-500/10 text-orange-600' : 'bg-blue-500/10 text-blue-600')}>
-                                        {product.unitType}
-                                    </Badge>
-                                    <span className="text-[10px] text-muted-foreground font-medium">{product.size}</span>
-                                </div>
-
-                                <div className="space-y-2 mb-4">
-                                    <div className="flex justify-between items-center bg-muted/30 p-2 rounded-lg border border-border/40">
-                                        <p className="text-[10px] font-bold text-muted-foreground uppercase">Costo</p>
-                                        <p className="text-xs font-black text-foreground">RD$ {product.cost.toLocaleString()}</p>
+                                {item.type === 'servicio' && item.billingMode && (
+                                    <div className="flex items-center gap-1 mb-3">
+                                        <Clock className="w-3 h-3 text-muted-foreground" />
+                                        <span className="text-[10px] text-muted-foreground">{item.billingMode}</span>
+                                        {item.sla && <><span className="text-muted-foreground/40 mx-1">•</span><span className="text-[10px] text-muted-foreground">SLA {item.sla}</span></>}
                                     </div>
-                                    <div className="flex justify-between items-center bg-primary/5 p-2 rounded-lg border border-primary/10">
-                                        <p className="text-[10px] font-bold text-primary uppercase">Precio</p>
-                                        <p className="text-sm font-black text-primary">RD$ {product.price.toLocaleString()}</p>
+                                )}
+                                {item.type === 'producto' && item.stock !== undefined && item.stock !== null && (
+                                    <div className="flex items-center gap-1 mb-3">
+                                        <Package className="w-3 h-3 text-muted-foreground" />
+                                        <span className={cn("text-[10px] font-bold", (item.stock ?? 0) <= 3 ? "text-amber-600" : "text-foreground")}>{item.stock} en stock</span>
+                                        {item.unitType && <><span className="text-muted-foreground/40 mx-1">•</span><span className="text-[10px] text-muted-foreground">{item.unitType}</span></>}
                                     </div>
-                                </div>
+                                )}
 
                                 <div className="flex items-center justify-between">
-                                    <Badge variant="outline" className={cn("text-[10px] font-black", getMarginColor(product.cost, product.price))}>
-                                        Margen {getMarginValue(product.cost, product.price)}%
-                                    </Badge>
-                                    <div className="text-right">
-                                        <p className="text-[9px] font-bold text-muted-foreground uppercase leading-none">Almacén</p>
-                                        <p className="text-[10px] font-black text-foreground truncate max-w-[80px]">{product.warehouse}</p>
+                                    <div>
+                                        <p className="text-[9px] text-muted-foreground uppercase font-bold">Precio</p>
+                                        <p className="text-sm font-black text-primary">RD$ {item.price.toLocaleString()}</p>
                                     </div>
+                                    <Badge variant="outline" className={cn("text-[10px] font-black", getMarginColor(item.cost, item.price))}>
+                                        {getMarginValue(item.cost, item.price)}% margen
+                                    </Badge>
                                 </div>
                             </CardContent>
                         </Card>
                     ))}
+                    {filtered.length === 0 && (
+                        <div className="col-span-full text-center py-16 text-muted-foreground">
+                            <Package className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                            <p>Sin resultados para los filtros actuales.</p>
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -297,10 +841,11 @@ export default function ProductsPage() {
                 <Card className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm overflow-hidden">
                     <div className="border rounded-lg overflow-hidden mx-4 mb-4 mt-4">
                         <Table>
-                            <TableHeader className="bg-muted/50 text-[10px] uppercase font-black tracking-widest">
+                            <TableHeader className="bg-muted/50">
                                 <TableRow>
-                                    <TableHead>Producto</TableHead>
-                                    <TableHead>Marca / Almacen</TableHead>
+                                    <TableHead>Nombre</TableHead>
+                                    <TableHead>Tipo</TableHead>
+                                    <TableHead>Categoría</TableHead>
                                     <TableHead className="text-right">Costo</TableHead>
                                     <TableHead className="text-right">Precio</TableHead>
                                     <TableHead>Margen</TableHead>
@@ -309,47 +854,49 @@ export default function ProductsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filtered.map(product => (
-                                    <TableRow key={product.id}
-                                        onClick={() => openEdit(product)}
-                                        className="hover:bg-muted/20 transition-colors group border-b border-border/40 cursor-pointer">
+                                {filtered.map(item => (
+                                    <TableRow key={item.id} onClick={() => openEdit(item)}
+                                        className="hover:bg-muted/20 transition-colors cursor-pointer border-b border-border/40">
                                         <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="font-black text-sm text-foreground">{product.name}</span>
-                                                <span className="font-mono text-[10px] text-muted-foreground">{product.code}</span>
+                                            <div className="flex items-center gap-2">
+                                                <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center shrink-0", item.type === 'producto' ? "bg-blue-500/10 text-blue-600" : "bg-violet-500/10 text-violet-600")}>
+                                                    {item.type === 'producto' ? <Package className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+                                                </div>
+                                                <div>
+                                                    <p className="font-bold text-sm">{item.name}</p>
+                                                    <p className="font-mono text-[10px] text-muted-foreground">{item.code}</p>
+                                                </div>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="text-xs font-bold text-foreground">{product.brand}</span>
-                                                <span className="text-[10px] text-muted-foreground truncate max-w-[120px]">{product.warehouse}</span>
-                                            </div>
+                                            <Badge variant="outline" className={cn("text-[9px] font-bold uppercase", item.type === 'producto' ? "bg-blue-50 text-blue-600 border-blue-200" : "bg-violet-50 text-violet-600 border-violet-200")}>
+                                                {item.type}
+                                            </Badge>
                                         </TableCell>
-                                        <TableCell className="text-right font-bold tabular-nums text-xs">RD$ {product.cost.toLocaleString()}</TableCell>
-                                        <TableCell className="text-right font-black tabular-nums text-sm text-primary">RD$ {product.price.toLocaleString()}</TableCell>
                                         <TableCell>
-                                            <Badge variant="outline" className={cn("text-[10px] font-black h-6", getMarginColor(product.cost, product.price))}>
-                                                {getMarginValue(product.cost, product.price)}%
+                                            <Badge variant="outline" className={cn("text-[10px]", CATEGORY_COLORS[item.category] || "bg-muted")}>
+                                                {item.category}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-right font-bold tabular-nums text-xs">RD$ {item.cost.toLocaleString()}</TableCell>
+                                        <TableCell className="text-right font-black tabular-nums text-sm text-primary">RD$ {item.price.toLocaleString()}</TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className={cn("text-[10px] font-black h-6", getMarginColor(item.cost, item.price))}>
+                                                {getMarginValue(item.cost, item.price)}%
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
-                                            {product.stock === null ? (
-                                                <span className="text-[10px] font-bold text-muted-foreground uppercase opacity-40">N/A</span>
+                                            {item.type === 'servicio' ? (
+                                                <span className="text-[10px] font-bold text-violet-500 uppercase">N/A</span>
                                             ) : (
-                                                <div className="flex flex-col items-end">
-                                                    <span className={cn(
-                                                        "text-sm font-black tabular-nums",
-                                                        product.stock === 0 ? "text-red-500" : product.stock <= 3 ? "text-amber-500" : "text-foreground"
-                                                    )}>
-                                                        {product.stock}
-                                                    </span>
-                                                    <span className="text-[9px] font-bold text-muted-foreground uppercase">{product.unitType}</span>
-                                                </div>
+                                                <span className={cn("text-sm font-black tabular-nums", (item.stock ?? 0) === 0 ? "text-red-500" : (item.stock ?? 99) <= 3 ? "text-amber-500" : "text-foreground")}>
+                                                    {item.stock ?? 0}
+                                                </span>
                                             )}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={product.status === 'active' ? 'outline' : 'destructive'} className={cn("text-[10px] font-black uppercase h-6", product.status === 'active' ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/30' : 'font-black')}>
-                                                {product.status === 'active' ? 'Activo' : 'Agotado'}
+                                            <Badge variant="outline" className={cn("text-[10px] font-black uppercase h-6", item.status === 'active' ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/30' : '')}>
+                                                {item.status === 'active' ? 'Activo' : 'Inactivo'}
                                             </Badge>
                                         </TableCell>
                                     </TableRow>
@@ -360,247 +907,18 @@ export default function ProductsPage() {
                 </Card>
             )}
 
-            {/* ── Unified Product Modal (Create & Edit) ────────────────────────── */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-[1050px] p-0 overflow-hidden border-none rounded-3xl shadow-2xl bg-white">
-                    <div className="p-6 bg-gray-50/80 border-b border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                <Package className="w-5 h-5" />
-                            </div>
-                            <DialogTitle className="text-xl font-black text-gray-900 tracking-tight">
-                                {isEditing ? `Editar: ${form.name}` : 'Registrar Nuevo Producto'}
-                            </DialogTitle>
-                            <DialogDescription className="sr-only">
-                                {isEditing ? 'Editar los datos del producto seleccionado.' : 'Completa los datos para registrar un nuevo producto en el catálogo.'}
-                            </DialogDescription>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            {isEditing && (
-                                <>
-                                    <Button onClick={toggleStatus} variant={form.status === 'active' ? 'outline' : 'destructive'} className="h-9 px-4 font-black text-[10px] uppercase rounded-lg border-gray-200 text-gray-700 hover:bg-gray-100">
-                                        {form.status === 'active' ? 'Marcar como Agotado' : 'Activar Producto'}
-                                    </Button>
-                                    <Button onClick={() => handleDelete(form.id)} variant="ghost" className="h-9 px-4 font-black text-[10px] uppercase rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600">
-                                        Eliminar
-                                    </Button>
-                                </>
-                            )}
-                        </div>
-                    </div>
-
-                    <div className="p-8 grid grid-cols-5 gap-8">
-                        {/* Left Column: Visuals & Stock Info */}
-                        <div className="col-span-2 space-y-6">
-                            <div className="aspect-square bg-gray-50 rounded-3xl border border-gray-100 overflow-hidden relative group">
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <Package className="w-20 h-20 text-gray-200" />
-                                </div>
-                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
-                                    <Button className="w-full bg-white/90 backdrop-blur-md border border-gray-200 text-gray-900 hover:bg-white font-bold gap-2">
-                                        <Plus className="w-4 h-4" /> Cambiar Imagen
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-3">
-                                {[1, 2, 3].map(i => (
-                                    <div key={i} className="aspect-square bg-gray-50 rounded-xl border border-dashed border-gray-200 flex items-center justify-center text-gray-300">
-                                        <Plus className="w-4 h-4" />
-                                    </div>
-                                ))}
-                            </div>
-
-                            <div className="p-5 bg-primary/5 rounded-2xl border border-primary/10 space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <Label className="text-[10px] font-black uppercase text-primary tracking-widest leading-none">Control de Inventario</Label>
-                                    <Badge className="bg-primary text-white text-[9px] font-black border-none uppercase h-5">{form.unitType}</Badge>
-                                </div>
-                                <div className="flex items-end justify-between">
-                                    <div className="flex flex-col">
-                                        <p className="text-3xl font-black text-primary">{form.stock || '0'}</p>
-                                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">En existencia</p>
-                                    </div>
-                                    {form.category !== 'Servicio' && (
-                                        <div className="w-24">
-                                            <Label className="text-[9px] font-bold text-muted-foreground uppercase">Ajustar</Label>
-                                            <Input
-                                                type="number"
-                                                className="h-9 bg-white border-primary/20 text-gray-900 font-black text-center focus-visible:ring-primary"
-                                                value={form.stock}
-                                                onChange={e => setForm({ ...form, stock: e.target.value })}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Right Columns: Data Form */}
-                        <div className="col-span-3 space-y-6 h-[500px] overflow-y-auto pr-4 custom-scrollbar">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Nombre</Label>
-                                    <Input className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Código / SKU</Label>
-                                    <Input className="h-11 bg-gray-50 border-gray-200 text-gray-600 font-mono rounded-xl" value={form.code} onChange={e => setForm({ ...form, code: e.target.value })} />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Categoría</Label>
-                                    <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
-                                        <SelectTrigger className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Hardware">Hardware</SelectItem>
-                                            <SelectItem value="Servicio">Servicio</SelectItem>
-                                            <SelectItem value="Software">Software</SelectItem>
-                                            <SelectItem value="Papelería">Papelería</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Almacén</Label>
-                                    <Select value={form.warehouse} onValueChange={v => setForm({ ...form, warehouse: v })}>
-                                        <SelectTrigger className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Almacén Central">Almacén Central</SelectItem>
-                                            <SelectItem value="Tienda Principal">Tienda Principal</SelectItem>
-                                            <SelectItem value="Depósito 1">Depósito 1</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Marca</Label>
-                                    <Input className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl" value={form.brand} onChange={e => setForm({ ...form, brand: e.target.value })} />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <div className="flex justify-between items-center">
-                                        <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Proveedor</Label>
-                                        <span className="text-[8px] font-bold text-amber-600 uppercase tracking-widest bg-amber-100 px-1 rounded">(Interno)</span>
-                                    </div>
-                                    <Input className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl" value={form.supplier} onChange={e => setForm({ ...form, supplier: e.target.value })} />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Costo (RD$)</Label>
-                                    <Input type="number" className="h-11 bg-white border-gray-200 text-gray-900 font-black rounded-xl" value={form.cost} onChange={e => setForm({ ...form, cost: e.target.value })} />
-                                </div>
-                                <div className="space-y-1.5">
-                                    <div className="flex justify-between items-center h-4">
-                                        <Label className="text-[10px] font-black uppercase text-primary tracking-wider">Precio de Venta (RD$)</Label>
-                                        {parseFloat(form.price) > 0 && parseFloat(form.cost) > 0 && (
-                                            <span className={cn(
-                                                "text-[9px] font-black px-1.5 py-0.5 rounded-md",
-                                                (((parseFloat(form.price) - parseFloat(form.cost)) / parseFloat(form.price)) * 100) > 20 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
-                                            )}>
-                                                Ganancia: {(((parseFloat(form.price) - parseFloat(form.cost)) / parseFloat(form.price)) * 100).toFixed(0)}%
-                                            </span>
-                                        )}
-                                    </div>
-                                    <Input type="number" className="h-11 bg-primary/5 border-primary/20 text-gray-900 font-black rounded-xl focus-visible:ring-primary" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">ITBIS (%)</Label>
-                                    <Select value={form.itbis} onValueChange={v => setForm({ ...form, itbis: v })}>
-                                        <SelectTrigger className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl"><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="18">18%</SelectItem>
-                                            <SelectItem value="16">16%</SelectItem>
-                                            <SelectItem value="0">Exento</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Unidad</Label>
-                                    <Select value={form.unitType} onValueChange={v => setForm({ ...form, unitType: v })}>
-                                        <SelectTrigger className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl"><SelectValue /></SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Unidad">Unidad</SelectItem>
-                                            <SelectItem value="Peso">Peso</SelectItem>
-                                            <SelectItem value="Servicio">Servicio</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                                <div className="space-y-1.5">
-                                    <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Tamaño / Equiv.</Label>
-                                    <Input className="h-11 bg-white border-gray-200 text-gray-900 font-bold rounded-xl" value={form.size} onChange={e => setForm({ ...form, size: e.target.value })} />
-                                </div>
-                            </div>
-
-                            {/* Attributes Section */}
-                            <div className="space-y-3 bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <div className="flex items-center justify-between">
-                                    <Label className="text-[10px] font-black uppercase text-gray-700 tracking-wider">Atributos Adicionales</Label>
-                                    <Button variant="outline" size="sm" className="h-7 text-[10px] uppercase font-bold" onClick={() => setForm({ ...form, attributes: [...form.attributes, { key: '', value: '' }] })}>
-                                        <Plus className="w-3 h-3 mr-1" /> Añadir
-                                    </Button>
-                                </div>
-                                {form.attributes.length === 0 ? (
-                                    <p className="text-xs text-muted-foreground italic text-center py-2">No hay atributos personalizados</p>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {form.attributes.map((attr, idx) => (
-                                            <div key={idx} className="flex gap-2">
-                                                <Input className="h-9 bg-white text-xs border-gray-200" placeholder="Ej. Color, Material" value={attr.key} onChange={e => {
-                                                    const newAttrs = [...form.attributes];
-                                                    newAttrs[idx].key = e.target.value;
-                                                    setForm({ ...form, attributes: newAttrs });
-                                                }} />
-                                                <Input className="h-9 bg-white text-xs border-gray-200" placeholder="Valor" value={attr.value} onChange={e => {
-                                                    const newAttrs = [...form.attributes];
-                                                    newAttrs[idx].value = e.target.value;
-                                                    setForm({ ...form, attributes: newAttrs });
-                                                }} />
-                                                <Button variant="ghost" size="icon" className="h-9 w-9 text-red-500 hover:bg-red-50 shrink-0" onClick={() => {
-                                                    const newAttrs = form.attributes.filter((_, i) => i !== idx);
-                                                    setForm({ ...form, attributes: newAttrs });
-                                                }}>
-                                                    <XCircle className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="space-y-1.5 pb-4">
-                                <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Descripción</Label>
-                                <textarea
-                                    className="w-full h-20 bg-white border border-gray-200 rounded-2xl p-4 text-sm font-medium text-gray-900 focus:ring-primary outline-none resize-none shadow-sm"
-                                    value={form.description}
-                                    onChange={e => setForm({ ...form, description: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="p-6 bg-gray-50 border-t border-gray-100 flex gap-4">
-                        <Button variant="ghost" className="flex-1 h-12 font-black text-xs uppercase text-gray-500 hover:text-gray-900 hover:bg-gray-200" onClick={() => setIsModalOpen(false)}>Descartar</Button>
-                        <Button
-                            className="flex-1 h-12 bg-gradient-brand text-white font-black text-sm uppercase rounded-xl shadow-brand"
-                            onClick={handleSave}
-                        >
-                            {isEditing ? 'Actualizar Producto' : 'Crear Producto'}
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            {/* Unified Modal */}
+            <CatalogModal
+                open={isModalOpen}
+                onOpenChange={setIsModalOpen}
+                itemType={currentType}
+                isEditing={isEditing}
+                form={form}
+                setForm={setForm}
+                onSave={handleSave}
+                onDelete={handleDelete}
+                onToggleStatus={handleToggleStatus}
+            />
         </div>
     );
 }

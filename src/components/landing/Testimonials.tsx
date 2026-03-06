@@ -16,7 +16,7 @@ export function Testimonials() {
         <section className="py-20 md:py-28 relative overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-2xl mx-auto mb-14">
-                    <p className="text-xs font-bold text-purple-400 tracking-[0.2em] uppercase mb-3">Testimonios</p>
+                    <p className="text-xs font-bold text-blue-400 tracking-[0.2em] uppercase mb-3">Testimonios</p>
                     <h2 className="text-3xl md:text-4xl font-black tracking-tight mb-4">
                         Lo que dicen nuestros <GradientText>clientes</GradientText>
                     </h2>
@@ -25,12 +25,12 @@ export function Testimonials() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
                     {TESTIMONIALS.map((t, i) => (
-                        <div key={i} className="group relative rounded-2xl border border-border/60 bg-card/50 backdrop-blur-xl p-6 hover:shadow-lg hover:shadow-purple-500/10 hover:border-purple-200/40 transition-all duration-300">
-                            <Quote className="w-8 h-8 text-purple-200 dark:text-purple-800 mb-4" />
+                        <div key={i} className="group relative rounded-2xl border border-border/60 bg-card/50 backdrop-blur-xl p-6 hover:shadow-lg hover:shadow-blue-500/10 hover:border-blue-200/40 transition-all duration-300">
+                            <Quote className="w-8 h-8 text-blue-200 dark:text-blue-800 mb-4" />
                             <p className="text-sm text-foreground/80 leading-relaxed mb-6">&ldquo;{t.text}&rdquo;</p>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500/20 to-cyan-500/20 flex items-center justify-center text-xs font-bold text-purple-600 border border-purple-200/50">
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500/20 to-sky-500/20 flex items-center justify-center text-xs font-bold text-blue-600 border border-blue-200/50">
                                         {t.name.split(" ").map(n => n[0]).join("")}
                                     </div>
                                     <div>

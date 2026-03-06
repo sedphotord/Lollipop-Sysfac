@@ -150,12 +150,26 @@ function NewContactPanel({ onSave, onCancel }: { onSave: (c: Client) => void; on
 }
 
 // ─────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────
+const CURRENCY_SYMBOLS: Record<string, string> = { DOP: "RD$", USD: "US$", EUR: "€" };
+const DEFAULT_RATES: Record<string, number> = { DOP: 1, USD: 58.5, EUR: 63.5 };
+/** Converts a DOP amount to the display currency and formats it */
+function fmtCurrency(amount: number, moneda: string, rate = 1) {
+    const sym = CURRENCY_SYMBOLS[moneda] || moneda;
+    const converted = rate > 0 ? amount / rate : amount;
+    return `${sym} ${converted.toLocaleString("es-DO", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+// ─────────────────────────────────────────────
 //  ITEM ROW
 // ─────────────────────────────────────────────
-function ItemRow({ item, onUpdate, onRemove }: {
+function ItemRow({ item, onUpdate, onRemove, currency, exchangeRate }: {
     item: Item;
     onUpdate: (field: keyof Item, value: any) => void;
     onRemove: () => void;
+    currency: string;
+    exchangeRate: number;
 }) {
     const [prodOpen, setProdOpen] = useState(false);
     const lineTotal = item.price * item.qty * (1 - item.disc / 100);
@@ -229,7 +243,7 @@ function ItemRow({ item, onUpdate, onRemove }: {
                 <Input type="number" value={item.qty} onChange={e => onUpdate("qty", Math.max(1, parseFloat(e.target.value) || 1))} className="h-8 text-xs text-right" min={1} />
             </td>
             <td className="py-1.5 px-2 text-right text-xs font-mono text-foreground/70 whitespace-nowrap">
-                RD$ {lineTotal.toLocaleString("es-DO", { minimumFractionDigits: 2 })}
+                {fmtCurrency(lineTotal, currency, exchangeRate)}
             </td>
             <td className="py-1.5 px-1.5 w-8">
                 <button onClick={onRemove} className="opacity-0 group-hover/row:opacity-100 text-muted-foreground/40 hover:text-destructive transition-all p-0.5 rounded">
@@ -285,6 +299,14 @@ function InvoiceBuilderContent() {
     const [companyAddress, setCompanyAddress] = useState('');
     const [companyPhone, setCompanyPhone] = useState('');
     const [companyEmail, setCompanyEmail] = useState('');
+    const [invoiceMode, setInvoiceMode] = useState<'tradicional' | 'electronico'>('electronico');
+    const [moneda, setMoneda] = useState("DOP");
+    const [exchangeRate, setExchangeRate] = useState(1);
+
+    // When currency changes, preset default rate
+    useEffect(() => {
+        setExchangeRate(DEFAULT_RATES[moneda] ?? 1);
+    }, [moneda]);
 
     // Load company info from localStorage (set in Settings page)
     useEffect(() => {
@@ -304,17 +326,22 @@ function InvoiceBuilderContent() {
         // Restore selected template from sessionStorage (survives preview navigation)
         const savedTpl = sessionStorage.getItem('invoice_selected_template');
         if (savedTpl) setPlantilla(savedTpl);
+
+        const savedMode = localStorage.getItem('sysfac_invoice_mode');
+        if (savedMode === 'tradicional' || savedMode === 'electronico') {
+            setInvoiceMode(savedMode);
+        }
     }, []);
 
-    // Auto-generate NCF when type changes
+    // Auto-generate NCF when type changes or mode changes
     useEffect(() => {
         try {
             const emitted = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
-            setNcf(generateNextNCF(tipo, emitted));
+            setNcf(generateNextNCF(tipo, emitted, invoiceMode));
         } catch {
-            setNcf(generateNextNCF(tipo, []));
+            setNcf(generateNextNCF(tipo, [], invoiceMode));
         }
-    }, [tipo]);
+    }, [tipo, invoiceMode]);
 
     // Pre-fill from quote conversion
     useEffect(() => {
@@ -399,6 +426,7 @@ function InvoiceBuilderContent() {
             vendedor,
             items: items.filter(i => i.name),
             totals: { subtotal, discount: discountTotal, tax: taxTotal, total },
+            terms, footer, almacen, listaPrecios, moneda, mode: invoiceMode, plantilla
         };
         const existing = JSON.parse(localStorage.getItem('invoice_emitted') || '[]');
         existing.unshift(invoice);
@@ -417,17 +445,23 @@ function InvoiceBuilderContent() {
     const handlePreview = () => {
         // Save state to sessionStorage and navigate to preview page
         const previewData = {
-            template: plantilla,
-            tipo, ncf, date, dueDate, paymentTerms, notes, terms, footer, vendedor,
-            client: client ? { name: client.name, rnc: client.rnc, address: client.address, phone: client.phone, email: client.email } : null,
+            company: { name: companyName, rnc: companyRnc, logo: companyLogo, address: companyAddress, phone: companyPhone, email: companyEmail },
+            client: { name: client?.name || "Consumidor final", rnc: client?.rnc || "", address: client?.address || "", phone: client?.phone || "", email: client?.email || "" },
+            document: { type: tipo === 'B01' ? 'Crédito Fiscal' : tipo === 'B02' ? 'Consumo' : tipo === 'B14' ? 'Régimen Especial' : tipo === 'B15' ? 'Gubernamental' : tipo, number: ncf, date: date || new Date().toLocaleDateString('es-DO'), dueDate: dueDate || '—', terms: paymentTerms, seller: vendedor, notes, footer, currency: moneda, mode: invoiceMode },
             items: items.filter(i => i.name).map(i => ({
-                id: i.id, description: i.name + (i.desc ? ` - ${i.desc}` : ""),
-                qty: i.qty, price: i.price, discount: i.price * i.qty * (i.disc / 100),
+                id: i.id,
+                name: i.name,
+                description: i.desc || "",
+                code: i.ref || "",
+                qty: i.qty, price: i.price, itbis: i.itbis,
+                discount: i.price * i.qty * (i.disc / 100),
                 tax: i.price * i.qty * (1 - i.disc / 100) * (i.itbis / 100),
                 total: i.price * i.qty * (1 - i.disc / 100),
             })),
-            totals: { subtotal, discount: discountTotal, tax: taxTotal, total }
+            totals: { subtotal, discount: discountTotal, tax: taxTotal, total },
+            template: plantilla,
         };
+        sessionStorage.setItem('invoice_selected_template', plantilla);
         sessionStorage.setItem('invoice_preview_data', JSON.stringify(previewData));
         router.push('/dashboard/invoices/preview');
     };
@@ -537,7 +571,7 @@ function InvoiceBuilderContent() {
                                 <Label className="text-xs text-muted-foreground whitespace-nowrap">{f.label}</Label>
                                 <Select value={f.value} onValueChange={f.onChange}>
                                     <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto">
-                                        <SelectValue /><ChevronDown className="w-3 h-3 opacity-60" />
+                                        <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent>{f.options.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}</SelectContent>
                                 </Select>
@@ -560,7 +594,7 @@ function InvoiceBuilderContent() {
                             <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/60" />
                             <Select value={vendedor} onValueChange={setVendedor}>
                                 <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto min-w-[80px]">
-                                    <SelectValue placeholder="Busca..." /><ChevronDown className="w-3 h-3 opacity-60" />
+                                    <SelectValue placeholder="Busca..." />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {["María López", "Carlos Pérez", "Admin"].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
@@ -568,29 +602,67 @@ function InvoiceBuilderContent() {
                             </Select>
                         </div>
                         <div className="flex items-center gap-2">
+                            <Label className="text-xs text-muted-foreground">Moneda</Label>
+                            <Select value={moneda} onValueChange={setMoneda}>
+                                <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto min-w-[50px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {["DOP", "USD", "EUR"].map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        {moneda !== "DOP" && (
+                            <div className="flex items-center gap-1.5">
+                                <Label className="text-xs text-muted-foreground whitespace-nowrap">Tasa</Label>
+                                <span className="text-xs text-muted-foreground/60 font-mono">1 {moneda} =</span>
+                                <input
+                                    type="number"
+                                    value={exchangeRate}
+                                    onChange={e => setExchangeRate(parseFloat(e.target.value) || 1)}
+                                    min={0.01}
+                                    step={0.01}
+                                    className="w-20 h-7 text-xs font-mono font-bold text-center border border-border/60 rounded-md bg-muted/20 focus:outline-none focus:ring-1 focus:ring-primary/40 px-2"
+                                />
+                                <span className="text-xs text-muted-foreground/60 font-mono">DOP</span>
+                            </div>
+                        )}
+                        <div className="flex items-center gap-2">
+                            <Label className="text-xs text-muted-foreground">Modalidad</Label>
+                            <Select value={invoiceMode} onValueChange={(v: 'tradicional' | 'electronico') => setInvoiceMode(v)}>
+                                <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto min-w-[90px]">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="electronico">e-CF</SelectItem>
+                                    <SelectItem value="tradicional">Tradicional</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex items-center gap-2">
                             <Label className="text-xs text-muted-foreground font-semibold">Plantilla *</Label>
                             <Select value={plantilla} onValueChange={v => { setPlantilla(v); sessionStorage.setItem('invoice_selected_template', v); }}>
                                 <SelectTrigger className="h-7 text-xs border-0 shadow-none bg-transparent p-0 gap-1 font-semibold text-foreground focus:ring-0 w-auto min-w-[120px]">
-                                    <SelectValue /><ChevronDown className="w-3 h-3 opacity-60" />
+                                    <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="w-56">
                                     {/* ── Facturas ── */}
-                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📄 Facturas</SelectItem>
+                                    <SelectItem value="__h1" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Facturas</SelectItem>
                                     <SelectItem value="InvoiceStandard">Estándar</SelectItem>
                                     <SelectItem value="InvoiceModern">Moderno</SelectItem>
                                     <SelectItem value="InvoiceCorporate">Corporativo</SelectItem>
                                     <SelectItem value="InvoiceElegant">Elegante</SelectItem>
                                     <SelectItem value="InvoiceMinimal">Minimalista</SelectItem>
                                     {/* ── Cotizaciones ── */}
-                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📋 Cotizaciones</SelectItem>
+                                    <SelectItem value="__h2" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Cotizaciones</SelectItem>
                                     <SelectItem value="QuoteStandard">Cotización Estándar</SelectItem>
                                     <SelectItem value="QuoteDetailed">Cotización Detallada</SelectItem>
                                     {/* ── Comprobantes ── */}
-                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">🧾 Comprobantes</SelectItem>
+                                    <SelectItem value="__h3" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Comprobantes</SelectItem>
                                     <SelectItem value="PaymentReceipt">Recibo de Pago</SelectItem>
                                     <SelectItem value="TicketPOS">Ticket POS (80mm)</SelectItem>
                                     {/* ── Documentos ── */}
-                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">📦 Documentos</SelectItem>
+                                    <SelectItem value="__h4" disabled className="text-[10px] font-black uppercase tracking-wider text-muted-foreground px-2 py-1">— Documentos</SelectItem>
                                     <SelectItem value="DeliveryNote">Conduce / Remisión</SelectItem>
                                     <SelectItem value="AccountStatement">Estado de Cuenta</SelectItem>
                                 </SelectContent>
@@ -635,7 +707,9 @@ function InvoiceBuilderContent() {
                                     </SelectContent>
                                 </Select>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-sm font-semibold text-muted-foreground">NCF</span>
+                                    <span className="text-sm font-semibold text-muted-foreground">
+                                        {invoiceMode === 'electronico' ? 'e-CF' : 'NCF'}
+                                    </span>
                                     <Input
                                         value={ncf}
                                         onChange={e => setNcf(e.target.value)}
@@ -751,6 +825,8 @@ function InvoiceBuilderContent() {
                                 <tbody>
                                     {items.map(item => (
                                         <ItemRow key={item.id} item={item}
+                                            currency={moneda}
+                                            exchangeRate={exchangeRate}
                                             onUpdate={(field, val) => updateItem(item.id, field, val)}
                                             onRemove={() => removeItem(item.id)} />
                                     ))}
@@ -786,15 +862,15 @@ function InvoiceBuilderContent() {
                                 </div>
                                 <div className="flex justify-between text-sm text-muted-foreground">
                                     <span>Subtotal</span>
-                                    <span className="font-mono">RD$ {subtotal.toLocaleString("es-DO", { minimumFractionDigits: 2 })}</span>
+                                    <span className="font-mono">{fmtCurrency(subtotal, moneda, exchangeRate)}</span>
                                 </div>
                                 <div className="flex justify-between text-sm text-muted-foreground">
                                     <span>Descuento</span>
-                                    <span className="font-mono text-destructive">-RD$ {discountTotal.toLocaleString("es-DO", { minimumFractionDigits: 2 })}</span>
+                                    <span className="font-mono text-destructive">-{fmtCurrency(discountTotal, moneda, exchangeRate)}</span>
                                 </div>
                                 <div className="flex justify-between border-t border-border/60 pt-2 font-bold text-base text-foreground">
                                     <span>Total</span>
-                                    <span className="font-mono text-gradient">RD$ {total.toLocaleString("es-DO", { minimumFractionDigits: 2 })}</span>
+                                    <span className="font-mono text-gradient">{fmtCurrency(total, moneda, exchangeRate)}</span>
                                 </div>
                             </div>
                         </div>

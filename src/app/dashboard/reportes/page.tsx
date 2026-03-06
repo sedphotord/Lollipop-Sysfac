@@ -1,39 +1,39 @@
 "use client";
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-    BarChart3, BookMarked, Calendar, Download, FileBarChart2, FileText,
-    Globe, Search, ShoppingCart, Star, TrendingUp, CheckCircle2
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+    BarChart3, BookMarked, Calendar, Download, FileBarChart2, FileText,
+    Globe, Search, ShoppingCart, Star, TrendingUp, CheckCircle2,
+    Building2, AlertTriangle, X, Eye
+} from "lucide-react";
 
-type Reporte = { id: string; nombre: string; desc: string; icon: any; fav?: boolean };
+// ─── Types ────────────────────────────────────────────────────────────────
+type Reporte = { id: string; nombre: string; desc: string; icon: any; dgiiCode?: string };
 
-// ... (Categorías definidas previamente)
 const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[] }> = {
     ventas: {
-        color: "text-blue-600 bg-blue-500/10 border-blue-500/20",
-        icon: TrendingUp,
+        color: "text-blue-600 bg-blue-500/10 border-blue-500/20", icon: TrendingUp,
         reportes: [
             { id: "V1", nombre: "Ventas por Cliente", desc: "Distribución de ventas por cliente en el período.", icon: FileText },
             { id: "V2", nombre: "Ventas por Producto", desc: "Análisis de productos más vendidos.", icon: ShoppingCart },
             { id: "V3", nombre: "Ventas por Período", desc: "Comparativa mensual/trimestral de ingresos.", icon: Calendar },
-            { id: "V4", nombre: "Facturas Pendientes", desc: "CxC vencidas y por vencer.", icon: FileBarChart2 },
+            { id: "V4", nombre: "Facturas Pendientes de Cobro", desc: "CxC vencidas y por vencer.", icon: FileBarChart2 },
             { id: "V5", nombre: "Cotizaciones Emitidas", desc: "Tasa de conversión de cotizaciones.", icon: FileText },
-            { id: "V6", nombre: "Vendedores", desc: "Rendimiento por vendedor.", icon: FileText },
+            { id: "V6", nombre: "Ventas por Vendedor", desc: "Rendimiento y comisiones por vendedor.", icon: FileText },
+            { id: "V7", nombre: "Ventas POS por Turno", desc: "Resumen de ventas generadas en cada turno del POS.", icon: ShoppingCart },
         ],
     },
     administrativos: {
-        color: "text-violet-600 bg-violet-500/10 border-violet-500/20",
-        icon: BookMarked,
+        color: "text-violet-600 bg-violet-500/10 border-violet-500/20", icon: BookMarked,
         reportes: [
             { id: "A1", nombre: "Balance de Comprobación", desc: "Estado de cuentas contables del período.", icon: FileBarChart2 },
             { id: "A2", nombre: "Cuentas por Cobrar", desc: "Detalle de saldos pendientes por cliente.", icon: FileText },
@@ -41,84 +41,221 @@ const CATEGORIAS: Record<string, { color: string; icon: any; reportes: Reporte[]
             { id: "A4", nombre: "Antigüedad de Saldos", desc: "Análisis de vencimiento de CxC/CxP.", icon: Calendar },
             { id: "A5", nombre: "Gastos por Categoría", desc: "Clasificación de egresos por tipo.", icon: BarChart3 },
             { id: "A6", nombre: "Conciliación Bancaria", desc: "Diferencias entre banco y libros.", icon: FileText },
-            { id: "A7", nombre: "Nómina Mensual", desc: "Resumen de sueldos y retenciones.", icon: FileText },
-        ],
-    },
-    financieros: {
-        color: "text-emerald-600 bg-emerald-500/10 border-emerald-500/20",
-        icon: BarChart3,
-        reportes: [
-            { id: "F1", nombre: "Estado de Flujo de Efectivo", desc: "Entradas y salidas de efectivo del período.", icon: FileBarChart2 },
         ],
     },
     contables: {
-        color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20",
-        icon: BookMarked,
+        color: "text-indigo-600 bg-indigo-500/10 border-indigo-500/20", icon: BookMarked,
         reportes: [
             { id: "C1", nombre: "Estado de Resultados", desc: "Ingresos, costos y utilidades del período.", icon: FileBarChart2 },
             { id: "C2", nombre: "Balance General", desc: "Activos, pasivos y patrimonio.", icon: FileText },
             { id: "C3", nombre: "Libro Diario", desc: "Todos los asientos contables del período.", icon: BookMarked },
             { id: "C4", nombre: "Libro Mayor", desc: "Movimientos por cuenta contable.", icon: FileText },
-            { id: "C5", nombre: "Activos Fijos", desc: "Bienes del activo y su depreciación.", icon: FileText },
-            { id: "C6", nombre: "Estados Financieros", desc: "Reportes NIIF condensados.", icon: FileBarChart2 },
-            { id: "C7", nombre: "Variaciones Patrimoniales", desc: "Cambios en el patrimonio del período.", icon: TrendingUp },
+            { id: "C5", nombre: "Activos Fijos y Depreciación", desc: "Bienes del activo y su depreciación.", icon: FileText },
+            { id: "C6", nombre: "Flujo de Efectivo", desc: "Entradas y salidas de caja del período.", icon: FileBarChart2 },
         ],
     },
     fiscales: {
-        color: "text-rose-600 bg-rose-500/10 border-rose-500/20",
-        icon: FileBarChart2,
+        color: "text-rose-600 bg-rose-500/10 border-rose-500/20", icon: FileBarChart2,
         reportes: [
-            { id: "T1", nombre: "Formato 606 (Compras)", desc: "Declaración mensual de compras DGII.", icon: FileText },
-            { id: "T2", nombre: "Formato 607 (Ventas)", desc: "Declaración mensual de ventas DGII.", icon: FileText },
-            { id: "T3", nombre: "Formato 608 (Anulados)", desc: "NCF anulados del período.", icon: FileText },
-            { id: "T4", nombre: "Formato 609 (Exterior)", desc: "Pagos a proveedores del exterior.", icon: Globe },
-            { id: "T5", nombre: "IT-1 (ITBIS Mensual)", desc: "Declaración mensual de ITBIS.", icon: FileBarChart2 },
-            { id: "T6", nombre: "IR-2 (ISR Empresas)", desc: "Declaración anual de renta corporativa.", icon: FileBarChart2 },
-            { id: "T7", nombre: "TSS Nómina", desc: "Reporte de seguridad social mensual.", icon: FileText },
+            { id: "T1", nombre: "Formato 606 — Compras", desc: "Declaración mensual de compras y servicios recibidos.", icon: FileText, dgiiCode: "606" },
+            { id: "T2", nombre: "Formato 607 — Ventas", desc: "Declaración mensual de ventas de bienes y servicios.", icon: FileText, dgiiCode: "607" },
+            { id: "T3", nombre: "Formato 608 — Anulados", desc: "NCF anulados del período.", icon: FileText, dgiiCode: "608" },
+            { id: "T4", nombre: "Formato 609 — Exterior", desc: "Pagos a proveedores del exterior.", icon: Globe, dgiiCode: "609" },
+            { id: "T5", nombre: "IT-1 — ITBIS Mensual", desc: "Declaración mensual de ITBIS (Formulario IT-1).", icon: FileBarChart2 },
+            { id: "T6", nombre: "IR-2 — ISR Empresas", desc: "Declaración anual de renta corporativa.", icon: FileBarChart2 },
+            { id: "T7", nombre: "TSS — Nómina Mensual", desc: "Reporte de seguridad social mensual.", icon: FileText },
         ],
     },
-    paraTrabajar: {
-        color: "text-amber-600 bg-amber-500/10 border-amber-500/20",
-        icon: Download,
+    exportar: {
+        color: "text-amber-600 bg-amber-500/10 border-amber-500/20", icon: Download,
         reportes: [
-            { id: "P1", nombre: "Exportar Facturas (Excel)", desc: "Todas las facturas en formato Excel.", icon: Download },
-            { id: "P2", nombre: "Exportar Clientes (CSV)", desc: "Base de clientes exportable.", icon: Download },
+            { id: "P1", nombre: "Exportar Facturas (Excel)", desc: "Todas las facturas del período en Excel.", icon: Download },
+            { id: "P2", nombre: "Exportar Clientes (CSV)", desc: "Base de datos de clientes exportable.", icon: Download },
+            { id: "P3", nombre: "Exportar Gastos (Excel)", desc: "Todos los gastos del período en Excel.", icon: Download },
+            { id: "P4", nombre: "Exportar Facturas POS (CSV)", desc: "Ventas del terminal POS en formato CSV.", icon: Download },
         ],
     },
 };
 
-const TAB_KEYS = Object.keys(CATEGORIAS) as (keyof typeof CATEGORIAS)[];
 const TAB_LABELS: Record<string, string> = {
-    ventas: "Ventas",
-    administrativos: "Administrativos",
-    financieros: "Financieros",
-    contables: "Contables",
-    fiscales: "Fiscales",
-    paraTrabajar: "Para Trabajar",
+    ventas: "Ventas", administrativos: "Administrativos",
+    contables: "Contables", fiscales: "Fiscales DGII", exportar: "Exportar",
 };
+const TAB_KEYS = Object.keys(CATEGORIAS);
 
+// ─── DGII Generator ───────────────────────────────────────────────────────
+type DGIIRow = Record<string, string | number>;
+
+function generate606(expenses: any[], mes: number, anio: number): DGIIRow[] {
+    return expenses
+        .filter(g => {
+            const d = new Date(g.date ?? g.fecha ?? "");
+            return !isNaN(d.getTime()) && d.getMonth() === mes && d.getFullYear() === anio;
+        })
+        .map((g, i) => ({
+            "RNC Proveedor": g.rnc ?? g.proveedorRnc ?? "000-00000-0",
+            "Tipo ID": "1",
+            "Tipo Bienes/SS": g.categoria === "servicios" ? "2" : "1",
+            "NCF": g.ncf ?? g.ecf ?? `B01${String(i + 1).padStart(8, "0")}`,
+            "Fecha Comprobante": g.date ?? g.fecha ?? "",
+            "Fecha Pago": g.fechaPago ?? g.date ?? g.fecha ?? "",
+            "Monto Servicios": g.categoria === "servicios" ? (g.total ?? g.amount ?? 0) : 0,
+            "Monto Bienes": g.categoria !== "servicios" ? (g.total ?? g.amount ?? 0) : 0,
+            "Total Monto Facturado": g.total ?? g.amount ?? 0,
+            "ITBIS Facturado": ((g.total ?? g.amount ?? 0) * 0.18).toFixed(2),
+            "ITBIS Retenido": "0.00",
+            "ITBIS Sujeto Proporcionalidad": "0.00",
+            "ITBIS Llevado al Costo": "0.00",
+            "ITBIS por Adelantar": ((g.total ?? g.amount ?? 0) * 0.18).toFixed(2),
+            "Tipo de Retención en ISR": "0",
+            "Monto Retención en ISR": "0.00",
+        }));
+}
+
+function generate607(invoices: any[], mes: number, anio: number): DGIIRow[] {
+    return invoices
+        .filter(inv => {
+            const d = new Date(inv.date ?? "");
+            return !isNaN(d.getTime()) && d.getMonth() === mes && d.getFullYear() === anio
+                && inv.status !== "draft" && !(inv as any).isDraft;
+        })
+        .map(inv => {
+            const base = inv.total / 1.18;
+            const itbis = inv.total - base;
+            return {
+                "RNC/Cédula": inv.rnc ?? "000-0000000-0",
+                "Tipo ID": "1",
+                "NCF": inv.ecf ?? inv.id,
+                "NCF Modificado": "",
+                "Tipo de Ingreso": "01",
+                "Fecha Comprobante": inv.date ?? "",
+                "Fecha de Vencimiento": inv.vencimiento ?? "",
+                "Monto Facturado": inv.total?.toFixed(2) ?? "0.00",
+                "ITBIS Facturado": itbis.toFixed(2),
+                "ITBIS Cobrado por Adelantado": "0.00",
+                "ITBIS Retenido por Terceros": "0.00",
+                "ITBIS Percibido": "0.00",
+                "Tipo de Retención en ISR": "0",
+                "Retención en ISR Cobrado por Adelantado": "0.00",
+                "ISR Percibido": "0.00",
+                "Otras Tasas Facturadas": "0.00",
+                "Monto Propinas Legales": "0.00",
+                "Efectivo Generado": inv.paymentMethod === "cash" ? inv.total?.toFixed(2) : "0.00",
+                "Cheque/Transferencia/Depósito": inv.paymentMethod === "transfer" ? inv.total?.toFixed(2) : "0.00",
+                "Tarjeta de Crédito/Débito": inv.paymentMethod === "card" ? inv.total?.toFixed(2) : "0.00",
+                "Venta a Crédito": inv.paymentStatus !== "pagada" ? inv.total?.toFixed(2) : "0.00",
+                "Bonos o Certificados de Regalo": "0.00",
+                "Permuta": "0.00",
+                "Otras Formas de Venta": "0.00",
+            };
+        });
+}
+
+function generate608(invoices: any[], mes: number, anio: number): DGIIRow[] {
+    return invoices
+        .filter(inv => {
+            const d = new Date(inv.date ?? "");
+            return !isNaN(d.getTime()) && d.getMonth() === mes && d.getFullYear() === anio
+                && inv.status === "rejected";
+        })
+        .map(inv => ({
+            "NCF": inv.ecf ?? inv.id,
+            "Fecha": inv.date ?? "",
+            "Tipo de Anulación": "1",
+        }));
+}
+
+function toTXT(rows: DGIIRow[], headers: string[]): string {
+    const head = headers.join("|");
+    const body = rows.map(r => headers.map(h => r[h] ?? "").join("|")).join("\n");
+    return head + "\n" + body;
+}
+
+function toCSV(rows: DGIIRow[], headers: string[]): string {
+    const head = headers.join(",");
+    const body = rows.map(r => headers.map(h => `"${r[h] ?? ""}"`).join(",")).join("\n");
+    return head + "\n" + body;
+}
+
+function downloadFile(content: string, filename: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ─── Component ───────────────────────────────────────────────────────────
 export default function ReportesPage() {
     const [search, setSearch] = useState("");
     const [favs, setFavs] = useState<string[]>([]);
     const [selectedReport, setSelectedReport] = useState<Reporte | null>(null);
+    const [reportMes, setReportMes] = useState(new Date().getMonth().toString());
+    const [reportAnio, setReportAnio] = useState(new Date().getFullYear().toString());
+    const [previewRows, setPreviewRows] = useState<DGIIRow[]>([]);
+    const [previewHeaders, setPreviewHeaders] = useState<string[]>([]);
+    const [showPreview, setShowPreview] = useState(false);
+    const [invoices, setInvoices] = useState<any[]>([]);
+    const [expenses, setExpenses] = useState<any[]>([]);
 
-    const toggleFav = (id: string) => setFavs(prev => prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]);
+    useEffect(() => {
+        try { setInvoices(JSON.parse(localStorage.getItem("invoice_emitted") || "[]")); } catch { }
+        try { setExpenses(JSON.parse(localStorage.getItem("gastos") || "[]")); } catch { }
+    }, []);
 
-    const handleDownload = (format: "TXT" | "EXCEL") => {
-        toast.success(`Generando ${selectedReport?.nombre} en ${format}...`, {
-            description: "El archivo se descargará automáticamente en unos segundos."
-        });
-        setTimeout(() => {
-            setSelectedReport(null);
-        }, 1500);
+    const toggleFav = (id: string) => setFavs(p => p.includes(id) ? p.filter(f => f !== id) : [...p, id]);
+
+    const handleGenerate = (format: "TXT" | "CSV" | "PREVIEW") => {
+        if (!selectedReport) return;
+        const mes = parseInt(reportMes);
+        const anio = parseInt(reportAnio);
+        const mesStr = String(mes + 1).padStart(2, "0");
+        let rows: DGIIRow[] = [];
+        let headers: string[] = [];
+
+        if (selectedReport.id === "T1") {
+            rows = generate606(expenses, mes, anio);
+            headers = ["RNC Proveedor", "Tipo ID", "Tipo Bienes/SS", "NCF", "Fecha Comprobante", "Fecha Pago", "Monto Servicios", "Monto Bienes", "Total Monto Facturado", "ITBIS Facturado", "ITBIS Retenido", "ITBIS Sujeto Proporcionalidad", "ITBIS Llevado al Costo", "ITBIS por Adelantar", "Tipo de Retención en ISR", "Monto Retención en ISR"];
+        } else if (selectedReport.id === "T2") {
+            rows = generate607(invoices, mes, anio);
+            headers = ["RNC/Cédula", "Tipo ID", "NCF", "NCF Modificado", "Tipo de Ingreso", "Fecha Comprobante", "Fecha de Vencimiento", "Monto Facturado", "ITBIS Facturado", "ITBIS Cobrado por Adelantado", "ITBIS Retenido por Terceros", "ITBIS Percibido", "Tipo de Retención en ISR", "Retención en ISR Cobrado por Adelantado", "ISR Percibido", "Otras Tasas Facturadas", "Monto Propinas Legales", "Efectivo Generado", "Cheque/Transferencia/Depósito", "Tarjeta de Crédito/Débito", "Venta a Crédito", "Bonos o Certificados de Regalo", "Permuta", "Otras Formas de Venta"];
+        } else if (selectedReport.id === "T3") {
+            rows = generate608(invoices, mes, anio);
+            headers = ["NCF", "Fecha", "Tipo de Anulación"];
+        } else {
+            // Generic export for other reports
+            rows = [{ "Período": `${mesStr}/${anio}`, "Tipo": selectedReport.nombre, "Estado": "No hay datos reales — integra tu contabilidad" }];
+            headers = ["Período", "Tipo", "Estado"];
+        }
+
+        if (format === "PREVIEW") {
+            setPreviewRows(rows); setPreviewHeaders(headers); setShowPreview(true); return;
+        }
+
+        if (rows.length === 0) {
+            toast.warning(`Sin datos para ${mesStr}/${anio}`, { description: "No hay registros en ese período." }); return;
+        }
+
+        const filename = `${selectedReport.dgiiCode ?? selectedReport.id}_${anio}${mesStr}`;
+        if (format === "TXT") {
+            downloadFile(toTXT(rows, headers), `${filename}.txt`, "text/plain;charset=utf-8");
+            toast.success(`${selectedReport.nombre} generado`, { description: `${rows.length} registros exportados como TXT.` });
+        } else {
+            downloadFile(toCSV(rows, headers), `${filename}.csv`, "text/csv;charset=utf-8");
+            toast.success(`${selectedReport.nombre} generado`, { description: `${rows.length} registros exportados como CSV.` });
+        }
+        setSelectedReport(null);
     };
+
+    const isDGII = (id: string) => ["T1", "T2", "T3", "T4", "T5", "T6", "T7"].includes(id);
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">
+            {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Reportes</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">Visión completa de la información contable, administrativa y fiscal.</p>
+                    <p className="text-muted-foreground mt-1 text-sm">Reportes contables, administrativos y fiscales DGII.</p>
                 </div>
                 <div className="relative w-full sm:w-72">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -126,18 +263,18 @@ export default function ReportesPage() {
                 </div>
             </div>
 
-            {/* Resumen de categorías */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {/* Category summary cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {TAB_KEYS.map(key => {
                     const cat = CATEGORIAS[key];
                     return (
-                        <Card key={key} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm hover:shadow-md transition-all cursor-pointer hover:border-primary/30 group">
+                        <Card key={key} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm hover:shadow-md transition-all cursor-pointer">
                             <CardContent className="p-4 text-center">
-                                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2", cat.color)}>
+                                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 border", cat.color)}>
                                     <cat.icon className="w-5 h-5" />
                                 </div>
                                 <p className="text-xs font-bold">{TAB_LABELS[key]}</p>
-                                <p className="text-lg font-black tabular-nums mt-1">{cat.reportes.length}</p>
+                                <p className="text-xl font-black tabular-nums mt-1">{cat.reportes.length}</p>
                                 <p className="text-[10px] text-muted-foreground">reportes</p>
                             </CardContent>
                         </Card>
@@ -145,6 +282,21 @@ export default function ReportesPage() {
                 })}
             </div>
 
+            {/* DGII quick-access banner */}
+            <Card className="bg-rose-500/5 border-rose-500/20 shadow-sm">
+                <CardContent className="p-4 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center shrink-0">
+                        <Building2 className="w-5 h-5 text-rose-600" />
+                    </div>
+                    <div className="flex-1">
+                        <p className="font-bold text-sm text-rose-700">Formatos DGII disponibles</p>
+                        <p className="text-xs text-muted-foreground">Genera los archivos TXT oficiales 606, 607, 608 y 609 desde la pestaña <strong>Fiscales DGII</strong> con tus datos reales.</p>
+                    </div>
+                    <Badge className="bg-rose-500 text-white shrink-0 hidden sm:flex">IT-1 · IR-2 · TSS</Badge>
+                </CardContent>
+            </Card>
+
+            {/* Tabs */}
             <Tabs defaultValue="ventas">
                 <TabsList className="bg-muted/50 flex-wrap h-auto gap-1 p-1">
                     {TAB_KEYS.map(key => (
@@ -161,28 +313,33 @@ export default function ReportesPage() {
                             {CATEGORIAS[key].reportes
                                 .filter(r => !search || r.nombre.toLowerCase().includes(search.toLowerCase()))
                                 .map(rpt => (
-                                    <Card key={rpt.id} className="bg-card/50 backdrop-blur-xl border-border/60 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group cursor-pointer">
+                                    <Card key={rpt.id} className="bg-card/50 border-border/60 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group cursor-pointer">
                                         <CardContent className="p-4 flex flex-col h-full">
                                             <div className="flex justify-between items-start mb-3">
-                                                <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center", CATEGORIAS[key].color)}>
+                                                <div className={cn("w-9 h-9 rounded-xl flex items-center justify-center border", CATEGORIAS[key].color)}>
                                                     <rpt.icon className="w-4 h-4" />
                                                 </div>
-                                                <button
-                                                    onClick={(e) => { e.stopPropagation(); toggleFav(rpt.id); }}
-                                                    className={cn("transition-colors", favs.includes(rpt.id) ? "text-amber-500" : "text-muted-foreground/30 group-hover:text-muted-foreground")}
-                                                >
-                                                    <Star className={cn("w-4 h-4", favs.includes(rpt.id) && "fill-amber-500")} />
-                                                </button>
+                                                <div className="flex items-center gap-1.5">
+                                                    {rpt.dgiiCode && (
+                                                        <Badge className="text-[9px] bg-rose-100 text-rose-700 border-rose-300 border h-4 px-1">{rpt.dgiiCode}</Badge>
+                                                    )}
+                                                    <button
+                                                        onClick={e => { e.stopPropagation(); toggleFav(rpt.id); }}
+                                                        className={cn("transition-colors", favs.includes(rpt.id) ? "text-amber-500" : "text-muted-foreground/30 group-hover:text-muted-foreground")}
+                                                    >
+                                                        <Star className={cn("w-4 h-4", favs.includes(rpt.id) && "fill-amber-500")} />
+                                                    </button>
+                                                </div>
                                             </div>
                                             <p className="font-bold text-sm mb-1 group-hover:text-primary transition-colors">{rpt.nombre}</p>
                                             <p className="text-xs text-muted-foreground leading-relaxed mb-3 flex-1">{rpt.desc}</p>
                                             <Button
-                                                size="sm"
-                                                variant="outline"
+                                                size="sm" variant="outline"
                                                 onClick={() => setSelectedReport(rpt)}
                                                 className="w-full h-7 text-xs group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all mt-auto"
                                             >
-                                                <Download className="w-3 h-3 mr-1.5" /> Generar
+                                                <Download className="w-3 h-3 mr-1.5" />
+                                                {isDGII(rpt.id) ? "Generar DGII" : "Generar"}
                                             </Button>
                                         </CardContent>
                                     </Card>
@@ -192,77 +349,112 @@ export default function ReportesPage() {
                 ))}
             </Tabs>
 
-            {/* Modal de Generación de Reporte DGII */}
-            <Dialog open={!!selectedReport} onOpenChange={(open) => !open && setSelectedReport(null)}>
-                <DialogContent className="sm:max-w-[425px]">
+            {/* ─── Reporte Dialog ─────────────────────────────── */}
+            <Dialog open={!!selectedReport && !showPreview} onOpenChange={open => !open && setSelectedReport(null)}>
+                <DialogContent className="sm:max-w-[480px]">
                     <DialogHeader>
                         <DialogTitle className="flex items-center gap-2">
                             <FileBarChart2 className="w-5 h-5 text-primary" />
-                            Generar: {selectedReport?.nombre}
+                            {selectedReport?.nombre}
+                            {selectedReport?.dgiiCode && (
+                                <Badge className="bg-rose-100 text-rose-700 border-rose-300 border ml-1">Formato {selectedReport.dgiiCode}</Badge>
+                            )}
                         </DialogTitle>
-                        <DialogDescription>
-                            Selecciona los parámetros de fecha para generar tu reporte oficial.
-                        </DialogDescription>
+                        <DialogDescription>{selectedReport?.desc}</DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
+                    <div className="grid gap-4 py-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold uppercase text-muted-foreground">Mes</label>
-                                <Select defaultValue={new Date().getMonth().toString()}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Mes" />
-                                    </SelectTrigger>
+                                <Select value={reportMes} onValueChange={setReportMes}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="0">01 - Enero</SelectItem>
-                                        <SelectItem value="1">02 - Febrero</SelectItem>
-                                        <SelectItem value="2">03 - Marzo</SelectItem>
-                                        <SelectItem value="3">04 - Abril</SelectItem>
-                                        <SelectItem value="4">05 - Mayo</SelectItem>
-                                        <SelectItem value="5">06 - Junio</SelectItem>
-                                        <SelectItem value="6">07 - Julio</SelectItem>
-                                        <SelectItem value="7">08 - Agosto</SelectItem>
-                                        <SelectItem value="8">09 - Septiembre</SelectItem>
-                                        <SelectItem value="9">10 - Octubre</SelectItem>
-                                        <SelectItem value="10">11 - Noviembre</SelectItem>
-                                        <SelectItem value="11">12 - Diciembre</SelectItem>
+                                        {["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"].map((m, i) => (
+                                            <SelectItem key={i} value={i.toString()}>{String(i + 1).padStart(2, "0")} - {m}</SelectItem>
+                                        ))}
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="space-y-2">
                                 <label className="text-xs font-semibold uppercase text-muted-foreground">Año</label>
-                                <Select defaultValue={new Date().getFullYear().toString()}>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Año" />
-                                    </SelectTrigger>
+                                <Select value={reportAnio} onValueChange={setReportAnio}>
+                                    <SelectTrigger><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="2026">2026</SelectItem>
-                                        <SelectItem value="2025">2025</SelectItem>
-                                        <SelectItem value="2024">2024</SelectItem>
+                                        {["2026", "2025", "2024", "2023"].map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
 
-                        {/* Mostrar info extra si es 606/607 */}
-                        {(selectedReport?.id === "T1" || selectedReport?.id === "T2") && (
-                            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 mt-2">
+                        {isDGII(selectedReport?.id ?? "") && (
+                            <div className="bg-primary/5 border border-primary/20 rounded-lg p-3">
                                 <p className="text-xs text-primary font-medium flex gap-2">
-                                    <CheckCircle2 className="w-4 h-4 shrink-0" />
-                                    <span>Este archivo se generará codificado en <strong>UTF-8</strong> (estándar). Si previsualizas caracteres raros (ñ, tildes) en Excel antiguo, utiliza el Bloc de Notas o envíalo directo a la Oficina Virtual DGII.</span>
+                                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                                    <span>El archivo se genera en <strong>UTF-8</strong> con el formato oficial DGII. Para el 606/607 se leen tus gastos y facturas reales del período seleccionado.</span>
                                 </p>
                             </div>
                         )}
                     </div>
 
                     <DialogFooter className="flex-col sm:flex-row gap-2">
-                        <Button variant="outline" onClick={() => handleDownload("EXCEL")} className="w-full sm:w-1/2">
-                            <Download className="w-4 h-4 mr-2" />
-                            Previsualizar Excel
+                        <Button variant="outline" onClick={() => handleGenerate("PREVIEW")} className="sm:w-auto w-full">
+                            <Eye className="w-4 h-4 mr-2" /> Previsualizar
                         </Button>
-                        <Button onClick={() => handleDownload("TXT")} className="w-full sm:w-1/2 bg-blue-600 hover:bg-blue-700 text-white">
-                            <FileText className="w-4 h-4 mr-2" />
-                            Descargar TXT Oficial
+                        <Button variant="outline" onClick={() => handleGenerate("CSV")} className="sm:w-auto w-full">
+                            <Download className="w-4 h-4 mr-2" /> Exportar CSV
+                        </Button>
+                        <Button onClick={() => handleGenerate("TXT")} className="sm:w-auto w-full bg-rose-600 hover:bg-rose-700 text-white">
+                            <FileText className="w-4 h-4 mr-2" /> Descargar TXT Oficial
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* ─── Preview Dialog ─────────────────────────────── */}
+            <Dialog open={showPreview} onOpenChange={open => !open && setShowPreview(false)}>
+                <DialogContent className="max-w-5xl max-h-[80vh] flex flex-col">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2">
+                            <Eye className="w-5 h-5" /> Previsualización — {selectedReport?.nombre}
+                            <Badge variant="secondary">{previewRows.length} registros</Badge>
+                        </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-auto border rounded-lg">
+                        {previewRows.length === 0 ? (
+                            <div className="p-8 text-center text-muted-foreground">
+                                <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-amber-500" />
+                                <p className="font-semibold">Sin datos para este período</p>
+                                <p className="text-xs mt-1">No hay registros en {["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"][parseInt(reportMes)]} {reportAnio}.</p>
+                            </div>
+                        ) : (
+                            <table className="text-xs w-full">
+                                <thead className="sticky top-0 bg-muted/90 backdrop-blur">
+                                    <tr>
+                                        {previewHeaders.map(h => (
+                                            <th key={h} className="px-3 py-2 text-left font-bold border-b border-border/60 whitespace-nowrap">{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/30">
+                                    {previewRows.map((row, i) => (
+                                        <tr key={i} className="hover:bg-muted/20">
+                                            {previewHeaders.map(h => (
+                                                <td key={h} className="px-3 py-1.5 whitespace-nowrap font-mono">{row[h] ?? ""}</td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
+                    <DialogFooter className="gap-2">
+                        <Button variant="outline" onClick={() => setShowPreview(false)}>Cerrar</Button>
+                        <Button variant="outline" onClick={() => { setShowPreview(false); handleGenerate("CSV"); }}>
+                            <Download className="w-4 h-4 mr-2" /> CSV
+                        </Button>
+                        <Button onClick={() => { setShowPreview(false); handleGenerate("TXT"); }} className="bg-rose-600 hover:bg-rose-700 text-white">
+                            <FileText className="w-4 h-4 mr-2" /> Descargar TXT
                         </Button>
                     </DialogFooter>
                 </DialogContent>

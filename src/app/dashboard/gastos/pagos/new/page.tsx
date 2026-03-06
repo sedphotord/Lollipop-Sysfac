@@ -34,17 +34,33 @@ function EgresoBuilderContent() {
     const [referencia, setReferencia] = useState("");
     const [notas, setNotas] = useState("");
 
+    // Retenciones State
+    const [retencionItbisPct, setRetencionItbisPct] = useState("0");
+    const [retencionItbisVal, setRetencionItbisVal] = useState("");
+    const [retencionIsrPct, setRetencionIsrPct] = useState("0");
+    const [retencionIsrVal, setRetencionIsrVal] = useState("");
+
     // Automatically load invoices when a supplier is selected
     useEffect(() => {
         if (proveedorId) {
             const supplierInvoices = MOCK_INVOICES.filter(i => i.rnc === proveedorId);
             setInvoices(supplierInvoices.map(i => ({ id: i.id, pendiente: i.pendiente, aplicar: 0 })));
+
+            // Reset retentions
+            setRetencionItbisPct("0");
+            setRetencionItbisVal("");
+            setRetencionIsrPct("0");
+            setRetencionIsrVal("");
         } else {
             setInvoices([]);
         }
     }, [proveedorId]);
 
-    const totalAbonado = invoices.reduce((acc, inv) => acc + (Number(inv.aplicar) || 0), 0);
+
+    // Computed totals
+    const subtotalAbonado = invoices.reduce((acc, inv) => acc + (Number(inv.aplicar) || 0), 0);
+    const totalRetenciones = (parseFloat(retencionItbisVal) || 0) + (parseFloat(retencionIsrVal) || 0);
+    const totalAbonado = subtotalAbonado - totalRetenciones;
 
     const handleApplyChange = (id: string, value: string) => {
         const numVal = parseFloat(value) || 0;
@@ -214,8 +230,15 @@ function EgresoBuilderContent() {
                                 <Calculator className="w-5 h-5 text-emerald-600" />
                                 Facturas Pendientes (CXP)
                             </h3>
-                            <div className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full font-bold text-lg border border-emerald-200 shadow-sm">
-                                Total: RD$ {totalAbonado.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            <div className="flex items-center gap-3">
+                                <div className="text-right">
+                                    <p className="text-xs text-muted-foreground font-medium">Subtotal a aplicar</p>
+                                    <p className="text-sm font-semibold">RD$ {subtotalAbonado.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                </div>
+                                <div className="bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-xl font-bold text-lg border border-emerald-200 shadow-sm flex flex-col items-end">
+                                    <span className="text-[10px] uppercase tracking-wider opacity-80 mb-0.5">Total a Pagar</span>
+                                    <span>RD$ {Math.max(0, totalAbonado).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -234,8 +257,8 @@ function EgresoBuilderContent() {
                                 <p className="text-sm text-muted-foreground mt-1">Este proveedor no tiene facturas pendientes de pago.</p>
                             </div>
                         ) : (
-                            <div className="flex-1">
-                                <div className="border rounded-xl overflow-hidden">
+                            <div className="flex-1 flex flex-col">
+                                <div className="border rounded-xl overflow-hidden flex-1">
                                     <table className="w-full text-sm text-left">
                                         <thead className="bg-muted/50 border-b text-xs uppercase text-muted-foreground font-semibold">
                                             <tr>
@@ -288,6 +311,73 @@ function EgresoBuilderContent() {
                                             })}
                                         </tbody>
                                     </table>
+                                </div>
+
+                                {/* Seccion de Retenciones Fiscales (DGII) */}
+                                <div className="mt-6 border border-emerald-100 bg-emerald-50/50 rounded-xl p-5 shadow-sm">
+                                    <div className="flex items-center gap-2 mb-4 border-b border-emerald-100 pb-3">
+                                        <Building2 className="w-4 h-4 text-emerald-600" />
+                                        <h4 className="font-semibold text-emerald-900 border-none">Aplicar Retenciones Fiscales (DGII)</h4>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-8">
+                                        {/* ITBIS */}
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <Label className="text-sm font-medium text-emerald-800">% Retención ITBIS</Label>
+                                                <Select value={retencionItbisPct} onValueChange={setRetencionItbisPct}>
+                                                    <SelectTrigger className="w-[120px] h-8 bg-white"><SelectValue placeholder="0%" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="0">0%</SelectItem>
+                                                        <SelectItem value="30">30%</SelectItem>
+                                                        <SelectItem value="75">75%</SelectItem>
+                                                        <SelectItem value="100">100%</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">RD$</span>
+                                                <Input
+                                                    type="number"
+                                                    placeholder="0.00"
+                                                    className="pl-10 text-right bg-white font-mono"
+                                                    value={retencionItbisVal}
+                                                    onChange={e => setRetencionItbisVal(e.target.value)}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground leading-tight">Valor retenido del ITBIS facturado. Se descontará del total a pagar al proveedor.</p>
+                                        </div>
+
+                                        {/* ISR */}
+                                        <div className="space-y-4">
+                                            <div className="flex items-center justify-between">
+                                                <Label className="text-sm font-medium text-emerald-800">% Retención ISR</Label>
+                                                <Select value={retencionIsrPct} onValueChange={setRetencionIsrPct}>
+                                                    <SelectTrigger className="w-[120px] h-8 bg-white"><SelectValue placeholder="0%" /></SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="0">0%</SelectItem>
+                                                        <SelectItem value="2">2% (Servicios)</SelectItem>
+                                                        <SelectItem value="10">10% (Honorarios)</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">RD$</span>
+                                                <Input
+                                                    type="number"
+                                                    placeholder="0.00"
+                                                    className="pl-10 text-right bg-white font-mono"
+                                                    value={retencionIsrVal}
+                                                    onChange={e => setRetencionIsrVal(e.target.value)}
+                                                />
+                                            </div>
+                                            <p className="text-[10px] text-muted-foreground leading-tight">Impuesto Sobre la Renta retenido en base al subtotal del servicio prestado.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 pt-4 border-t border-emerald-100 flex justify-between items-center">
+                                        <p className="text-sm font-medium text-emerald-800">Total Retenido (ITBIS + ISR)</p>
+                                        <p className="text-lg font-bold text-red-600 font-mono">- RD$ {totalRetenciones.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
+                                    </div>
                                 </div>
                             </div>
                         )}

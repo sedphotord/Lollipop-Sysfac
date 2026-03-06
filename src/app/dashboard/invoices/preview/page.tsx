@@ -1,242 +1,164 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Download, ZoomIn, ZoomOut } from "lucide-react";
-import Link from "next/link";
-import { InvoiceStandard } from "@/components/templates/InvoiceStandard";
-import { InvoiceCorporate } from "@/components/templates/InvoiceCorporate";
-import { InvoiceMinimal } from "@/components/templates/InvoiceMinimal";
-import { InvoiceModern } from "@/components/templates/InvoiceModern";
-import { InvoiceElegant } from "@/components/templates/InvoiceElegant";
-import { QuoteStandard } from "@/components/templates/QuoteStandard";
-import { QuoteDetailed } from "@/components/templates/QuoteDetailed";
-import { PaymentReceipt } from "@/components/templates/PaymentReceipt";
-import { TicketPOS } from "@/components/templates/TicketPOS";
-import { DeliveryNote } from "@/components/templates/DeliveryNote";
-import { AccountStatement } from "@/components/templates/AccountStatement";
+import { ArrowLeftIcon, ArrowDownTrayIcon, PrinterIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 
-const TEMPLATES: Record<string, React.ComponentType<{ data: any }>> = {
-    'InvoiceStandard': InvoiceStandard as any,
-    'InvoiceCorporate': InvoiceCorporate as any,
-    'InvoiceMinimal': InvoiceMinimal as any,
-    'InvoiceModern': InvoiceModern as any,
-    'InvoiceElegant': InvoiceElegant as any,
-    'QuoteStandard': QuoteStandard as any,
-    'QuoteDetailed': QuoteDetailed as any,
-    'PaymentReceipt': PaymentReceipt as any,
-    'TicketPOS': TicketPOS as any,
-    'DeliveryNote': DeliveryNote as any,
-    'AccountStatement': AccountStatement as any,
-    // legacy
-    'inv-standard': InvoiceStandard as any,
-    'inv-corporate': InvoiceCorporate as any,
-    'inv-minimal': InvoiceMinimal as any,
-    'inv-modern': InvoiceModern as any,
-    'inv-elegant': InvoiceElegant as any,
+// Lazy-load all invoice templates
+const TEMPLATES: Record<string, React.ComponentType<any>> = {
+    InvoiceStandard: dynamic(() => import("@/components/templates/InvoiceStandard").then(m => m.InvoiceStandard), { ssr: false }),
+    InvoiceModern: dynamic(() => import("@/components/templates/InvoiceModern").then(m => m.InvoiceModern), { ssr: false }),
+    InvoiceCorporate: dynamic(() => import("@/components/templates/InvoiceCorporate").then(m => m.InvoiceCorporate), { ssr: false }),
+    InvoiceElegant: dynamic(() => import("@/components/templates/InvoiceElegant").then(m => m.InvoiceElegant), { ssr: false }),
+    InvoiceMinimal: dynamic(() => import("@/components/templates/InvoiceMinimal").then(m => m.InvoiceMinimal), { ssr: false }),
+    QuoteStandard: dynamic(() => import("@/components/templates/QuoteStandard").then(m => m.QuoteStandard), { ssr: false }),
+    QuoteDetailed: dynamic(() => import("@/components/templates/QuoteDetailed").then(m => m.QuoteDetailed), { ssr: false }),
 };
 
-const TEMPLATE_LABELS: Record<string, string> = {
-    'InvoiceStandard': 'Factura Estándar',
-    'InvoiceCorporate': 'Factura Corporativa',
-    'InvoiceMinimal': 'Factura Minimalista',
-    'InvoiceModern': 'Factura Moderna',
-    'InvoiceElegant': 'Factura Elegante',
-    'QuoteStandard': 'Cotización Estándar',
-    'QuoteDetailed': 'Cotización Detallada',
-    'PaymentReceipt': 'Recibo de Pago',
-    'TicketPOS': 'Ticket POS',
-    'DeliveryNote': 'Conduce / Remisión',
-    'AccountStatement': 'Estado de Cuenta',
-};
-
-const PRINT_STYLE = `
-@page { size: letter; margin: 0; }
-@media print {
-    body * { visibility: hidden !important; }
-    #preview-template-area, #preview-template-area * { visibility: visible !important; }
-    #preview-template-area { position: fixed; inset: 0; width: 100%; z-index: 99999; transform: none !important; }
-}
-`;
-
-export default function InvoicePreviewPage() {
-    const [previewData, setPreviewData] = useState<any>(null);
-    const [templateId, setTemplateId] = useState('InvoiceStandard');
-    const [globalColor, setGlobalColor] = useState('#2346e8');
-    const [globalLogo, setGlobalLogo] = useState<string | null>(null);
-    const [zoom, setZoom] = useState(90);
-    const [company, setCompany] = useState({
-        name: 'Mi Empresa SRL',
-        rnc: '130-12345-6',
-        address: '',
-        email: '',
-        phone: '',
-        web: ''
-    });
+function InvoicePreviewContent() {
+    const router = useRouter();
+    const [data, setData] = useState<any>(null);
+    const [companyLogo, setCompanyLogo] = useState<string | null>(null);
+    const [companySettings, setCompanySettings] = useState<any>({});
 
     useEffect(() => {
-        const raw = sessionStorage.getItem('invoice_preview_data');
-        if (raw) {
-            try {
-                const data = JSON.parse(raw);
-                setPreviewData(data);
-                // Read template from preview data first
-                if (data.template && TEMPLATES[data.template]) {
-                    setTemplateId(data.template);
-                } else {
-                    // fallback: sessionStorage selected template (persisted on change)
-                    const ssTpl = sessionStorage.getItem('invoice_selected_template');
-                    if (ssTpl && TEMPLATES[ssTpl]) { setTemplateId(ssTpl); }
-                    else {
-                        const saved = localStorage.getItem('lollipop_invoice_template_id');
-                        if (saved && TEMPLATES[saved]) setTemplateId(saved);
-                    }
-                }
-            } catch (_) { }
-        } else {
-            const ssTpl = sessionStorage.getItem('invoice_selected_template');
-            if (ssTpl && TEMPLATES[ssTpl]) setTemplateId(ssTpl);
-            else {
-                const saved = localStorage.getItem('lollipop_invoice_template_id');
-                if (saved && TEMPLATES[saved]) setTemplateId(saved);
-            }
-        }
-        const savedColor = localStorage.getItem('lollipop_theme_color');
-        if (savedColor) setGlobalColor(savedColor);
+        // Read preview data stored by the editor
+        try {
+            const raw = sessionStorage.getItem("invoice_preview_data");
+            if (raw) setData(JSON.parse(raw));
+        } catch { }
 
-        // Logo — try both possible keys
-        const savedLogo = localStorage.getItem('lollipop_company_logo') || localStorage.getItem('sysfac_company_logo');
-        if (savedLogo) setGlobalLogo(savedLogo);
-
-        // Company settings — merge with good defaults
-        const coRaw = localStorage.getItem('lollipop_company_settings');
-        if (coRaw) {
-            try {
-                const co = JSON.parse(coRaw);
-                setCompany(prev => ({
-                    ...prev,
-                    name: co.name || prev.name,
-                    rnc: co.rnc || prev.rnc,
-                    address: co.address || prev.address,
-                    email: co.email || prev.email,
-                    phone: co.phone || prev.phone,
-                    web: co.web || '',
-                }));
-            } catch { }
-        }
+        // Read company info
+        try {
+            const logo = localStorage.getItem("lollipop_company_logo") || localStorage.getItem("sysfac_company_logo");
+            if (logo) setCompanyLogo(logo);
+            const raw = localStorage.getItem("lollipop_company_settings");
+            if (raw) setCompanySettings(JSON.parse(raw));
+        } catch { }
     }, []);
 
-    const ActiveTemplate = TEMPLATES[templateId] || InvoiceStandard;
+    const handlePrint = () => window.print();
 
-    const fullData = previewData ? {
-        color: { primary: globalColor },
-        company: {
-            name: company.name,
-            rnc: company.rnc,
-            logo: globalLogo,
-            address: company.address,
-            email: company.email,
-            phone: company.phone,
-        },
-        client: previewData.client || { name: "—", rnc: "", address: "", phone: "", email: "" },
-        document: {
-            type: previewData.tipo || "Crédito Fiscal",
-            number: previewData.ncf || (previewData.tipo === 'B01' ? 'B0100000001'
-                : previewData.tipo === 'B02' ? 'B0200000001'
-                    : previewData.tipo === 'B14' ? 'B1400000001'
-                        : previewData.tipo === 'B15' ? 'B1500000001'
-                            : 'B0100000001'),
-            date: previewData.date || "",
-            dueDate: previewData.dueDate || "",
-            ncf: previewData.ncf || (previewData.tipo === 'B01' ? 'B0100000001'
-                : previewData.tipo === 'B02' ? 'B0200000001'
-                    : previewData.tipo === 'B14' ? 'B1400000001'
-                        : previewData.tipo === 'B15' ? 'B1500000001'
-                            : 'B0100000001'),
-            terms: previewData.paymentTerms || "Vencimiento manual",
-            seller: previewData.vendedor || "—",
-            notes: previewData.notes || "",
-            footer: previewData.footer || "",
-        },
-        items: previewData.items || [],
-        totals: previewData.totals || { subtotal: 0, discount: 0, tax: 0, total: 0 }
-    } : null;
-
-    return (
-        <>
-            <style dangerouslySetInnerHTML={{ __html: PRINT_STYLE }} />
-            <div className="min-h-screen bg-muted/30 flex flex-col">
-                {/* Toolbar */}
-                <div className="bg-background border-b px-6 py-3 flex items-center gap-3 sticky top-0 z-10 shadow-sm print:hidden">
-                    <Link href="/dashboard/invoices/new">
-                        <button className="p-1.5 rounded-lg hover:bg-muted/60 text-muted-foreground transition-colors">
-                            <ArrowLeft className="w-4.5 h-4.5" />
-                        </button>
-                    </Link>
-                    <span className="font-bold text-foreground">Vista Previa</span>
-                    <span className="text-xs text-muted-foreground px-2 py-0.5 bg-muted/40 rounded-full border">
-                        {TEMPLATE_LABELS[templateId] || templateId}
-                    </span>
-
-                    <div className="flex-1" />
-
-                    {/* Zoom controls */}
-                    <div className="flex items-center gap-1 border rounded-lg p-1 bg-muted/30">
-                        <button onClick={() => setZoom(z => Math.max(50, z - 10))} className="p-1 rounded hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground">
-                            <ZoomOut className="w-4 h-4" />
-                        </button>
-                        <span className="text-xs font-mono w-10 text-center text-muted-foreground">{zoom}%</span>
-                        <button onClick={() => setZoom(z => Math.min(130, z + 10))} className="p-1 rounded hover:bg-muted/60 transition-colors text-muted-foreground hover:text-foreground">
-                            <ZoomIn className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
-                        <Printer className="w-4 h-4" /> Imprimir / PDF
+    if (!data) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center text-muted-foreground">
+                    <p className="text-lg font-medium">No hay datos de vista previa.</p>
+                    <Button variant="outline" className="mt-4" onClick={() => router.back()}>
+                        <ArrowLeftIcon className="w-4 h-4 mr-2" /> Volver al editor
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2" onClick={() => window.print()}>
-                        <Download className="w-4 h-4" /> Descargar PDF
-                    </Button>
-                    <Link href="/dashboard/invoices/new">
-                        <Button size="sm" className="bg-gradient-brand border-0 text-white gap-2 shadow-sm">
-                            Volver a editar
-                        </Button>
-                    </Link>
-                </div>
-
-                {/* Preview area */}
-                <div className="flex-1 flex flex-col items-center justify-start py-10 px-4 overflow-auto">
-                    {!fullData ? (
-                        <div className="flex flex-col items-center gap-4 mt-20 text-center">
-                            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center">
-                                <Printer className="w-8 h-8 text-primary" />
-                            </div>
-                            <h2 className="text-lg font-bold text-foreground">Sin datos de factura</h2>
-                            <p className="text-sm text-muted-foreground max-w-xs">
-                                Crea una factura primero y haz clic en &quot;Vista previa&quot; para ver cómo quedará impresa.
-                            </p>
-                            <Link href="/dashboard/invoices/new">
-                                <Button className="bg-gradient-brand border-0 text-white mt-2">
-                                    Crear Nueva Factura
-                                </Button>
-                            </Link>
-                        </div>
-                    ) : (
-                        <div
-                            id="preview-template-area"
-                            className="w-full max-w-[860px] transition-all duration-300"
-                            style={{
-                                transform: `scale(${zoom / 100})`,
-                                transformOrigin: 'top center',
-                                marginBottom: `${(zoom / 100 - 1) * -100}%`,
-                                '--template-primary': globalColor
-                            } as React.CSSProperties}
-                        >
-                            <ActiveTemplate data={fullData} />
-                        </div>
-                    )}
                 </div>
             </div>
-        </>
+        );
+    }
+
+    // Map editor data to template props format
+    const templateId =
+        data.template ||
+        sessionStorage.getItem("invoice_selected_template") ||
+        "InvoiceStandard";
+    const TemplateComponent = TEMPLATES[templateId] || TEMPLATES["InvoiceStandard"];
+
+    const TIPO_NAMES: Record<string, string> = {
+        B01: "Crédito Fiscal", B02: "Consumo", B14: "Gubernamental", B15: "Exportación",
+        E31: "Crédito Fiscal (e-CF)", E32: "Consumidor Final (e-CF)", E44: "Gubernamental (e-CF)", E45: "Exportación (e-CF)",
+    };
+
+    const templateProps = {
+        company: {
+            name: companySettings.name || "Mi Empresa SRL",
+            rnc: companySettings.rnc || "130-12345-6",
+            address: companySettings.address || "",
+            phone: companySettings.phone || "",
+            email: companySettings.email || "",
+            logo: companyLogo || undefined,
+        },
+        client: data.client || { name: "Consumidor Final", rnc: "", address: "", phone: "", email: "" },
+        document: {
+            type: TIPO_NAMES[data.tipo] || data.tipo || "Consumo",
+            number: data.ncf || "",
+            date: data.date || new Date().toLocaleDateString("es-DO"),
+            dueDate: data.dueDate || "—",
+            terms: data.paymentTerms || "",
+            seller: data.vendedor || "",
+            notes: data.notes || "",
+            footer: data.footer || "",
+            currency: data.moneda || "DOP",
+            mode: data.invoiceMode || "tradicional",
+        },
+        items: data.items || [],
+        totals: data.totals || { subtotal: 0, discount: 0, tax: 0, total: 0 },
+        color: { primary: localStorage.getItem("lollipop_theme_color") || "#3b82f6" },
+    };
+
+    return (
+        <div className="min-h-screen bg-muted/30">
+            {/* ── Top Toolbar ── */}
+            <div className="bg-background border-b px-6 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm print:hidden">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-1.5 rounded-lg hover:bg-muted/60 text-muted-foreground transition-colors"
+                    >
+                        <ArrowLeftIcon className="w-4 h-4" />
+                    </button>
+                    <div>
+                        <h1 className="text-base font-bold text-foreground">Vista previa</h1>
+                        <p className="text-xs text-muted-foreground">{templateId} · {data.ncf || "Sin NCF"}</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button variant="outline" className="gap-2 text-sm" onClick={handlePrint}>
+                        <PrinterIcon className="w-4 h-4" /> Imprimir / PDF
+                    </Button>
+                    <Button variant="outline" className="gap-2 text-sm" disabled title="Próximamente">
+                        <EnvelopeIcon className="w-4 h-4" /> Enviar por correo
+                    </Button>
+                </div>
+            </div>
+
+            {/* ── Invoice Preview Area ── */}
+            <div className="max-w-5xl mx-auto py-8 px-4">
+                <div
+                    id="invoice-print-area"
+                    className="bg-white shadow-xl rounded-xl overflow-hidden border border-border/30 print:shadow-none print:rounded-none print:border-0"
+                    style={{ minHeight: "29.7cm" }}
+                >
+                    <React.Suspense
+                        fallback={
+                            <div className="flex items-center justify-center h-96 text-muted-foreground">
+                                <div className="animate-spin mr-2 h-5 w-5 border-2 border-primary border-t-transparent rounded-full" />
+                                Cargando plantilla...
+                            </div>
+                        }
+                    >
+                        <TemplateComponent data={templateProps} />
+                    </React.Suspense>
+                </div>
+            </div>
+
+            <style>{`
+                @media print {
+                    body * { visibility: hidden !important; }
+                    #invoice-print-area, #invoice-print-area * { visibility: visible !important; }
+                    #invoice-print-area {
+                        position: fixed !important;
+                        left: 0 !important; top: 0 !important;
+                        width: 100% !important;
+                        z-index: 999999 !important;
+                    }
+                }
+            `}</style>
+        </div>
+    );
+}
+
+export default function InvoicePreviewPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-muted-foreground">Cargando vista previa...</div>}>
+            <InvoicePreviewContent />
+        </Suspense>
     );
 }

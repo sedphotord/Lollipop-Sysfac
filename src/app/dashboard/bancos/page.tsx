@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const LS_BANCOS = "lollipop_bancos";
+
 // ── Chart (simple SVG sparkline) ──────────────────────────────────
 function IncomesChart({ period }: { period: "6M" | "3M" | "7D" }) {
     const months6 = ["Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo"];
@@ -267,6 +269,18 @@ export default function BancosPage() {
     const [period, setPeriod] = useState<"6M" | "3M" | "7D">("6M");
     const [showModal, setShowModal] = useState(false);
 
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem(LS_BANCOS);
+            setCuentas(raw ? JSON.parse(raw) : INIT_CUENTAS);
+        } catch { setCuentas(INIT_CUENTAS); }
+    }, []);
+
+    const persistCuentas = (data: Cuenta[]) => {
+        setCuentas(data);
+        try { localStorage.setItem(LS_BANCOS, JSON.stringify(data)); } catch { }
+    };
+
     const totalBancos = cuentas.filter(c => c.tipo !== "Tarjeta de crédito").reduce((a, c) => a + c.saldo, 0);
     const totalTarjetas = cuentas.filter(c => c.tipo === "Tarjeta de crédito").reduce((a, c) => a + c.saldo, 0);
     const filtered = cuentas.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
@@ -276,9 +290,11 @@ export default function BancosPage() {
             id: Date.now().toString(), name: f.name, tipo: f.tipo,
             numero: f.numero, saldo: parseFloat(f.saldo) || 0, currency: f.currency, connected: false,
         };
-        setCuentas(p => [...p, newC]);
+        persistCuentas([...cuentas, newC]);
         setShowModal(false);
     };
+
+    const handleDelete = (id: string) => persistCuentas(cuentas.filter(c => c.id !== id));
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-3 duration-500">

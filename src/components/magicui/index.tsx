@@ -57,7 +57,7 @@ export function Marquee({ children, className, reverse = false, pauseOnHover = t
 export function ShimmerButton({ children, className, shimmerColor = "rgba(255,255,255,0.15)", ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { shimmerColor?: string }) {
     return (
         <button className={cn(
-            "relative overflow-hidden rounded-full px-8 py-3.5 font-bold text-white bg-gradient-to-r from-purple-600 via-purple-500 to-cyan-500 shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 transition-shadow",
+            "relative overflow-hidden rounded-full px-8 py-3.5 font-bold text-white bg-gradient-to-r from-blue-600 via-blue-500 to-sky-500 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-shadow",
             className
         )} {...props}>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full animate-shimmer" />
@@ -107,7 +107,7 @@ export function DotPattern({ className, cr = 1, cx = 1, cy = 1, spacing = 20 }: 
 export function GradientText({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
         <span className={cn(
-            "bg-gradient-to-r from-purple-600 via-cyan-500 to-purple-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-x",
+            "bg-gradient-to-r from-blue-600 via-sky-500 to-blue-600 bg-[length:200%_auto] bg-clip-text text-transparent animate-gradient-x",
             className
         )}>{children}</span>
     );
@@ -130,7 +130,7 @@ export function BentoCard({ children, className, glare = true }: {
     return (
         <div ref={ref} onMouseMove={handleMove} onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}
             className={cn(
-                "group relative overflow-hidden rounded-2xl border border-border/60 bg-card/50 backdrop-blur-xl p-6 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:border-purple-300/40",
+                "group relative overflow-hidden rounded-2xl border border-border/60 bg-card/50 backdrop-blur-xl p-6 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/10 hover:border-blue-300/40",
                 className
             )}>
             {glare && hovering && (
