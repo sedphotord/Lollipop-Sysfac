@@ -141,7 +141,7 @@ export default function AjustesInventarioPage() {
                         <div className="px-6 py-4 flex items-center justify-between border-b bg-muted/20">
                             <h2 className="font-bold text-lg text-foreground">Detalle de Ajuste</h2>
                             <Button variant="ghost" size="icon" onClick={() => setSelectedAjuste(null)} className="w-8 h-8 hover:bg-muted text-muted-foreground text-xl leading-none">
-                                ├ù
+                                &times;
                             </Button>
                         </div>
                         <div className="p-8 space-y-6">

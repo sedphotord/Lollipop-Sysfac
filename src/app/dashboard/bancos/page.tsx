@@ -15,56 +15,65 @@ import { cn } from "@/lib/utils";
 
 const LS_BANCOS = "lollipop_bancos";
 
-// ── Chart (simple SVG sparkline) ──────────────────────────────────
+// ── Chart (SVG with real data from localStorage) ────────────────────
 function IncomesChart({ period }: { period: "6M" | "3M" | "7D" }) {
-    const months6 = ["Octubre", "Noviembre", "Diciembre", "Enero", "Febrero", "Marzo"];
-    const months3 = ["Enero", "Febrero", "Marzo"];
-    const days7 = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-    const labels = period === "6M" ? months6 : period === "3M" ? months3 : days7;
-    const points = period === "6M"
-        ? [0, 0, 0, 0, 0, 0]
-        : period === "3M"
-            ? [0, 0, 0]
-            : [0, 0, 0, 0, 0, 0, 0];
+    const [ingresosData, setIngresosData] = useState<number[]>([]);
+    const [gastosData2, setGastosData2] = useState<number[]>([]);
+    const [chartLabels, setChartLabels] = useState<string[]>([]);
 
-    const W = 360, H = 130, PAD_L = 28, PAD_B = 30, PAD_T = 10;
+    useEffect(() => {
+        const now = new Date();
+        const invoices: any[] = (() => { try { return JSON.parse(companyStorage.get("invoice_emitted") || "[]"); } catch { return []; } })();
+        const expenses: any[] = (() => { try { return JSON.parse(companyStorage.get("gastos") || "[]"); } catch { return []; } })();
+
+        if (period === "7D") {
+            const lbl: string[] = [], ing: number[] = [], gst: number[] = [];
+            for (let d = 6; d >= 0; d--) {
+                const date = new Date(now); date.setDate(now.getDate() - d);
+                const iso = date.toISOString().split("T")[0];
+                lbl.push(date.toLocaleDateString("es-DO", { weekday: "short" }));
+                ing.push(invoices.filter((i: any) => (i.date || i.createdAt || "").startsWith(iso)).reduce((a: number, i: any) => a + (i.totals?.total || i.total || 0), 0));
+                gst.push(expenses.filter((g: any) => (g.fecha || "").startsWith(iso)).reduce((a: number, g: any) => a + (g.monto || 0), 0));
+            }
+            setChartLabels(lbl); setIngresosData(ing); setGastosData2(gst);
+        } else {
+            const months = period === "6M" ? 6 : 3;
+            const lbl: string[] = [], ing: number[] = [], gst: number[] = [];
+            for (let m = months - 1; m >= 0; m--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+                const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+                lbl.push(d.toLocaleDateString("es-DO", { month: "short" }));
+                ing.push(invoices.filter((i: any) => (i.date || i.createdAt || "").startsWith(ym)).reduce((a: number, i: any) => a + (i.totals?.total || i.total || 0), 0));
+                gst.push(expenses.filter((g: any) => (g.fecha || "").startsWith(ym)).reduce((a: number, g: any) => a + (g.monto || 0), 0));
+            }
+            setChartLabels(lbl); setIngresosData(ing); setGastosData2(gst);
+        }
+    }, [period]);
+
+    const W = 360, H = 130, PAD_L = 42, PAD_B = 30, PAD_T = 10;
     const plotW = W - PAD_L, plotH = H - PAD_B - PAD_T;
-    const maxVal = Math.max(...points, 5);
-    const xScale = (i: number) => PAD_L + (i / (points.length - 1)) * plotW;
-    const yScale = (v: number) => PAD_T + plotH - (v / maxVal) * plotH;
+    const maxVal = Math.max(...ingresosData, ...gastosData2, 1);
+    const n = chartLabels.length;
+    const xS = (i: number) => PAD_L + (n <= 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const yS = (v: number) => PAD_T + plotH - (v / maxVal) * plotH;
+    const fmt = (v: number) => v >= 1000000 ? `${(v / 1000000).toFixed(1)}M` : v >= 1000 ? `${(v / 1000).toFixed(0)}K` : v.toFixed(0);
+    const linePath = (pts: number[]) => pts.map((v, i) => `${i === 0 ? "M" : "L"} ${xS(i)} ${yS(v)}`).join(" ");
+    const yTicks = [0, 1, 2, 3, 4].map(t => (t / 4) * maxVal);
 
-    const pathD = points
-        .map((v, i) => `${i === 0 ? "M" : "L"} ${xScale(i)} ${yScale(v)}`)
-        .join(" ");
-
-    const yTicks = [5, 4, 3, 2, 1, 0].map(n => (n / 5) * maxVal);
+    if (n === 0) return <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">Cargando...</div>;
+    const hasData = Math.max(...ingresosData, ...gastosData2) > 0;
 
     return (
         <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto overflow-visible">
-            {/* Y grid + labels */}
             {yTicks.map((v, i) => {
-                const y = yScale(v);
-                return (
-                    <g key={i}>
-                        <line x1={PAD_L} y1={y} x2={W} y2={y} stroke="#e5e7eb" strokeWidth={0.8} />
-                        <text x={PAD_L - 4} y={y + 3.5} textAnchor="end" fontSize={9} fill="#9ca3af">${v.toFixed(0)}</text>
-                    </g>
-                );
+                const y = yS(v);
+                return (<g key={i}><line x1={PAD_L} y1={y} x2={W} y2={y} stroke="#e5e7eb" strokeWidth={0.8} /><text x={PAD_L - 4} y={y + 3.5} textAnchor="end" fontSize={8} fill="#9ca3af">{hasData ? fmt(v) : "0"}</text></g>);
             })}
-            {/* Ingresos line (primary teal) */}
-            <path d={pathD} fill="none" stroke="hsl(var(--primary))" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
-            {points.map((v, i) => (
-                <circle key={i} cx={xScale(i)} cy={yScale(v)} r={4} fill="white" stroke="hsl(var(--primary))" strokeWidth={2} />
-            ))}
-            {/* Gastos line (red) */}
-            <path d={pathD} fill="none" stroke="#ef4444" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
-            {points.map((v, i) => (
-                <circle key={i} cx={xScale(i)} cy={yScale(v)} r={4} fill="white" stroke="#ef4444" strokeWidth={2} />
-            ))}
-            {/* X labels */}
-            {labels.map((l, i) => (
-                <text key={i} x={xScale(i)} y={H - 4} textAnchor="middle" fontSize={9} fill="#9ca3af">{l}</text>
-            ))}
+            <path d={linePath(ingresosData)} fill="none" stroke="hsl(var(--primary))" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+            {ingresosData.map((v, i) => <circle key={i} cx={xS(i)} cy={yS(v)} r={3.5} fill="white" stroke="hsl(var(--primary))" strokeWidth={2} />)}
+            <path d={linePath(gastosData2)} fill="none" stroke="#ef4444" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+            {gastosData2.map((v, i) => <circle key={i} cx={xS(i)} cy={yS(v)} r={3.5} fill="white" stroke="#ef4444" strokeWidth={2} />)}
+            {chartLabels.map((l, i) => <text key={i} x={xS(i)} y={H - 4} textAnchor="middle" fontSize={9} fill="#9ca3af">{l}</text>)}
         </svg>
     );
 }
